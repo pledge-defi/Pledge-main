@@ -1,0 +1,157 @@
+.components_header_landing {
+  position: fixed;
+  top: 0;
+  z-index: 9;
+  width: 100%;
+  height: 80px;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.3s ease-in-out;
+
+  .modile_list {
+    display: none;
+  }
+
+  .continer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+
+    & > a {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      color: white;
+      font-weight: 600;
+
+      span {
+        margin-left: 8.39px;
+        font-size: 16px;
+      }
+    }
+
+    .home_menu_list {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      a {
+        margin-left: 44px;
+        color: white;
+        color: #262533;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .menu-item {
+        color: rgba(93, 82, 255, 1) !important;
+      }
+
+      .launch-app {
+        width: 126px;
+        margin-left: 44px;
+      }
+    }
+  }
+
+  &.no_opacity {
+    color: #262533;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+    .continer a {
+      color: #262533;
+    }
+
+    .home_menu_list {
+      display: flex;
+
+      .menu-item {
+        color: #262533;
+      }
+
+      // .launch-app {
+      //   color: white;
+      //   background-color: #5d52ff;
+      // }
+    }
+  }
+}
+
+.ant-drawer-content {
+  display: block;
+
+  img {
+    float: right;
+    width: 14px;
+    height: 14px;
+  }
+
+  .home_menu_list2 {
+    display: flex;
+    flex-direction: column;
+
+    .menu-item {
+      height: 50px;
+      color: #8b89a3;
+      font-weight: 500;
+      font-size: 16px;
+      font-style: normal;
+      line-height: 50px;
+    }
+
+    .menu-item:hover {
+      color: #5d52ff !important;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 16px;
+    }
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  .components_header_landing {
+    display: block;
+
+    .modile_list {
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+
+      img {
+        width: 20px;
+        height: 14px;
+        margin: 0 24px 0 18px;
+      }
+
+      .components_button {
+        width: 115px;
+        height: 28px;
+        padding: 5px 10px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 18px;
+        text-align: center;
+      }
+    }
+
+    .components_connect_wallet {
+      margin: 0;
+    }
+
+    .home_menu_list {
+      display: none !important;
+    }
+
+    .logo_name {
+      display: none;
+    }
+  }
+}
