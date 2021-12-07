@@ -25,14 +25,13 @@ function HomePage() {
   const [pool, setpool] = useState('BUSD');
   const [coin, setcoin] = useState('');
   const [visible, setvisible] = useState(false);
-  const [show, setshow] = useState('0');
+  const [show, setshow] = useState('100');
 
   const callback = (key) => {
     history.push(key);
     setpool(key);
   };
   const handleVisibleChange = (visable, num) => {
-    console.log(1111111111, visable, num);
     if (visable) {
       setshow(num);
       setvisible(visable);
@@ -169,7 +168,13 @@ function HomePage() {
       render: (val, record) => {
         console.log(record);
         return (
-          <Popover content={content} title="Choose a Role" trigger="click">
+          <Popover
+            content={content}
+            title="Choose a Role"
+            trigger="click"
+            visible={show === record.key && visible}
+            onVisibleChange={(e) => handleVisibleChange(e, record.key)}
+          >
             <div className="underlyingAsset" onClick={() => Changecoin(val)}>
               <img src={record.logo} alt="" />
               <p>{val}</p>
@@ -327,7 +332,7 @@ function HomePage() {
         className="close"
         onClick={() => {
           setvisible(false);
-          setshow('0');
+          setshow('100');
         }}
       />
     </div>

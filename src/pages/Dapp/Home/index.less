@@ -326,6 +326,29 @@
       height: 38px;
     }
 
+    .ant-tabs-nav-list > .ant-tabs-tab div,
+    .ant-table-content table .ant-table-tbody > tr td {
+      font-size: 14px !important;
+
+      div,
+      div p {
+        font-size: 14px !important;
+      }
+    }
+
+    .ant-table-content .ant-table-thead tr {
+      align-items: center;
+    }
+
+    .ant-table-content .ant-table-thead tr th,
+    div div span {
+      font-size: 12px;
+    }
+
+    .ant-table-content .ant-table-thead tr th:nth-child(1) {
+      flex: 2.3;
+    }
+
     .dapp-layout {
       display: block;
       padding: 125px 0 120px !important;
@@ -350,23 +373,33 @@
     left: -30px;
     width: 308px;
     height: 283px;
+    padding-top: 10px;
 
     .ant-popover-title {
+      display: flex;
+      align-items: center;
       width: 308px;
       height: 48px;
       color: #262533;
       font-weight: 500;
       font-size: 16px;
-      line-height: 40px;
+      line-height: 24px;
     }
 
     .choose {
       display: block;
 
+      .close {
+        top: 23px;
+        left: 273px;
+        width: 14px;
+      }
+
       .choose_lender,
       .choose_borrow {
         display: flex;
-        box-sizing: border-box;
+        flex-direction: row;
+
         width: 276px;
         height: 80px;
         margin: 10px 0;
@@ -377,6 +410,7 @@
 
         span {
           display: block;
+          text-align: left !important;
         }
 
         span:nth-child(1) {

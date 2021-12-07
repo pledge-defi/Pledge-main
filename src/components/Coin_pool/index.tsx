@@ -150,7 +150,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
 
       <div className="coin_pool_box2">
         <div className="coin_pool_box2_title">
-          <p className="info_title2">How much do you want to {mode == 'Lender' ? 'lend' : 'borrow'}?</p>
+          <p className="info_title2">How much do you want to {mode == 'Lend' ? 'Lend' : 'Borrow'}?</p>
           {mode == 'Lend' ? (
             <>
               <div className="balance_input">
@@ -271,7 +271,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           <span className="info_title">Maturity Date</span> <span className="info_key_info">2021/12/01 12:00</span>
         </p>
         {mode == 'Lend' ? (
-          <div>
+          <div className="lend_button">
             <Button1 style={{ marginTop: '60px' }} disabled={lendvalue == 0 || lendvalue == null ? true : false}>
               Connect Wallet
             </Button1>
