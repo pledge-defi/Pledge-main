@@ -42,6 +42,7 @@
   }
 
   .ant-tabs-nav-list {
+    position: relative;
     display: flex;
     justify-content: space-between;
     width: 475px;
@@ -77,6 +78,31 @@
     .ant-tabs-ink-bar {
       color: #fff !important;
       background: none !important;
+    }
+  }
+
+  .ant-dropdown-trigger {
+    position: absolute;
+    top: 324px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 140px;
+    height: 46px;
+    margin-left: 515px;
+    padding: 8px 37px;
+    color: #5d52ff;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    background: rgba(93, 82, 255, 0.1);
+    border: 1px solid #5d52ff;
+    border-radius: 12px;
+
+    svg {
+      margin-left: 8.5px;
     }
   }
 

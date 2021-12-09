@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
-import { Tabs, Table, Progress, Popover } from 'antd';
+import { Tabs, Table, Progress, Popover, Menu, Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 
 import { DappLayout } from '_src/Layout';
 import { Link } from 'react-router-dom';
@@ -37,6 +38,17 @@ function HomePage() {
       setvisible(visable);
     }
   };
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <a>live</a>
+      </Menu.Item>
+
+      <Menu.Item>
+        <a>Finished</a>
+      </Menu.Item>
+    </Menu>
+  );
   //每三位加一个小数点
   function toThousands(num) {
     var num = (num || 0).toString(),
@@ -337,10 +349,15 @@ function HomePage() {
       />
     </div>
   );
-  // ant-popover ant-popover-placement-top  ant-popover-hidden
   return (
     <div className="dapp_home_page">
       <DappLayout title="Market Pool" className="trust_code">
+        <Dropdown overlay={menu} trigger={['click']}>
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Live
+            <DownOutlined />
+          </a>
+        </Dropdown>
         <Tabs defaultActiveKey="1" onChange={callback} className="all_tab">
           <TabPane tab="BUSD" key="BUSD">
             <Table

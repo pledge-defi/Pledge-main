@@ -7,24 +7,22 @@ import Button from '_components/Button';
 import './index.less';
 
 export interface IAccessTab {
-  rightAngleDirection?: 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom' | 'null';
-  type?: 'paramy' | 'default';
   className?: string;
-  disabled?: boolean;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  mode: string;
 }
 
-const AccessTab: React.FC<IAccessTab> = ({ className, style }) => {
+const AccessTab: React.FC<IAccessTab> = ({ className, style, mode }) => {
+  console.log(mode);
   return (
     <div className={classnames('access_tab')} style={style}>
       <div className="access_title">
         <img src={USDT} alt="" style={{ width: '40px' }} />
         <h2>USDT</h2>
       </div>
-      <p className="access_key">Loan amount</p>
+
+      <p className="access_token">{mode == 'Lend' ? 'LP-Token' : 'SP-Token'}</p>
       <p className="access_num">100,000 USDT</p>
-      <p className="access_token">100 LP-Token</p>
       <p className="access_list">
         <span className="access_key">Underlying Asset</span>
         <span className="access_value">BTCB</span>
@@ -40,7 +38,6 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style }) => {
 
 AccessTab.defaultProps = {
   className: '',
-
   style: null,
 };
 

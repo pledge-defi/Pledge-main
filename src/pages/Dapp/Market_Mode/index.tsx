@@ -9,6 +9,7 @@ import PortfolioList from '_components/PortfolioList';
 import ClaimList from '_components/ClaimList';
 import AccessTab from '_components/AccessTab';
 import Emptyimg from '_assets/images/empty.png';
+import Refund from '_components/Refund';
 
 import pageURL from '_constants/pageURL';
 
@@ -39,52 +40,6 @@ function Market_Mode() {
     'Margin Ratio',
     'Collateralization Ratio',
   ];
-  const ClaimTitle = [
-    'Pool / Underlying Asset',
-    'Total Lend Amount',
-    'Total Borrow Amount',
-    'Quantity Deposit',
-    'Refund Deposit',
-    'Extract The Refund',
-  ];
-  const Claiminfo = [
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'BTCB',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'USDT',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'BTCB',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'USDT',
-    },
-  ];
 
   return (
     <>
@@ -109,109 +64,19 @@ function Market_Mode() {
           <PortfolioList mode={mode} />
           <PortfolioList mode={mode} />
           <PortfolioList mode={mode} />
-          {mode == 'Lend' ? (
-            <>
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
-                <h3>Refund Deposit</h3>
-                <Tooltip placement="top" title={'Refund Deposit'}>
-                  <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
-                </Tooltip>
-              </div>
-              <p className="prtfolioList_title">
-                {ClaimTitle.map((item, index) => {
-                  return (
-                    <span className="all_tab" key={index}>
-                      {item}
-                    </span>
-                  );
-                })}
-              </p>
-              <p>
-                {Claiminfo.map((item, index) => {
-                  return (
-                    <li className="claim_list" key={index}>
-                      <p style={{ justifyContent: 'start' }}>
-                        <OrderImg img1={item.logo1} img2={item.logo2} />
-                        {item.Asset}
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Total Lend Amount</span> <span>{item.TotalLendAmount}</span>
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Total Borrow Amount</span>{' '}
-                        <span>{item.TotalBorrowAmount}</span>
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Quantity Deposit</span>
-                        <span>{item.QuantityDeposit}</span>
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Refund Deposit</span> <span>{item.RefundDeposit}</span>
-                      </p>
-                      <Button1>Claim</Button1>
-                    </li>
-                  );
-                })}
-              </p>
-            </>
-          ) : (
-            <>
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
-                <h3>Access to Borrowing</h3>
-                <Tooltip placement="top" title={'Access to Borrowing'}>
-                  <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
-                </Tooltip>
-              </div>
-              <div className="access" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                <AccessTab />
-                <AccessTab />
-                <AccessTab />
-              </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
-                <h3>Refund Borrow</h3>
-                <Tooltip placement="top" title={'Refund Borrow'}>
-                  <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
-                </Tooltip>
-              </div>
-              <p className="prtfolioList_title">
-                {ClaimTitle.map((item, index) => {
-                  return (
-                    <span className="all_tab" key={index}>
-                      {item}
-                    </span>
-                  );
-                })}
-              </p>
-              <p>
-                {Claiminfo.map((item, index) => {
-                  return (
-                    <li className="claim_list" key={index}>
-                      <p style={{ justifyContent: 'start' }}>
-                        <OrderImg img1={item.logo1} img2={item.logo2} />
-                        {item.Asset}
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Total Lend Amount</span> <span>{item.TotalLendAmount}</span>
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Total Borrow Amount</span>{' '}
-                        <span>{item.TotalBorrowAmount}</span>
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Quantity Deposit</span>
-                        <span>{item.QuantityDeposit}</span>
-                      </p>
-                      <p>
-                        <span className="claim_list_title">Refund Deposit</span> <span>{item.RefundDeposit}</span>
-                      </p>
-                      <Button1>Claim</Button1>
-                    </li>
-                  );
-                })}
-              </p>
-            </>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
+            <h3>Access to {mode == 'Borrow' ? 'Borrowing' : 'Lending'}</h3>
+            <Tooltip placement="top" title={'Access to Borrowing'}>
+              <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
+            </Tooltip>
+          </div>
+          <div className="access" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <AccessTab mode={mode} />
+            <AccessTab mode={mode} />
+            <AccessTab mode={mode} />
+          </div>
+          <Refund mode={mode} />
         </DappLayout>
       ) : (
         <DappLayout title={`${mode} Order`} className="dapp_mode_page">
