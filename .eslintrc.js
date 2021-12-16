@@ -1,19 +1,11 @@
+const path = require('path');
+
 module.exports = {
   env: {
     browser: true,
     es2021: true,
   },
-  extends: [
-    'plugin:react/recommended',
-    'plugin:prettier/recommended',
-    'airbnb',
-    'airbnb/hooks',
-    'prettier',
-    // 专门支持了 eslint-plugin-react
-    'prettier/react',
-    // 专门支持了 @typescript-eslint/eslint-plugin
-    'prettier/@typescript-eslint',
-  ],
+  extends: ['plugin:react/recommended', 'plugin:prettier/recommended', 'airbnb', 'airbnb/hooks', 'prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -27,14 +19,21 @@ module.exports = {
     'no-var': 'error',
     // 优先使用 interface 而不是 type
     '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
-    'react/button-has-type': 'never',
-    'react/prop-types': 'never',
-    'react/sort-comp': 'never',
-    'import/extensions': 'never',
+    'react/button-has-type': 'off',
+    'react/prop-types': 'off',
+    'react/sort-comp': 'off',
+    'import/extensions': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
     //  取消 .d.ts 声明文件中使用了 constructor 报错 问题
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'error',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': [
+      'warn',
+      {
+        additionalHooks: 'useRecoilCallback',
+      },
+    ],
   },
   overrides: [
     {
@@ -57,6 +56,7 @@ module.exports = {
           ['_constants', path.resolve(__dirname, './src/constants/')],
           ['_utils', path.resolve(__dirname, './src/utils/')],
           ['_assets', path.resolve(__dirname, 'src/assets/')],
+          ['_abis', path.resolve(__dirname, 'src/abis/')],
         ],
         extensions: ['.js', '.less', '.jsx', '.json', '.jsonc', '.wasm'],
       },

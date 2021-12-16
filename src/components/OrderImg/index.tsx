@@ -4,6 +4,8 @@ import classnames from 'classnames';
 import BUSD from '_src/assets/images/order_BUSD.png';
 import BTCB from '_src/assets/images/order_BTCB.png';
 import USDT from '_src/assets/images/order_USDT.png';
+import DAI from '_src/assets/images/order_DAI.png';
+import BNB from '_src/assets/images/order_BNB.png';
 
 import './index.less';
 
@@ -19,6 +21,8 @@ const OrderImg: React.FC<IOrderImg> = ({ className, style, img1, img2 }) => {
     BUSD: BUSD,
     BTCB: BTCB,
     USDT: USDT,
+    DAI: DAI,
+    BNB: BNB,
   };
   return (
     <div className={classnames('components_order_img')} style={style}>

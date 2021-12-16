@@ -164,11 +164,8 @@
         border-color: #5d52ff;
       }
 
-      .key:nth-child(1),
-      .key:nth-child(2),
-      .key:nth-child(3),
-      .key:nth-child(4),
-      .key:nth-child(5) {
+      .key:nth-child(odd),
+      .key:nth-child(even) {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -249,6 +246,25 @@
       }
     }
   }
+}
+
+.ant-dropdown-menu-item:hover {
+  background-color: #fff;
+}
+
+.menutab {
+  margin: 0;
+  color: #262533;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 44px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.menutab:hover {
+  background: #f7f6ff;
 }
 
 .ant-popover-inner {

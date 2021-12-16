@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const WebpackBar = require('webpackbar');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { DefinePlugin } = require('webpack');
+const { DefinePlugin, ProvidePlugin } = require('webpack');
 
 const { webpackEntry } = require('../utils/getEntry');
 const { PROJECT_ROOT, SRC_ROOT, LESS_PATH_ROOT } = require('../utils/getPath');
@@ -23,9 +23,9 @@ module.exports = {
   },
   experiments: {
     // outputModule: true,
-    // syncWebAssembly: true, 兼容 旧版 webpack-4
+    syncWebAssembly: true, //兼容 旧版 webpack-4
     topLevelAwait: true, // 支持 顶级 await
-    asyncWebAssembly: true,
+    // asyncWebAssembly: true,
   },
   module: {
     rules: [
@@ -34,11 +34,11 @@ module.exports = {
         use: ['babel-loader'],
         exclude: [/node_modules/],
       },
-      {
-        test: /\.js$/,
-        use: ['source-map-loader'],
-        enforce: 'pre',
-      },
+      // {
+      //   test: /\.js$/,
+      //   use: ['source-map-loader'],
+      //   enforce: 'pre',
+      // },
       {
         test: /\.css$/,
         use: [
@@ -114,6 +114,23 @@ module.exports = {
       _constants: path.resolve(SRC_ROOT, './constants/'),
       _utils: path.resolve(SRC_ROOT, './utils'),
       _assets: path.resolve(SRC_ROOT, './assets'),
+      _abis: path.resolve(SRC_ROOT, './abis'),
+    },
+    fallback: {
+      os: require.resolve('os-browserify/browser'),
+      https: require.resolve('https-browserify'),
+      http: require.resolve('stream-http'),
+      stream: require.resolve('stream-browserify'),
+      path: false,
+      assert: require.resolve('assert/'),
+      fs: false,
+      // net: false,
+      // tls: false,
+      // zlib: false,
+      // crypto: false,
+      buffer: require.resolve('buffer/'),
+      crypto: require.resolve('crypto-browserify'),
+      // zlib: require.resolve('browserify-zlib'),
     },
   },
   plugins: [
@@ -133,6 +150,10 @@ module.exports = {
     }),
     new DefinePlugin({
       'process.env.VERSION_APP': JSON.stringify(pkgJson.version),
+    }),
+    new ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
     }),
   ],
 };

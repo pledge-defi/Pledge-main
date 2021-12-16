@@ -5,23 +5,23 @@ import { notification } from 'antd';
 import classNames from 'classnames';
 
 import { injected } from './connector';
-import { useEagerConnect, useInactiveListener } from '_components/ConnectWallet/WalletHooks';
+import { useEagerConnect, useInactiveListener } from '_containers/ConnectWallet/WalletHooks';
 import ChainBridge from '_constants/ChainBridge';
-import Button from '_components/Button';
 
-import metamaskLogo from '_assets/images/metamask_logo.png';
+import MetamaskSVG from '_assets/images/metamask.svg';
+import WalletSVG from '_assets/images/wallet.svg';
 
 import './index.less';
 import services from '_src/services';
 export interface IConnectWallet {
+  typeUI?: 'header' | 'metamask';
   className?: string;
   style?: React.CSSProperties;
 }
 
-const ConnectWallet: React.FC<IConnectWallet> = ({ className, style, children }) => {
+const ConnectWallet: React.FC<IConnectWallet> = ({ typeUI, className, style, children }) => {
   const triedEager = useEagerConnect();
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
-
   const [activatingConnector, setActivatingConnector] = useState<InjectedConnector>();
   console.log('====chainId', chainId);
 
@@ -34,7 +34,7 @@ const ConnectWallet: React.FC<IConnectWallet> = ({ className, style, children })
           .filter((item) => item.type === 'Ethereum')
           .find((item) => item.networkId === 525);
         try {
-          await services.PoolServer.switchNetwork(fraNetworkDefault);
+          await services.evmServer.switchNetwork(fraNetworkDefault);
         } catch {
           notification.warning({
             message: error?.name,
@@ -68,24 +68,39 @@ const ConnectWallet: React.FC<IConnectWallet> = ({ className, style, children })
 
   function ButtonSwitchComponent() {
     if (connected && isDisconnect) {
-      return (
-        <div className="wallet_connected">
-          <img src={metamaskLogo} />
-          <span>{`${account.slice(0, 6)}...${account.slice(-4)}`}</span>
-        </div>
-      );
+      //TODO: move `typeUI` outside
+      if (typeUI === 'header') {
+        return (
+          <div className="wallet-connected wallet-header">
+            <WalletSVG style={{ marginRight: '12px' }} />
+            <span className="address">{`${account.slice(0, 8)}···${account.slice(-6)}`}</span>
+          </div>
+        );
+      }
+      return <div className="wallet-connected">{children}</div>;
     }
 
     if (activating) {
-      return <Button rightAngleDirection="leftBottom">Connectting</Button>;
+      return <div className="connect-no-connected">CONNECTING</div>;
     }
     return (
-      <Button rightAngleDirection="leftBottom" onClick={handleOnCLickConnectWallet}>
-        Connect Wallet
-      </Button>
+      <div className="connect-no-connected" onClick={handleOnCLickConnectWallet}>
+        {typeUI !== 'header' && <MetamaskSVG style={{ marginRight: '12px' }} />} CONNECT WALLET
+      </div>
     );
   }
-  return <div className="components_connect_wallet">{ButtonSwitchComponent()}</div>;
+  return (
+    <div
+      style={style}
+      className={classNames('components-connect-wallet', className, { 'header-wallet': typeUI === 'header' })}
+    >
+      {ButtonSwitchComponent()}
+    </div>
+  );
+};
+
+ConnectWallet.defaultProps = {
+  typeUI: 'header',
 };
 
 export default ConnectWallet;

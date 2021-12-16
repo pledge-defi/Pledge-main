@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Collapse, Statistic, Row, Col, Table, Steps, message } from 'antd';
 
@@ -10,6 +10,7 @@ import ClaimTime from '_components/ClaimTime';
 import './index.less';
 
 export interface IPortfolioList {
+  props?: any;
   className?: string;
   style?: React.CSSProperties;
   mode: string;
@@ -17,7 +18,7 @@ export interface IPortfolioList {
 
 const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, ...props }) => {
   const { Panel } = Collapse;
-
+  const PoolState = { 0: 'Match', 1: 'Execution', 2: 'Finish', 3: 'Liquidation', 4: 'Undone' };
   const DetailList = [
     {
       title: 'Detail',
@@ -32,7 +33,12 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, ...props }) 
       Expected_interest: '10.0000 BUSD',
     },
   ];
-
+  const poolAsset = {
+    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
+    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
+    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
+    '0x0000000000000000000000000000000000000000': 'BNB',
+  };
   return (
     <div className={classNames('portfolio_list', className)} {...props}>
       <Collapse bordered={false} expandIconPosition="right" ghost={true}>
@@ -40,23 +46,23 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, ...props }) 
           header={
             <Row gutter={16}>
               <Col span={4}>
-                <OrderImg img1="BUSD" img2="BTCB" />
-                <Statistic title="BUSD-BTCB" />
+                <OrderImg img1={props.props.poolname} img2={props.props.underlying_asset} />
+                <Statistic title={`${props.props.poolname} / ${props.props.underlying_asset}`} />
               </Col>
               <Col span={4}>
-                <Statistic title="5%" />
+                <Statistic title={`${props.props.fixed_rate} %`} />
               </Col>
               <Col span={4}>
-                <Statistic title="Expired" />
+                <Statistic title={PoolState[props.props.state]} />
               </Col>
               <Col span={4} className="media_tab">
-                <Statistic title="2021/11/01 12:00" />
+                <Statistic title={props.props.settlement_date} />
               </Col>
               <Col span={4} className="media_tab">
-                <Statistic title="150%" />
+                <Statistic title={props.props.margin_ratio} />
               </Col>
               <Col span={4} className="media_tab">
-                <Statistic title="200% " />
+                <Statistic title={props.props.collateralization_ratio} />
               </Col>
             </Row>
           }
@@ -86,17 +92,19 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, ...props }) 
                   </li>
                 </ul>
               ) : (
-                <ul className="order_list" key={index}>
-                  <p>{item.title}</p>
-                  <li>
-                    <span>The_principal</span>
-                    <span>{item.The_principal}</span>
-                  </li>
-                  <li>
-                    <span>Expected_interest</span>
-                    <span>{item.Expected_interest}</span>
-                  </li>
-                </ul>
+                props.props.state != 0 && props.props.state != 4 && (
+                  <ul className="order_list" key={index}>
+                    <p>{item.title}</p>
+                    <li>
+                      <span>The Principal</span>
+                      <span>{item.The_principal}</span>
+                    </li>
+                    <li>
+                      <span>Expected Interest</span>
+                      <span>{item.Expected_interest}</span>
+                    </li>
+                  </ul>
+                )
               );
             })}
             <ClaimTime />
