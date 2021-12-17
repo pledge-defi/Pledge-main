@@ -11,176 +11,77 @@ export interface IRefund {
   className?: string;
   mode: string;
   style?: React.CSSProperties;
+  stateinfo?: any;
+  props?: any;
 }
 
-const Refund: React.FC<IRefund> = ({ className, style, mode }) => {
-  const LendTitle = [
-    'Pool / Underlying Asset',
-    'Total Lend Amount',
-    'Total Borrow Amount',
-    'Quantity Deposit',
-    'Refund Deposit',
-    'Extract The Refund',
-  ];
-  const BorrowTitle = [
-    'Pool / Underlying Asset',
-    'Total Lend Amount',
-    'Total Borrow Amount',
-    'Quantity Borrow',
-    'Refund Borrow',
-    'Extract The Refund',
-  ];
-  const Lendinfo = [
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'BTCB',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'USDT',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'BTCB',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityDeposit: '1,000 BUSD',
-      RefundDeposit: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'USDT',
-    },
-  ];
-  const Borrowinfo = [
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityBorrow: '1,000 BUSD',
-      RefundBorrow: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'BTCB',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityBorrow: '1,000 BUSD',
-      RefundBorrow: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'USDT',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityBorrow: '1,000 BUSD',
-      RefundBorrow: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'BTCB',
-    },
-    {
-      Asset: 'BUSD-BTCB',
-      TotalLendAmount: '2,000 BUSD',
-      TotalBorrowAmount: '1,000 BUSD',
-      QuantityBorrow: '1,000 BUSD',
-      RefundBorrow: '200 BUSD',
-      logo1: 'BUSD',
-      logo2: 'USDT',
-    },
-  ];
+const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props }) => {
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
-        <h3>{mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}</h3>
-        <Tooltip placement="top" title={mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}>
-          <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
-        </Tooltip>
-      </div>
-      <p className="prtfolioList_title">
-        {mode == 'Lend'
-          ? LendTitle.map((item, index) => {
-              return (
-                <span className="all_tab" key={index}>
-                  {item}
-                </span>
-              );
-            })
-          : BorrowTitle.map((item, index) => {
-              return (
-                <span className="all_tab" key={index}>
-                  {item}
-                </span>
-              );
-            })}
-      </p>
       <p>
-        {mode == 'Lend'
-          ? Lendinfo.map((item, index) => {
-              return (
-                <li className="claim_list" key={index}>
-                  <p style={{ justifyContent: 'start' }}>
-                    <OrderImg img1={item.logo1} img2={item.logo2} />
-                    {item.Asset}
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Total Lend Amount</span> <span>{item.TotalLendAmount}</span>
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Total Borrow Amount</span> <span>{item.TotalBorrowAmount}</span>
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Quantity Deposit</span>
-                    <span>{item.QuantityDeposit}</span>
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Refund Deposit</span> <span>{item.RefundDeposit}</span>
-                  </p>
-                  <Button>Claim</Button>
-                </li>
-              );
-            })
-          : Borrowinfo.map((item, index) => {
-              return (
-                <li className="claim_list" key={index}>
-                  <p style={{ justifyContent: 'start' }}>
-                    <OrderImg img1={item.logo1} img2={item.logo2} />
-                    {item.Asset}
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Total Lend Amount</span> <span>{item.TotalLendAmount}</span>
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Total Borrow Amount</span> <span>{item.TotalBorrowAmount}</span>
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Quantity Borrow</span>
-                    <span>{item.QuantityBorrow}</span>
-                  </p>
-                  <p>
-                    <span className="claim_list_title">Refund Borrow</span> <span>{item.RefundBorrow}</span>
-                  </p>
-                  <Button>Claim</Button>
-                </li>
-              );
-            })}
+        {mode == 'Lend' ? (
+          <li className="claim_list">
+            <p style={{ justifyContent: 'start' }}>
+              <OrderImg img1={props.poolname} img2={props.underlying_asset} />
+              {props.poolname} / {props.underlying_asset}
+            </p>
+            {props.state != 0 ? (
+              <>
+                <p>
+                  <span>{stateinfo.settleAmountLend / 100000000}</span>
+                </p>
+                <p>
+                  <span>{stateinfo.settleAmountBorrow / 100000000}</span>
+                </p>
+                <p>
+                  <span>{stateinfo.liquidationAmounLend / 100000000}</span>
+                </p>
+                <p>
+                  <span>{stateinfo.finishAmountLend / 100000000}</span>
+                </p>
+                <Button>Claim</Button>
+              </>
+            ) : (
+              <div className="statemask">
+                <p>
+                  <span> Wait for the settlement date to get back the unmatched quota</span>
+                </p>
+                <Button disabled={true}>Claim</Button>
+              </div>
+            )}
+          </li>
+        ) : (
+          <li className="claim_list">
+            <p style={{ justifyContent: 'start' }}>
+              <OrderImg img1={props.poolname} img2={props.underlying_asset} />
+              {props.poolname} / {props.underlying_asset}
+            </p>
+            {props.state != 0 ? (
+              <>
+                <p>
+                  <span>{stateinfo.settleAmountLend / 100000000}</span>
+                </p>
+                <p>
+                  <span>{stateinfo.settleAmountBorrow / 100000000}</span>
+                </p>
+                <p>
+                  <span>{stateinfo.liquidationAmounBorrow / 100000000}</span>
+                </p>
+                <p>
+                  <span>{stateinfo.finishAmountBorrow / 100000000}</span>
+                </p>
+                <Button>Claim</Button>
+              </>
+            ) : (
+              <div className="statemask">
+                <p>
+                  <span> Wait for the settlement date to get back the unmatched quota</span>
+                </p>
+                <Button disabled={true}>Claim</Button>
+              </div>
+            )}
+          </li>
+        )}
       </p>
     </div>
   );

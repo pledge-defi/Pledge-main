@@ -30,6 +30,8 @@ function Market_Mode() {
 
   const [data, setdata] = useState([]);
   const [datastate, setdatastate] = useState([]);
+  const [datainfo, setdatainfo] = useState([]);
+
   const poolAsset = {
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
@@ -40,7 +42,7 @@ function Market_Mode() {
     const datainfo = await services.PoolServer.getPoolBaseData();
     const datainfo1 = await services.PoolServer.getPoolDataInfo();
 
-    console.log(datainfo1);
+    setdatainfo(datainfo1);
     const res = datainfo.map((item, index) => {
       let maxSupply = (item.maxSupply / 1000000000000000000).toFixed(0);
       let borrowSupply = (item.borrowSupply / 1000000000000000000).toFixed(0);
@@ -81,7 +83,22 @@ function Market_Mode() {
       history.push(pageURL.Dapp);
     }
   }, []);
-
+  const LendTitle = [
+    'Pool / Underlying Asset',
+    'Total Lend Amount',
+    'Total Borrow Amount',
+    'Quantity Deposit',
+    'Refund Deposit',
+    'Extract The Refund',
+  ];
+  const BorrowTitle = [
+    'Pool / Underlying Asset',
+    'Total Lend Amount',
+    'Total Borrow Amount',
+    'Quantity Borrow',
+    'Refund Borrow',
+    'Extract The Refund',
+  ];
   const PortfolioListTitle1 = ['Pool / Underlying Asset', 'Fixed Rate', 'State'];
   const PortfolioListTitle = [
     'Pool / Underlying Asset',
@@ -123,12 +140,39 @@ function Market_Mode() {
               <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
             </Tooltip>
           </div>
-          <div className="access" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-            <AccessTab mode={mode} />
-            <AccessTab mode={mode} />
-            <AccessTab mode={mode} />
+          <div className="access">
+            {data.map((item, index) => {
+              return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo[index]} />;
+            })}
           </div>
-          <Refund mode={mode} />
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
+              <h3>{mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}</h3>
+              <Tooltip placement="top" title={mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}>
+                <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
+              </Tooltip>
+            </div>
+            <p className="prtfolioList_title">
+              {mode == 'Lend'
+                ? LendTitle.map((item, index) => {
+                    return (
+                      <span className="all_tab" key={index}>
+                        {item}
+                      </span>
+                    );
+                  })
+                : BorrowTitle.map((item, index) => {
+                    return (
+                      <span className="all_tab" key={index}>
+                        {item}
+                      </span>
+                    );
+                  })}
+            </p>
+            {data.map((item, index) => {
+              return <Refund mode={mode} props={item} key={index} stateinfo={datainfo[index]} />;
+            })}
+          </div>
         </DappLayout>
       ) : (
         <DappLayout title={`${mode} Order`} className="dapp_mode_page">
