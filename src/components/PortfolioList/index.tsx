@@ -37,9 +37,10 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
   };
   console.log(props);
   const getBalance = async () => {
-    await services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
-      setbalance(res);
-    });
+    (await props) &&
+      services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
+        setbalance(res);
+      });
   };
   useEffect(() => {
     getBalance();

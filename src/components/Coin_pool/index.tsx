@@ -108,7 +108,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       };
     });
     setpoolinfo(res);
-    chainId !== undefined &&
+    res &&
       (await services.ERC20Server.balanceOf(res[pid]?.Sp ?? 0).then((res) => {
         console.log('余额', res, poolinfo[pid]?.Sp ?? 0);
         setbalance(res);
