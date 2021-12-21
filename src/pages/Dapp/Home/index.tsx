@@ -16,6 +16,8 @@ import img2 from '_src/assets/images/4023 2.png';
 import img3 from '_src/assets/images/4023 3.png';
 import img4 from '_src/assets/images/4023 4.png';
 import img5 from '_src/assets/images/4023 5.png';
+import BTCB from '_src/assets/images/order_BTCB.png';
+import BNB from '_src/assets/images/order_BNB.png';
 import Lender1 from '_src/assets/images/Group 1843.png';
 import Borrower from '_src/assets/images/Group 1842.png';
 import Close from '_assets/images/Close Square.png';
@@ -47,6 +49,10 @@ function HomePage() {
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
     '0x0000000000000000000000000000000000000000': 'BNB',
   };
+  const imglist = {
+    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCB,
+    '0x0000000000000000000000000000000000000000': BNB,
+  };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -54,6 +60,7 @@ function HomePage() {
       return x.dividedBy(y).toString();
     }
   };
+
   const dealNumber_8 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -92,7 +99,7 @@ function HomePage() {
         poolname: poolAsset[item.lendToken],
         endTime: item.endTime,
         settleTime: item.settleTime,
-        logo: img1,
+        logo: imglist[item.borrowToken],
         Sp: item.lendToken,
         Jp: item.borrowToken,
       };

@@ -35,13 +35,16 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       return x.dividedBy(y).toString();
     }
   };
-  console.log(props.props.settlement_date);
+
+  console.log(new Date().getTime());
+
   const getBalance = async () => {
     (await props) &&
       services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
         setbalance(res);
       });
   };
+
   useEffect(() => {
     getBalance();
   }, []);
@@ -131,7 +134,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                 )
               );
             })}
-            <ClaimTime />
+            <ClaimTime endtime={props.props.endtime} state={props.props.state} />
           </div>
         </Panel>
       </Collapse>
