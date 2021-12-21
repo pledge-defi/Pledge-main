@@ -5,6 +5,7 @@ import { action, observable, makeAutoObservable } from 'mobx';
  */
 class TestStore {
   count = 0;
+  poolinfo;
   increment = () => {
     this.count = this.count + 1;
   };
@@ -12,6 +13,7 @@ class TestStore {
   constructor() {
     makeAutoObservable(this, {
       count: observable,
+      poolinfo: observable,
       increment: action,
     });
   }

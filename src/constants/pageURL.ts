@@ -11,7 +11,7 @@ const pageURL = {
   Dapp: '/',
   Market: '/:pool',
   Lend_Borrow: '/Market/:mode',
-  Market_Pool: '/:pool/:coin/:mode',
+  Market_Pool: '/:pid/:pool/:coin/:mode',
 };
 
 export default pageURL;

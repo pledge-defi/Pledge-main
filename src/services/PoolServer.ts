@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { gasOptions, getPledgePoolContract, web3 } from './web3';
 import { AddEthereumChainParameter, BridgeConfigSimple } from '_constants/ChainBridge.d';
-import { pledge_address } from '_src/utils/constants';
+import { pledge_address, ORACLE_address } from '_src/utils/constants';
 
 import type { PledgePool } from '_src/contracts/PledgePool';
+import { send } from 'process';
 
 const PoolServer = {
   async poolLength() {
@@ -31,7 +32,23 @@ const PoolServer = {
     }
     return poolDataData;
   },
-
+  async depositLend(pid, value, coinAddress) {
+    const contract = getPledgePoolContract(pledge_address);
+    let options = await gasOptions();
+    if (coinAddress === '0x0000000000000000000000000000000000000000') {
+      options = { ...options, value };
+    }
+    return await contract.methods.depositLend(pid, value).send(options);
+  },
+  async depositBorrow(pid, value, time, coinAddress) {
+    const contract = getPledgePoolContract(pledge_address);
+    let options = await gasOptions();
+    if (coinAddress === '0x0000000000000000000000000000000000000000') {
+      options = { ...options, value };
+    }
+    const data = await contract.methods.depositBorrow(pid, value, time).send(options);
+    return data;
+  },
   async switchNetwork(value: BridgeConfigSimple) {
     return await window.ethereum.request({
       method: 'wallet_addEthereumChain',

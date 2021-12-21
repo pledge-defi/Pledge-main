@@ -1,11 +1,28 @@
-import { gasOptions, getERC20Contract } from './web3';
+import { gasOptions, getERC20Contract, getDefaultAccount } from './web3';
 import type { ERC20 } from '_src/contracts/ERC20';
-type GetbalanceOf = Parameters<ERC20['balanceOf']>;
+import { pledge_address, ORACLE_address } from '_src/utils/constants';
+
 const ERC20Server = {
-  async balanceOf(address: string, ...arg: GetbalanceOf) {
-    const contract = getERC20Contract(address);
-    const rates = await contract.methods.balanceOf(...arg).call();
+  //
+  async balanceOf(contractAddress) {
+    const contract = getERC20Contract(contractAddress);
+    const account = await getDefaultAccount();
+    const rates = await contract.methods.balanceOf(account).call();
     return rates;
+  },
+  //
+  async Approve(contractAddress, amount) {
+    const contract = getERC20Contract(contractAddress);
+    const options = await gasOptions();
+    const rates = await contract.methods.approve(pledge_address, amount).send(options);
+    return rates;
+  },
+  //
+  async allowance(contractAddress) {
+    // sp_token \ jp_token
+    const contract = getERC20Contract(contractAddress);
+    const owner = await getDefaultAccount();
+    return await contract.methods.allowance(owner, pledge_address).call();
   },
 };
 

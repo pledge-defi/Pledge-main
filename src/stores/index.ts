@@ -11,12 +11,13 @@ import TestStore from './TestStore';
  * 创建根Stroe, 统一管理状态
  */
 class RootStore {
+  testStore: TestStore;
   /**
    * 构造方法, 集合子Store
    */
   constructor() {
     /** 多语言状态管理 */
-    this.testStore = new TestStore(this);
+    this.testStore = new TestStore();
   }
 }
 

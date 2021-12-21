@@ -67,6 +67,8 @@ function Market_Mode() {
         margin_ratio: `${item.autoLiquidateThreshold / 1000000}%`,
         collateralization_ratio: `${item.martgageRate / 1000000}%`,
         poolname: poolAsset[item.lendToken],
+        Sp: item.lendToken,
+        Jp: item.borrowToken,
       };
     });
     console.log(res);
@@ -131,7 +133,7 @@ function Market_Mode() {
           </p>
           {console.log(data)}
           {data.map((item, index) => {
-            return <PortfolioList mode={mode} props={item} key={index} />;
+            return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo[index]} />;
           })}
 
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>

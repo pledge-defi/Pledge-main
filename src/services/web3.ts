@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { PledgePool } from '_src/contracts/PledgePool';
+import { PledgePool, SendOptions } from '_src/contracts/PledgePool';
 import { DebtToken } from '_src/contracts/DebtToken';
 import { BscPledgeOracle } from '_src/contracts/BscPledgeOracle';
 import { AddressPrivileges } from '_src/contracts/AddressPrivileges';
@@ -34,12 +34,12 @@ const getDebtTokenContract = (address: string) => {
 };
 
 const getPledgePoolContract = (address: string) => {
-  return (new web3.eth.Contract(PledgePoolAbi, address) as unknown) as {
+  return new web3.eth.Contract(PledgePoolAbi, address) as {
     methods: PledgePool;
   };
 };
 const getERC20Contract = (address: string) => {
-  return (new web3.eth.Contract(ERC20Abi, address) as unknown) as {
+  return new web3.eth.Contract(ERC20Abi, address) as {
     methods: ERC20;
   };
 };
@@ -50,12 +50,11 @@ const getDefaultAccount = async () => {
   }
   return '';
 };
-const gasOptions = async (params = {}) => {
-  const gasLimit = Web3.utils.toHex(500000);
+
+const gasOptions = async (params = {}): Promise<SendOptions> => {
   const from = await getDefaultAccount();
   return {
     from,
-    gasLimit,
     ...params,
   };
 };
@@ -67,4 +66,5 @@ export {
   getBscPledgeOracleAbiContract,
   getDebtTokenContract,
   getPledgePoolContract,
+  getDefaultAccount,
 };

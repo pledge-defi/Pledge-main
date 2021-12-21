@@ -19,6 +19,7 @@ import img5 from '_src/assets/images/4023 5.png';
 import Lender1 from '_src/assets/images/Group 1843.png';
 import Borrower from '_src/assets/images/Group 1842.png';
 import Close from '_assets/images/Close Square.png';
+import RootStore from '_src/stores/index';
 
 import './index.less';
 import Button from '_components/Button';
@@ -31,8 +32,8 @@ import { poll } from 'ethers/lib/utils';
 function HomePage() {
   const history = useHistory();
   const { connector, library, chainId, account } = useWeb3React();
-  console.log(connector, library, chainId, account);
-
+  const { testStore } = RootStore;
+  const [pid, setpid] = useState(0);
   const { TabPane } = Tabs;
   const [pool, setpool] = useState('BUSD');
   const [coin, setcoin] = useState('');
@@ -46,16 +47,29 @@ function HomePage() {
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
     '0x0000000000000000000000000000000000000000': 'BNB',
   };
-
+  const dealNumber_18 = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e18);
+      return x.dividedBy(y).toString();
+    }
+  };
+  const dealNumber_8 = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e6);
+      return x.dividedBy(y).toString();
+    }
+  };
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
     const datainfo1 = await services.PoolServer.getPoolDataInfo();
 
     console.log(datainfo);
     const res = datainfo.map((item, index) => {
-      let maxSupply = (item.maxSupply / 1000000000000000000).toFixed(0);
-      let borrowSupply = (item.borrowSupply / 1000000000000000000).toFixed(0);
-      let lendSupply = (item.lendSupply / 1000000000000000000).toFixed(0);
+      let maxSupply = dealNumber_18(item.maxSupply);
+      let borrowSupply = dealNumber_18(item.borrowSupply);
+      let lendSupply = dealNumber_18(item.lendSupply);
       console.log(maxSupply);
 
       const times = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
@@ -68,15 +82,19 @@ function HomePage() {
         key: index + 1,
         state: item.state,
         underlying_asset: poolAsset[item.borrowToken],
-        fixed_rate: item.interestRate / 1000000,
+        fixed_rate: dealNumber_8(item.interestRate),
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: times,
         length: `${days} day`,
-        margin_ratio: `${item.autoLiquidateThreshold / 1000000}%`,
-        collateralization_ratio: `${item.martgageRate / 1000000}%`,
+        margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
+        collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
         poolname: poolAsset[item.lendToken],
+        endTime: item.endTime,
+        settleTime: item.settleTime,
         logo: img1,
+        Sp: item.lendToken,
+        Jp: item.borrowToken,
       };
     });
     console.log(res);
@@ -248,6 +266,7 @@ function HomePage() {
                 onClick={() => {
                   setcoin(record.underlying_asset);
                   setshow(record.key);
+                  setpid(record.key - 1);
                 }}
               >
                 Detail
@@ -359,14 +378,17 @@ function HomePage() {
     <div className="choose">
       <div className="choose_lender">
         <img src={Lender1} alt="" />
-        <Link to={PageUrl.Market_Pool.replace(':pool/:coin/:mode', `${pool}/${coin}/Lender`)} style={{ color: '#FFF' }}>
+        <Link
+          to={PageUrl.Market_Pool.replace(':pid/:pool/:coin/:mode', `${pid}/${pool}/${coin}/Lender`)}
+          style={{ color: '#FFF' }}
+        >
           <span>Lender</span> <span> Lock in a fixed interest rate today. Fixed rates guarantee your APY.</span>
         </Link>
       </div>
       <div className="choose_borrow">
         <img src={Borrower} alt="" />
         <Link
-          to={PageUrl.Market_Pool.replace(':pool/:coin/:mode', `${pool}/${coin}/Borrower`)}
+          to={PageUrl.Market_Pool.replace(':pid/:pool/:coin/:mode', `${pid}/${pool}/${coin}/Borrower`)}
           style={{ color: '#FFF' }}
         >
           <span>Borrower</span> <span>Borrow with certainty. Fixed rates lock in what you pay.</span>
