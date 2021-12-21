@@ -81,7 +81,6 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       let lendSupply = dealNumber_18(item.lendSupply);
       console.log(maxSupply);
 
-      const times = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
       const maturitydate = moment.unix(item.endTime).format(FORMAT_TIME_STANDARD);
       var difftime = item.endTime - item.settleTime;
 
@@ -94,7 +93,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         fixed_rate: dealNumber_8(item.interestRate),
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
-        settlement_date: times,
+        settlement_date: maturitydate,
         length: `${days} day`,
         margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
         collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
@@ -108,11 +107,12 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       };
     });
     setpoolinfo(res);
-    res &&
-      (await services.ERC20Server.balanceOf(res[pid]?.Sp ?? 0).then((res) => {
+
+    (await res) &&
+      services.ERC20Server.balanceOf(res[pid]?.Sp ?? 0).then((res) => {
         console.log('余额', res, poolinfo[pid]?.Sp ?? 0);
         setbalance(res);
-      }));
+      });
   };
   console.log(poolinfo[pid]);
   useEffect(() => {

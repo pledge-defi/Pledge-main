@@ -35,7 +35,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       return x.dividedBy(y).toString();
     }
   };
-  console.log(props);
+  console.log(props.props.settlement_date);
   const getBalance = async () => {
     (await props) &&
       services.ERC20Server.balanceOf(props.props.Sp).then((res) => {

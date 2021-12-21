@@ -13,6 +13,7 @@ import Refund from '_components/Refund';
 import services from '_src/services';
 import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 
 import pageURL from '_constants/pageURL';
 
@@ -38,18 +39,32 @@ function Market_Mode() {
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
     '0x0000000000000000000000000000000000000000': 'BNB',
   };
+  const dealNumber_18 = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e18);
+      return x.dividedBy(y).toString();
+    }
+  };
+  const dealNumber_8 = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e6);
+      return x.dividedBy(y).toString();
+    }
+  };
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
     const datainfo1 = await services.PoolServer.getPoolDataInfo();
 
     setdatainfo(datainfo1);
     const res = datainfo.map((item, index) => {
-      let maxSupply = (item.maxSupply / 1000000000000000000).toFixed(0);
-      let borrowSupply = (item.borrowSupply / 1000000000000000000).toFixed(0);
-      let lendSupply = (item.lendSupply / 1000000000000000000).toFixed(0);
+      let maxSupply = dealNumber_18(item.maxSupply);
+      let borrowSupply = dealNumber_18(item.borrowSupply);
+      let lendSupply = dealNumber_18(item.lendSupply);
       console.log(maxSupply);
 
-      const times = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
+      const maturitydate = moment.unix(item.endTime).format(FORMAT_TIME_STANDARD);
 
       var difftime = item.endTime - item.settleTime;
 
@@ -59,13 +74,13 @@ function Market_Mode() {
         key: index + 1,
         state: item.state,
         underlying_asset: poolAsset[item.borrowToken],
-        fixed_rate: item.interestRate / 1000000,
+        fixed_rate: dealNumber_8(item.interestRate),
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
-        settlement_date: times,
+        settlement_date: maturitydate,
         length: `${days} day`,
-        margin_ratio: `${item.autoLiquidateThreshold / 1000000}%`,
-        collateralization_ratio: `${item.martgageRate / 1000000}%`,
+        margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
+        collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
         poolname: poolAsset[item.lendToken],
         Sp: item.lendToken,
         Jp: item.borrowToken,
