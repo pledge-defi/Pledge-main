@@ -1,44 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-
+import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { Collapse, Statistic, Row, Col, Table, Steps, message } from 'antd';
-
+import BigNumber from 'bignumber.js';
 import Button from '_components/Button';
 
 import './index.less';
+import services from '_src/services';
 
 export interface IClaimTime {
   className?: string;
   endtime: any;
   style?: React.CSSProperties;
   state: any;
+  pid: any;
+  value: any;
+  mode: any;
+  settlementAmountLend: any;
+  spToken: any;
+  jpToken: any;
 }
 
-const ClaimTime: React.FC<IClaimTime> = ({ className, style, endtime, state }) => {
+const ClaimTime: React.FC<IClaimTime> = ({
+  className,
+  style,
+  endtime,
+  state,
+  pid,
+  value,
+  mode,
+  settlementAmountLend,
+  spToken,
+  jpToken,
+}) => {
   const [days, setdays] = useState(1);
   const [hours, sethours] = useState(1);
   const [minutes, setminutes] = useState(1);
   const [second, setsecond] = useState(1);
-  console.log(state);
+  const [Spnum, setSpnum] = useState('');
+  const [Jpnum, setJpnum] = useState('');
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+
   let timer = null;
   function interval() {
     timer = setInterval(() => {
       let a = Number(endtime - new Date().getTime() / 1000);
-      let days = parseInt((a / (3600 * 24)).toString());
+      let days = parseInt((a / (3600 * 24)).toString()) > 0 ? parseInt((a / (3600 * 24)).toString()) : 0;
       let hours =
-        parseInt(((a - days * 24 * 3600) / 3600).toString()) < 10
-          ? '0' + parseInt(((a - days * 24 * 3600) / 3600).toString())
-          : parseInt(((a - days * 24 * 3600) / 3600).toString());
+        parseInt(((a - days * 24 * 3600) / 3600).toString()) > 0
+          ? parseInt(((a - days * 24 * 3600) / 3600).toString())
+          : '0';
       let minutes =
-        parseInt(((a - days * 24 * 3600 - Number(hours) * 3600) / 60).toString()) < 10
-          ? '0' + parseInt(((a - days * 24 * 3600 - Number(hours) * 3600) / 60).toString())
-          : parseInt(((a - days * 24 * 3600 - Number(hours) * 3600) / 60).toString());
+        parseInt(((a - days * 24 * 3600 - Number(hours) * 3600) / 60).toString()) > 0
+          ? parseInt(((a - days * 24 * 3600 - Number(hours) * 3600) / 60).toString())
+          : '0';
       let second =
-        parseInt((a - days * 24 * 3600 - Number(hours) * 3600 - Number(minutes) * 60).toString()) < 10
-          ? '0' + parseInt((a - days * 24 * 3600 - Number(hours) * 3600 - Number(minutes) * 60).toString())
-          : parseInt((a - days * 24 * 3600 - Number(hours) * 3600 - Number(minutes) * 60).toString());
+        parseInt((a - days * 24 * 3600 - Number(hours) * 3600 - Number(minutes) * 60).toString()) > 0
+          ? parseInt((a - days * 24 * 3600 - Number(hours) * 3600 - Number(minutes) * 60).toString())
+          : '0';
       const times = days + ':' + hours + ':' + minutes + ':' + second;
       console.log(times);
+
       setdays(days);
       sethours(Number(hours));
       setminutes(Number(minutes));
@@ -51,7 +73,32 @@ const ClaimTime: React.FC<IClaimTime> = ({ className, style, endtime, state }) =
     }, 1000);
   }
 
+  const getclaim = () => {
+    var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
+    console.log(timestamp);
+    try {
+      mode == 'Lend'
+        ? services.PoolServer.getwithdrawLend(pid, Spnum)
+        : services.PoolServer.getwithdrawBorrow(pid, Jpnum, timestamp);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
+    if (chainId !== undefined) {
+      {
+        mode == 'Lend'
+          ? services.ERC20Server.balanceOf(spToken).then((res) => {
+              setSpnum(res);
+              console.log(res);
+            })
+          : services.ERC20Server.balanceOf(jpToken).then((res) => {
+              setJpnum(res);
+              console.log(res);
+            });
+      }
+    }
+
     if (state !== '4') {
       interval();
     } else {
@@ -74,7 +121,13 @@ const ClaimTime: React.FC<IClaimTime> = ({ className, style, endtime, state }) =
       </div>
 
       <div className="claim_button">
-        <Button disabled={days + hours + minutes + second == 0 ? false : true}>Claim</Button>
+        {state !== '4' ? (
+          <Button disabled={days + hours + minutes + second == 0 ? false : true} onClick={getclaim}>
+            Claim
+          </Button>
+        ) : (
+          <Button disabled={true}>Claim</Button>
+        )}
       </div>
     </div>
   );

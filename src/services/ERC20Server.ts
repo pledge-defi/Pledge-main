@@ -10,6 +10,7 @@ const ERC20Server = {
     const rates = await contract.methods.balanceOf(account).call();
     return rates;
   },
+
   //
   async Approve(contractAddress, amount) {
     const contract = getERC20Contract(contractAddress);

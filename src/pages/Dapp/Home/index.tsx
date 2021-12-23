@@ -57,7 +57,7 @@ function HomePage() {
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return x.dividedBy(y).toString();
+      return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
 
@@ -110,7 +110,7 @@ function HomePage() {
     console.log(data);
   };
   useEffect(() => {
-    callback('BUSD');
+    history.push('BUSD');
     getPoolInfo();
   }, []);
 

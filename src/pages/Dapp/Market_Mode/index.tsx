@@ -43,7 +43,7 @@ function Market_Mode() {
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return x.dividedBy(y).toString();
+      return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
   const dealNumber_8 = (num) => {
@@ -64,7 +64,7 @@ function Market_Mode() {
       let lendSupply = dealNumber_18(item.lendSupply);
       console.log(maxSupply);
 
-      const maturitydate = moment.unix(item.endTime).format(FORMAT_TIME_STANDARD);
+      const settlementdate = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
 
       var difftime = item.endTime - item.settleTime;
 
@@ -77,14 +77,18 @@ function Market_Mode() {
         fixed_rate: dealNumber_8(item.interestRate),
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
-        settlement_date: maturitydate,
-        length: `${days} day`,
+        settlement_date: settlementdate,
+        length: days,
         margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
         collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
         poolname: poolAsset[item.lendToken],
         Sp: item.lendToken,
         Jp: item.borrowToken,
         endtime: item.endTime,
+        lendSupply: item.lendSupply,
+        borrowSupply: item.borrowSupply,
+        Sptoken: item.spCoin,
+        Jptoken: item.jpCoin,
       };
     });
     console.log(res);

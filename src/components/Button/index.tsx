@@ -1,6 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 
+import { PoweroffOutlined } from '@ant-design/icons';
+
 import './index.less';
 
 export interface IButtonProps {
@@ -9,6 +11,7 @@ export interface IButtonProps {
   className?: string;
   disabled?: boolean;
   style?: React.CSSProperties;
+  loading?: boolean;
   onClick?: () => void;
 }
 
@@ -19,6 +22,7 @@ const Button: React.FC<IButtonProps> = ({
   rightAngleDirection,
   style,
   type,
+  loading,
   onClick,
   ...props
 }) => {

@@ -16,6 +16,8 @@ import { useRouteMatch, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
 import img1 from '_src/assets/images/4023 1.png';
+import JP from '_src/assets/images/Jp.png';
+import SP from '_src/assets/images/Sp.png';
 
 import './index.less';
 import Button1 from '_components/Button';
@@ -53,14 +55,14 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return x.multipliedBy(y);
+      return x.multipliedBy(y).toFixed();
     }
   };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return x.dividedBy(y).toString();
+      return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
   const dealNumber_8 = (num) => {
@@ -70,6 +72,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       return x.dividedBy(y).toString();
     }
   };
+
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
     // 获取余额;
@@ -80,7 +83,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       let borrowSupply = dealNumber_18(item.borrowSupply);
       let lendSupply = dealNumber_18(item.lendSupply);
       console.log(maxSupply);
-
+      const settlementdate = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
       const maturitydate = moment.unix(item.endTime).format(FORMAT_TIME_STANDARD);
       var difftime = item.endTime - item.settleTime;
 
@@ -93,7 +96,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         fixed_rate: dealNumber_8(item.interestRate),
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
-        settlement_date: maturitydate,
+        settlement_date: settlementdate,
         length: `${days} day`,
         margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
         collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
@@ -107,17 +110,12 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       };
     });
     setpoolinfo(res);
-
-    (await res) &&
-      services.ERC20Server.balanceOf(res[pid]?.Sp ?? 0).then((res) => {
-        console.log('余额', res, poolinfo[pid]?.Sp ?? 0);
-        setbalance(res);
-      });
   };
   console.log(poolinfo[pid]);
   useEffect(() => {
     getPoolInfo();
   }, []);
+
   function toThousands(num) {
     var num = (num || 0).toString(),
       result = '';
@@ -249,7 +247,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <>
               <div className="balance_input">
                 <p style={{ fontWeight: 400 }}>
-                  Balance: {balance && parseInt(dealNumber_18(balance))} {pool}
+                  Balance: {balance && parseInt(dealNumber_18(balance).toString())} {pool}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <InputNumber
@@ -314,7 +312,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
               <div style={{ marginBottom: '28px', paddingBottom: '28px', borderBottom: '1px dashed #E6E6EB' }}>
                 <div className="balance_input">
                   <p style={{ fontWeight: 400 }}>
-                    Balance: {(balance && parseInt(dealNumber_18(balance))) || 0} {coin}
+                    Balance: {(balance && parseInt(dealNumber_18(balance).toString())) || 0} {coin}
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <InputNumber
@@ -355,6 +353,11 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         <p className="info_key">
           <span className="info_title">Receive</span>{' '}
           <span className="info_key_info">
+            {mode === 'Lend' ? (
+              <img src={SP} alt="" style={{ width: '24px', marginRight: '8px' }} />
+            ) : (
+              <img src={JP} alt="" style={{ width: '24px', marginRight: '8px' }} />
+            )}
             {borrowvalue ? borrowvalue.toFixed(2) : lendvalue ? lendvalue.toFixed(2) : '0.00'}
             {'  '}
             {mode === 'Lend' ? 'SP-Token' : 'JP-Token'}
@@ -371,29 +374,70 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           <span className="info_key_info">{poolinfo[pid]?.maturity_date ?? 0}</span>
         </p>
         {mode == 'Lend' ? (
-          <div className="lend_button">
-            {chainId == undefined ? (
-              <ConnectWallet />
-            ) : (
-              <Button1
-                style={{ marginTop: '60px' }}
-                onClick={async () => {
-                  // 授权
-                  console.log(poolinfo[pid]?.Sp ?? 0, lendvalue);
-                  let num = dealNumber(lendvalue);
-                  console.log(num.toString());
-                  await services.ERC20Server.Approve(poolinfo[pid]?.Sp ?? 0, num);
-                  // //授权的SPtoken
+          <div>
+            <div
+              className="steps-action"
+              style={{ display: 'flex', justifyContent: 'space-between', margin: '42px 0 10px' }}
+            >
+              {current < steps.length - 1 && (
+                <>
+                  {chainId == undefined ? (
+                    <ConnectWallet className="borrowwallet" />
+                  ) : (
+                    <Button1
+                      style={{ width: '48%', borderRadius: '15px' }}
+                      onClick={async () => {
+                        next(),
+                          services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
+                            setbalance(res);
+                          });
+                        let num = dealNumber(lendvalue);
+                        await services.ERC20Server.Approve(poolinfo[pid]?.Sp ?? 0, num).catch(() => console.error());
+                        //授权的SPtoken
+                        await services.ERC20Server.allowance(poolinfo[pid]?.Sp ?? 0).catch(() => console.error());
+                      }}
+                      disabled={lendvalue == 0 || lendvalue == null ? true : false}
+                    >
+                      Approve
+                    </Button1>
+                  )}
+                  <Button1
+                    style={{ width: '48%' }}
+                    disabled={true}
+                    onClick={() => message.success('Processing complete!')}
+                  >
+                    Lend
+                  </Button1>
+                </>
+              )}
+              {current === steps.length - 1 && (
+                <>
+                  <Button1 style={{ width: '48%', borderRadius: '15px' }} disabled={true} onClick={() => next()}>
+                    Approve
+                  </Button1>
+                  <Button1
+                    style={{ width: '48%', borderRadius: '15px' }}
+                    onClick={async () => {
+                      // 授权
+                      let num = dealNumber(lendvalue);
+                      console.log(num, lendvalue);
 
-                  await services.ERC20Server.allowance(poolinfo[pid]?.Sp ?? 0);
-                  // //lend方法
-                  console.log(poolinfo[pid]?.Jp ?? 0);
-                  services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Jp ?? 0);
-                }}
-              >
-                Lend
-              </Button1>
-            )}
+                      // //lend方法
+                      console.log(poolinfo[pid]?.Jp ?? 0);
+                      services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Jp ?? 0).catch(() => console.error());
+                    }}
+                  >
+                    Lend
+                  </Button1>
+                </>
+              )}
+            </div>
+            <Steps current={current} style={{ width: '60%', margin: '0 auto' }}>
+              {steps.map((item) => (
+                <Step key={item.title} title={item.title} />
+              ))}
+            </Steps>
+            <div className="steps-content">{steps[current].content}</div>
           </div>
         ) : (
           <div>
@@ -408,7 +452,22 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   ) : (
                     <Button1
                       style={{ width: '48%', borderRadius: '15px' }}
-                      onClick={() => next()}
+                      onClick={async () => {
+                        next(),
+                          services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
+                            setbalance(res);
+                          });
+                        let borrownum = dealNumber(borrowvalue);
+                        await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum)
+                          .then((data) => [console.log(data)])
+                          .catch(() => console.error());
+                        // // // //授权的JPtoken
+                        await services.ERC20Server.allowance(poolinfo[pid]?.Jp ?? 0)
+                          .then((data) => {
+                            console.log('授权' + data);
+                          })
+                          .catch(() => console.error());
+                      }}
                       disabled={data == 0 || data == null ? true : false}
                     >
                       Approve
@@ -436,20 +495,16 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
 
                       var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
                       console.log(timestamp);
-
+                      services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
+                        setbalance(res);
+                      });
                       // // 授权
                       console.log(poolinfo[pid]?.Sp ?? 0, borrowvalue);
                       let borrownum = dealNumber(borrowvalue);
-                      // // console.log(borrownum.toString());
-                      await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum).then((data) => [
-                        console.log(data),
-                      ]);
-                      // // // //授权的SPtoken
-                      await services.ERC20Server.allowance(poolinfo[pid]?.Jp ?? 0).then((data) => {
-                        console.log('授权' + data);
-                      });
                       // // //borrow方法
-                      services.PoolServer.depositBorrow(pid, borrownum, timestamp, poolinfo[pid]?.Jp ?? 0);
+                      services.PoolServer.depositBorrow(pid, borrownum, timestamp, poolinfo[pid]?.Jp ?? 0).catch(() =>
+                        console.error(),
+                      );
                     }}
                   >
                     Borrow

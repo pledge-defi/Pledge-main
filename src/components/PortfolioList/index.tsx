@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import Button from '_components/Button';
 import OrderImg from '_components/OrderImg';
 import ClaimTime from '_components/ClaimTime';
+import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 
 import './index.less';
 import services from '_src/services';
@@ -19,9 +20,12 @@ export interface IPortfolioList {
 }
 
 const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ...props }) => {
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+
   const { Panel } = Collapse;
   const [balance, setbalance] = useState('initialState');
-  const PoolState = { 0: 'Match', 1: 'Execution', 2: 'Finish', 3: 'Liquidation', 4: 'Undone' };
+
+  const PoolState = { 0: 'match', 1: 'running', 2: 'expired', 3: 'liquidation', 4: 'undone' };
   const poolAsset = {
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
@@ -32,40 +36,107 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return x.dividedBy(y).toString();
+      return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
 
-  console.log(new Date().getTime());
-
-  const getBalance = async () => {
-    (await props) &&
-      services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
-        setbalance(res);
-      });
+  const getBalance = () => {
+    try {
+      if (chainId !== undefined) {
+        services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
+          setbalance(res);
+        });
+      } else {
+        setbalance('0');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     getBalance();
   }, []);
+  const expectedInterest =
+    ((Number(
+      dealNumber_18(
+        props.props.state == '2'
+          ? datainfo.finishAmountLend
+          : props.props.state == '1'
+          ? datainfo.settleAmountLend
+          : props.props.state == '3'
+          ? datainfo.liquidationAmounLend
+          : '0',
+      ),
+    ) *
+      Number(props.props.fixed_rate)) /
+      100 /
+      365) *
+    props.props.length;
+  console.log(22, datainfo.settleAmountLend);
+  console.log(expectedInterest);
   const DetailList = [
     {
+      //利息 = 本金*fixed rate/365 * length（天数）
       title: 'Detail',
-      Total_financing: `${datainfo.settleAmountLend}  ${props.props.poolname}`,
+      Total_financing: `${dealNumber_18(
+        props.props.state == '2'
+          ? datainfo.finishAmountLend
+          : props.props.state == '1'
+          ? datainfo.settleAmountLend
+          : props.props.state == '3'
+          ? datainfo.liquidationAmounLend
+          : '0',
+      )}  ${props.props.poolname}`,
       Balance:
         mode == 'Borrow'
-          ? `${parseInt(dealNumber_18(balance))} JP-Token`
-          : `${parseInt(dealNumber_18(balance))} SP-Token`,
+          ? `${parseInt(dealNumber_18(balance).toString())} JP-Token`
+          : `${parseInt(dealNumber_18(balance).toString())} SP-Token`,
       Pledge: '10 BTCB',
       Time: `${props.props.settlement_date}`,
     },
     {
       title: 'Reward',
-      The_principal: '100.00 BUSD',
-      Expected_interest: '10.0000 BUSD',
+      The_principal: `${dealNumber_18(
+        props.props.state == '2'
+          ? datainfo.finishAmountLend
+          : props.props.state == '1'
+          ? datainfo.settleAmountLend
+          : props.props.state == '3'
+          ? datainfo.liquidationAmounLend
+          : 0,
+      )} ${props.props.poolname}`,
+      Expected_interest: `${expectedInterest} ${props.props.poolname}`,
     },
   ];
-
+  const withdrawLendvalue =
+    Number(
+      dealNumber_18(
+        props.props.state == '2'
+          ? datainfo.finishAmountLend
+          : props.props.state == '1'
+          ? datainfo.settleAmountLend
+          : props.props.state == '3'
+          ? datainfo.liquidationAmounLend
+          : '0',
+      ),
+    ) +
+    Number(
+      ((dealNumber_18(
+        props.props.state == '2'
+          ? datainfo.finishAmountLend
+          : props.props.state == '1'
+          ? datainfo.settleAmountLend
+          : props.props.state == '3'
+          ? datainfo.liquidationAmounLend
+          : '0',
+      ) *
+        Number(props.props.fixed_rate)) /
+        100 /
+        365) *
+        props.props.length,
+    );
+  console.log(666666666, withdrawLendvalue);
   return (
     <div className={classNames('portfolio_list', className)} {...props}>
       <Collapse bordered={false} expandIconPosition="right" ghost={true}>
@@ -74,7 +145,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
             <Row gutter={16}>
               <Col span={4}>
                 <OrderImg img1={props.props.poolname} img2={props.props.underlying_asset} />
-                <Statistic title={`${props.props.poolname} / ${props.props.underlying_asset}`} />
+                <Statistic title={`${props.props.poolname}/${props.props.underlying_asset}`} />
               </Col>
               <Col span={4}>
                 <Statistic title={`${props.props.fixed_rate} %`} />
@@ -102,7 +173,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                 <ul className="order_list" key={index}>
                   <p>{item.title}</p>
                   <li>
-                    <span>Total_financing</span> <span>{item.Total_financing}</span>
+                    <span>Total Lend</span> <span>{item.Total_financing}</span>
                   </li>
                   <li>
                     <span>Balance</span> <span>{item.Balance}</span>
@@ -115,7 +186,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                     ''
                   )}
                   <li>
-                    <span>Time</span> <span>{item.Time}</span>
+                    <span>Order Time</span> <span>{item.Time}</span>
                   </li>
                 </ul>
               ) : (
@@ -134,7 +205,16 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                 )
               );
             })}
-            <ClaimTime endtime={props.props.endtime} state={props.props.state} />
+            <ClaimTime
+              endtime={props.props.endtime}
+              state={props.props.state}
+              pid={props.props.key - 1}
+              value={datainfo.finishAmountLend}
+              mode={mode}
+              settlementAmountLend={datainfo.settleAmountLend}
+              spToken={props.props.Sptoken}
+              jpToken={props.props.Jptoken}
+            />
           </div>
         </Panel>
       </Collapse>
