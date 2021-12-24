@@ -366,7 +366,12 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         <p className="info_key">
           <span className="info_title">Expected Interest</span>{' '}
           <span className="info_key_info">
-            {borrowvalue ? (0.05 * borrowvalue).toFixed(2) : lendvalue ? 0.05 * lendvalue : '0.00'} {pool}
+            {borrowvalue
+              ? (poolinfo[pid]?.fixed_rate / 100 ?? 0) * borrowvalue
+              : lendvalue
+              ? (poolinfo[pid]?.fixed_rate / 100 ?? 0) * lendvalue
+              : '0.00'}{' '}
+            {pool}
           </span>
         </p>
         <p className="info_key">

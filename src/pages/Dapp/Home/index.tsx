@@ -79,7 +79,7 @@ function HomePage() {
       let lendSupply = dealNumber_18(item.lendSupply);
       console.log(maxSupply);
 
-      const times = moment.unix(item.endTime).format(FORMAT_TIME_STANDARD);
+      const times = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
 
       var difftime = item.endTime - item.settleTime;
 
