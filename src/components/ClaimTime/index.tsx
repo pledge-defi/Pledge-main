@@ -39,6 +39,7 @@ const ClaimTime: React.FC<IClaimTime> = ({
   const [second, setsecond] = useState(1);
   const [Spnum, setSpnum] = useState('');
   const [Jpnum, setJpnum] = useState('');
+  const [hasNoClaim, sethasNoClaim] = useState(false);
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
 
   let timer = null;
@@ -97,6 +98,15 @@ const ClaimTime: React.FC<IClaimTime> = ({
               console.log(res);
             });
       }
+      {
+        mode == 'Lend'
+          ? services.PoolServer.getuserLendInfo(pid.toString()).then((data) => {
+              sethasNoClaim(data.hasNoClaim);
+            })
+          : services.PoolServer.getuserBorrowInfo(pid.toString()).then((data) => {
+              sethasNoClaim(data.hasNoClaim);
+            });
+      }
     }
 
     if (state !== '4') {
@@ -122,9 +132,13 @@ const ClaimTime: React.FC<IClaimTime> = ({
 
       <div className="claim_button">
         {state !== '4' ? (
-          <Button disabled={days + hours + minutes + second == 0 ? false : true} onClick={getclaim}>
-            Claim
-          </Button>
+          hasNoClaim == false ? (
+            <Button disabled={days + hours + minutes + second == 0 ? false : true} onClick={getclaim}>
+              Claim
+            </Button>
+          ) : (
+            <Button disabled={true}>Claim</Button>
+          )
         ) : (
           <Button disabled={true}>Claim</Button>
         )}

@@ -110,7 +110,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 <p>
                   <span>{balance}</span>
                 </p>
-                <Button onClick={getRefund} disabled={hasNoClaim == false ? false : true}>
+                <Button onClick={getRefund} disabled={balance !== '0' ? false : true}>
                   Claim
                 </Button>
               </>
@@ -163,7 +163,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 <p>
                   <span>{balance}</span>
                 </p>
-                <Button onClick={getRefund} disabled={hasNoClaim == false ? false : true}>
+                <Button onClick={getRefund} disabled={balance !== '0' ? false : true}>
                   Claim
                 </Button>
               </>

@@ -65,6 +65,11 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
+  const dealNumber_7 = (num) => {
+    if (num) {
+      return Math.floor(num * Math.pow(10, 7)) / Math.pow(10, 7);
+    }
+  };
   const dealNumber_8 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -290,7 +295,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   <InputNumber
                     type="number"
                     name="input3"
-                    value={borrowvalue ? borrowvalue : ''}
+                    value={dealNumber_7(borrowvalue) ? dealNumber_7(borrowvalue) : ''}
                     onChange={handleOnChange3}
                     bordered={false}
                     style={{ width: '100%', fontSize: '24px', paddingLeft: '18px' }}
@@ -317,7 +322,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <InputNumber
                       type="number"
-                      value={data ? data : ''}
+                      value={dealNumber_7(data) ? dealNumber_7(data) : ''}
                       name="input2"
                       onChange={handleOnChange2}
                       bordered={false}
@@ -392,6 +397,9 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     <Button1
                       style={{ width: '48%', borderRadius: '15px' }}
                       onClick={async () => {
+                        if (lendvalue < 100) {
+                          return alert('Minimum deposit quantity 100 BUSD');
+                        }
                         next(),
                           services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
                             setbalance(res);
@@ -458,6 +466,9 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     <Button1
                       style={{ width: '48%', borderRadius: '15px' }}
                       onClick={async () => {
+                        if (borrowvalue < 100) {
+                          return alert('Minimum deposit quantity 100 BUSD');
+                        }
                         next(),
                           services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
                             setbalance(res);

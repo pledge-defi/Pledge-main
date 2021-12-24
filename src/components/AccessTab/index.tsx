@@ -64,7 +64,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
           ? services.PoolServer.getuserLendInfo((props.key - 1).toString()).then((data) => {
               sethasNoClaim(data.hasNoClaim);
             })
-          : services.PoolServer.getuserLendInfo((props.key - 1).toString()).then((data) => {
+          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString()).then((data) => {
               sethasNoClaim(data.hasNoClaim);
             });
       }
@@ -125,7 +125,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       <Button
         style={{ marginTop: '40px' }}
         onClick={accessClaim}
-        disabled={props.state == '0' || props.state == '4' ? true : hasNoClaim == true ? true : false}
+        disabled={props.state == '0' || props.state == '4' ? true : balance == '0' ? true : false}
       >
         Claim
       </Button>
