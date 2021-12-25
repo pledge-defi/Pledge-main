@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
-import { Progress } from 'antd';
+import { Progress, notification, Divider, Space } from 'antd';
 import ConnectWallet from '_components/ConnectWallet';
 import BUSD from '_src/assets/images/busd.png';
 import BTCB from '_src/assets/images/btcb.png';
@@ -18,6 +18,10 @@ import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
 import img1 from '_src/assets/images/4023 1.png';
 import JP from '_src/assets/images/Jp.png';
 import SP from '_src/assets/images/Sp.png';
+import Success from '_src/assets/images/Success.png';
+import Error from '_src/assets/images/Error.png';
+import LoadingSVG from '_src/assets/images/loading.svg';
+import { HomeOutlined, SettingFilled, SmileOutlined, SyncOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import './index.less';
 import Button1 from '_components/Button';
@@ -25,6 +29,7 @@ import { collectStoredAnnotations } from 'mobx/dist/internal';
 import pageURL from '_constants/pageURL';
 import { number } from 'prop-types';
 import BigNumber from 'bignumber.js';
+import { render } from 'react-dom';
 
 export interface ICoin_pool {
   mode: string;
@@ -34,7 +39,7 @@ export interface ICoin_pool {
 type Iparams = {
   pid: string;
 };
-
+const Context = React.createContext({ name: 'Default' });
 const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [data, setData] = useState(0);
   const [balance, setbalance] = useState('');
@@ -42,9 +47,77 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [borrowvalue, setborrowvalue] = useState(0);
   const [lendvalue, setlendvalue] = useState(0);
   const { connector, library, chainId, account } = useWeb3React();
+  const [loadings, setloadings] = useState(false);
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
   const { pid } = params;
+  // const [api, contextHolder] = notification.useNotification();
 
+  const openNotification = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Approve success'}</div>,
+    });
+  };
+  const openNotificationerror = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Approve error'}</div>,
+    });
+  };
+  const openNotificationlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Lend success'}</div>,
+    });
+  };
+  const openNotificationborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Borrow success'}</div>,
+    });
+  };
+  const openNotificationerrorlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Lend error'}</div>,
+    });
+  };
+  const openNotificationerrorborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Borrow error'}</div>,
+    });
+  };
   const poolAsset = {
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
@@ -158,6 +231,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     setborrowvalue(value);
     setData((value / coinlist[coin]) * 2);
   }
+
   const { Step } = Steps;
   const steps = [
     {
@@ -184,7 +258,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     <div className="coin_pool">
       <div className="coin_pool_box">
         <div className="coin_pool_box_title">
-          <img src={imglist[pool]} alt="" style={{ width: '40px', height: '40px' }} /> <h3>{pool} Pool</h3>
+          <img src={imglist[pool]} /> <h3>{pool} Pool</h3>
         </div>
         <div className="coin_pool_box_info">
           <p className="info_title">
@@ -394,25 +468,37 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   {chainId == undefined ? (
                     <ConnectWallet className="borrowwallet" />
                   ) : (
-                    <Button1
-                      style={{ width: '48%', borderRadius: '15px' }}
-                      onClick={async () => {
-                        if (lendvalue < 100) {
-                          return alert('Minimum deposit quantity 100 BUSD');
-                        }
-                        next(),
+                    <Context.Provider value={{ name: 'Ant Design' }}>
+                      <Button1
+                        style={{ width: '48%', borderRadius: '15px' }}
+                        loading={loadings}
+                        onClick={async () => {
+                          if (lendvalue < 100) {
+                            return alert('Minimum deposit quantity 100 BUSD');
+                          }
+                          setloadings(true);
                           services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
                             setbalance(res);
                           });
-                        let num = dealNumber(lendvalue);
-                        await services.ERC20Server.Approve(poolinfo[pid]?.Sp ?? 0, num).catch(() => console.error());
-                        //授权的SPtoken
-                        await services.ERC20Server.allowance(poolinfo[pid]?.Sp ?? 0).catch(() => console.error());
-                      }}
-                      disabled={lendvalue == 0 || lendvalue == null ? true : false}
-                    >
-                      Approve
-                    </Button1>
+                          let num = dealNumber(lendvalue);
+                          await services.ERC20Server.Approve(poolinfo[pid]?.Sp ?? 0, num)
+                            .then(() => {
+                              openNotification('Success');
+                              setloadings(false);
+                              next();
+                            })
+                            .catch(() => {
+                              openNotificationerror('Error'), setloadings(false);
+                            });
+
+                          //授权的SPtoken
+                          await services.ERC20Server.allowance(poolinfo[pid]?.Sp ?? 0).catch(() => console.error());
+                        }}
+                        disabled={lendvalue == 0 || lendvalue == null ? true : false}
+                      >
+                        Approve
+                      </Button1>
+                    </Context.Provider>
                   )}
                   <Button1
                     style={{ width: '48%' }}
@@ -429,15 +515,23 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     Approve
                   </Button1>
                   <Button1
+                    loading={loadings}
                     style={{ width: '48%', borderRadius: '15px' }}
                     onClick={async () => {
-                      // 授权
                       let num = dealNumber(lendvalue);
                       console.log(num, lendvalue);
-
+                      setloadings(true);
                       // //lend方法
                       console.log(poolinfo[pid]?.Jp ?? 0);
-                      services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Jp ?? 0).catch(() => console.error());
+                      services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Jp ?? 0)
+                        .then(() => {
+                          setloadings(false);
+                          openNotificationlend('Success');
+                          prev();
+                        })
+                        .catch(() => {
+                          openNotificationerrorlend('Error'), setloadings(false);
+                        });
                     }}
                   >
                     Lend
@@ -465,18 +559,26 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   ) : (
                     <Button1
                       style={{ width: '48%', borderRadius: '15px' }}
+                      loading={loadings}
                       onClick={async () => {
                         if (borrowvalue < 100) {
                           return alert('Minimum deposit quantity 100 BUSD');
                         }
-                        next(),
-                          services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
-                            setbalance(res);
-                          });
+                        setloadings(true);
+                        services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
+                          setbalance(res);
+                        });
                         let borrownum = dealNumber(borrowvalue);
                         await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum)
-                          .then((data) => [console.log(data)])
-                          .catch(() => console.error());
+                          .then(() => {
+                            openNotification('Success');
+                            setloadings(false);
+                            next();
+                          })
+                          .catch(() => {
+                            openNotificationerror('Error'), setloadings(false);
+                          });
+
                         // // // //授权的JPtoken
                         await services.ERC20Server.allowance(poolinfo[pid]?.Jp ?? 0)
                           .then((data) => {
@@ -505,10 +607,10 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   </Button1>
                   <Button1
                     style={{ width: '48%', borderRadius: '15px' }}
+                    loading={loadings}
                     onClick={async () => {
-                      prev();
                       //  window.open(pageURL.Lend_Borrow.replace(':mode', `${mode}`));
-
+                      setloadings(true);
                       var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
                       console.log(timestamp);
                       services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
@@ -518,9 +620,15 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       console.log(poolinfo[pid]?.Sp ?? 0, borrowvalue);
                       let borrownum = dealNumber(borrowvalue);
                       // // //borrow方法
-                      services.PoolServer.depositBorrow(pid, borrownum, timestamp, poolinfo[pid]?.Jp ?? 0).catch(() =>
-                        console.error(),
-                      );
+                      services.PoolServer.depositBorrow(pid, borrownum, timestamp, poolinfo[pid]?.Jp ?? 0)
+                        .then(() => {
+                          openNotificationborrow('Success');
+                          setloadings(false);
+                          prev();
+                        })
+                        .catch(() => {
+                          openNotificationerrorborrow('Error'), setloadings(false);
+                        });
                     }}
                   >
                     Borrow

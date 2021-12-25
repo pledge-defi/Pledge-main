@@ -10,6 +10,9 @@ import DAI from '_src/assets/images/order_DAI.png';
 import BNB from '_src/assets/images/order_BNB.png';
 import BigNumber from 'bignumber.js';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { Progress, notification, Divider, Space } from 'antd';
+import Success from '_src/assets/images/Success.png';
+import Error from '_src/assets/images/Error.png';
 
 import './index.less';
 import { has } from 'immer/dist/internal';
@@ -34,6 +37,52 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
   console.log('access状态' + props.state);
   const [hasNoClaim, sethasNoClaim] = useState(false);
   const [balance, setbalance] = useState('0');
+  const [loadings, setloadings] = useState(false);
+
+  const openNotificationlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim SP-Token success'}</div>,
+    });
+  };
+  const openNotificationborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim JP-Token success'}</div>,
+    });
+  };
+  const openNotificationerrorlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim SP-Token success'}</div>,
+    });
+  };
+  const openNotificationerrorborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim JP-Token success'}</div>,
+    });
+  };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -44,17 +93,23 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
 
   const accessClaim = async () => {
     if (props.state == '1' || props.state == '2') {
-      try {
-        mode == 'Lend'
-          ? await services.PoolServer.getclaimLend(props.key - 1).then((data) => {
-              console.log(data);
+      mode == 'Lend'
+        ? await services.PoolServer.getclaimLend(props.key - 1)
+            .then(() => {
+              openNotificationlend('Success');
+              setloadings(false);
             })
-          : await services.PoolServer.getclaimBorrow(props.key - 1).then((data) => {
-              console.log(data);
+            .catch(() => {
+              openNotificationerrorlend('Error'), setloadings(false);
+            })
+        : await services.PoolServer.getclaimBorrow(props.key - 1)
+            .then(() => {
+              openNotificationborrow('Success');
+              setloadings(false);
+            })
+            .catch(() => {
+              openNotificationerrorborrow('Error'), setloadings(false);
             });
-      } catch (error) {
-        console.log(error);
-      }
     }
   };
   useEffect(() => {
@@ -95,7 +150,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
           {mode == 'Lend' ? (
             <>
               <p className="access_token">{mode == 'Lend' ? 'SP-Token' : 'JP-Token'}</p>
-              <p className="access_num">{balance}</p>
+              <p className="access_num">{dealNumber_18(balance)}</p>
             </>
           ) : (
             <>
@@ -108,7 +163,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
               </div>
               <div style={{ display: 'inline-block', float: 'right' }}>
                 <p className="access_token">{mode == 'Lend' ? 'SP-Token' : 'JP-Token'}</p>
-                <p className="access_num">{balance}</p>
+                <p className="access_num">{dealNumber_18(balance)}</p>
               </div>
             </>
           )}
@@ -124,7 +179,10 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       </p>
       <Button
         style={{ marginTop: '40px' }}
-        onClick={accessClaim}
+        loading={loadings}
+        onClick={() => {
+          setloadings(true), accessClaim();
+        }}
         disabled={props.state == '0' || props.state == '4' ? true : balance == '0' ? true : false}
       >
         Claim

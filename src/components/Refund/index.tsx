@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { Progress, notification, Divider, Space } from 'antd';
+import Success from '_src/assets/images/Success.png';
+import Error from '_src/assets/images/Error.png';
 
 import Button from '_components/Button';
 import OrderImg from '_components/OrderImg';
@@ -23,6 +26,52 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
 
   const [hasNoClaim, sethasNoClaim] = useState(false);
   const [balance, setbalance] = useState('0');
+  const [loadings, setloadings] = useState(false);
+
+  const openNotificationlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim SP-Token success'}</div>,
+    });
+  };
+  const openNotificationborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim JP-Token success'}</div>,
+    });
+  };
+  const openNotificationerrorlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim SP-Token success'}</div>,
+    });
+  };
+  const openNotificationerrorborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim JP-Token success'}</div>,
+    });
+  };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -36,12 +85,8 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
     if (chainId !== undefined) {
       {
         mode == 'Lend'
-          ? services.PoolServer.getuserLendInfo((props.key - 1).toString()).then((data) => {
-              sethasNoClaim(data.hasNoClaim);
-            })
-          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString()).then((data) => {
-              sethasNoClaim(data.hasNoClaim);
-            });
+          ? services.PoolServer.getuserLendInfo((props.key - 1).toString())
+          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString());
       }
       mode == 'Lend'
         ? services.ERC20Server.balanceOf(props.Sptoken).then((data) => {
@@ -60,11 +105,39 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
     if (props.state == '4') {
       mode == 'Lend'
         ? services.PoolServer.getemergencyLendWithdrawal(props.key - 1)
-        : services.PoolServer.getemergencyBorrowWithdrawal(props.key - 1);
+            .then(() => {
+              openNotificationlend('Success');
+              setloadings(false);
+            })
+            .catch(() => {
+              openNotificationerrorlend('Error'), setloadings(false);
+            })
+        : services.PoolServer.getemergencyBorrowWithdrawal(props.key - 1)
+            .then(() => {
+              openNotificationborrow('Success');
+              setloadings(false);
+            })
+            .catch(() => {
+              openNotificationerrorborrow('Error'), setloadings(false);
+            });
     } else {
       mode == 'Lend'
         ? services.PoolServer.getrefundLend(props.key - 1)
-        : services.PoolServer.getrefundBorrow(props.key - 1);
+            .then(() => {
+              openNotificationlend('Success');
+              setloadings(false);
+            })
+            .catch(() => {
+              openNotificationerrorlend('Error'), setloadings(false);
+            })
+        : services.PoolServer.getrefundBorrow(props.key - 1)
+            .then(() => {
+              openNotificationborrow('Success');
+              setloadings(false);
+            })
+            .catch(() => {
+              openNotificationerrorborrow('Error'), setloadings(false);
+            });
     }
   };
   return (
@@ -108,7 +181,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   <span>{dealNumber_18(props.lendSupply)}</span>
                 </p>
                 <p>
-                  <span>{balance}</span>
+                  <span>{dealNumber_18(balance)}</span>
                 </p>
                 <Button onClick={getRefund} disabled={balance !== '0' ? false : true}>
                   Claim
@@ -161,9 +234,15 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   </span>
                 </p>
                 <p>
-                  <span>{balance}</span>
+                  <span>{dealNumber_18(balance)}</span>
                 </p>
-                <Button onClick={getRefund} disabled={balance !== '0' ? false : true}>
+                <Button
+                  onClick={() => {
+                    setloadings(true), getRefund();
+                  }}
+                  disabled={balance !== '0' ? false : true}
+                  loading={loadings}
+                >
                   Claim
                 </Button>
               </>

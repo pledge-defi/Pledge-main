@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { Collapse, Statistic, Row, Col, Table, Steps, message } from 'antd';
+import { Progress, notification, Divider, Space } from 'antd';
+import Success from '_src/assets/images/Success.png';
+import Error from '_src/assets/images/Error.png';
+
 import BigNumber from 'bignumber.js';
 import Button from '_components/Button';
 
@@ -40,8 +44,53 @@ const ClaimTime: React.FC<IClaimTime> = ({
   const [Spnum, setSpnum] = useState('');
   const [Jpnum, setJpnum] = useState('');
   const [hasNoClaim, sethasNoClaim] = useState(false);
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const [loadings, setloadings] = useState(false);
 
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const openNotificationlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim SP-Token success'}</div>,
+    });
+  };
+  const openNotificationborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetab" style={{ display: 'flex' }}>
+          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim JP-Token success'}</div>,
+    });
+  };
+  const openNotificationerrorlend = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim SP-Token success'}</div>,
+    });
+  };
+  const openNotificationerrorborrow = (placement) => {
+    notification.info({
+      message: (
+        <div className="messagetaberror" style={{ display: 'flex' }}>
+          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        </div>
+      ),
+      description: <div>{'Claim JP-Token success'}</div>,
+    });
+  };
   let timer = null;
   function interval() {
     timer = setInterval(() => {
@@ -77,13 +126,24 @@ const ClaimTime: React.FC<IClaimTime> = ({
   const getclaim = () => {
     var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
     console.log(timestamp);
-    try {
-      mode == 'Lend'
-        ? services.PoolServer.getwithdrawLend(pid, Spnum)
-        : services.PoolServer.getwithdrawBorrow(pid, Jpnum, timestamp);
-    } catch (error) {
-      console.log(error);
-    }
+
+    mode == 'Lend'
+      ? services.PoolServer.getwithdrawLend(pid, Spnum)
+          .then(() => {
+            openNotificationlend('Success');
+            setloadings(false);
+          })
+          .catch(() => {
+            openNotificationerrorlend('Error'), setloadings(false);
+          })
+      : services.PoolServer.getwithdrawBorrow(pid, Jpnum, timestamp)
+          .then(() => {
+            openNotificationborrow('Success');
+            setloadings(false);
+          })
+          .catch(() => {
+            openNotificationerrorborrow('Error'), setloadings(false);
+          });
   };
   useEffect(() => {
     if (chainId !== undefined) {
@@ -133,7 +193,13 @@ const ClaimTime: React.FC<IClaimTime> = ({
       <div className="claim_button">
         {state !== '4' ? (
           hasNoClaim == false ? (
-            <Button disabled={days + hours + minutes + second == 0 ? false : true} onClick={getclaim}>
+            <Button
+              disabled={days + hours + minutes + second == 0 ? false : true}
+              loading={loadings}
+              onClick={() => {
+                setloadings(true), getclaim();
+              }}
+            >
               Claim
             </Button>
           ) : (

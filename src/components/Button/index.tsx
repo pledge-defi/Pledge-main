@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { PoweroffOutlined } from '@ant-design/icons';
+import { HomeOutlined, SettingFilled, SmileOutlined, SyncOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import './index.less';
 
@@ -44,6 +44,7 @@ const Button: React.FC<IButtonProps> = ({
       onClick={handleOnClick}
       {...props}
     >
+      {loading == true ? <LoadingOutlined style={{ marginRight: '7px', color: '#fff' }} id="loading" /> : ''}
       {children}
     </div>
   );

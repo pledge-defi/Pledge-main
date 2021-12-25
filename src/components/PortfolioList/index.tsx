@@ -92,7 +92,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
         mode == 'Borrow'
           ? `${parseInt(dealNumber_18(balance).toString())} JP-Token`
           : `${parseInt(dealNumber_18(balance).toString())} SP-Token`,
-      Pledge: '10 BTCB',
+      Pledge: `${dealNumber_18(props.props.borrowSupply)}${props.props.underlying_asset}`,
       Time: `${props.props.settlement_date}`,
     },
     {
