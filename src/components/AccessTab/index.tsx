@@ -40,47 +40,115 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
   const [loadings, setloadings] = useState(false);
 
   const openNotificationlend = (placement) => {
-    notification.info({
+    notification.open({
       message: (
-        <div className="messagetab" style={{ display: 'flex' }}>
-          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
-          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        <div
+          style={{
+            border: '1px solid #2DE0E0',
+            width: '340px',
+            height: '90px',
+            background: ' #fff',
+            borderRadius: '4px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            padding: '21px',
+          }}
+        >
+          <div
+            className="messagetab"
+            style={{
+              display: 'flex',
+            }}
+          >
+            <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+            <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
+          </div>
+          <p style={{ marginLeft: '33px' }}>{'Claim SP-Token success'}</p>
         </div>
       ),
-      description: <div>{'Claim SP-Token success'}</div>,
     });
   };
   const openNotificationborrow = (placement) => {
-    notification.info({
+    notification.open({
       message: (
-        <div className="messagetab" style={{ display: 'flex' }}>
-          <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
-          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        <div
+          style={{
+            border: '1px solid #2DE0E0',
+            width: '340px',
+            height: '90px',
+            background: ' #fff',
+            borderRadius: '4px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            padding: '21px',
+          }}
+        >
+          <div
+            className="messagetab"
+            style={{
+              display: 'flex',
+            }}
+          >
+            <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+            <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
+          </div>
+          <p style={{ marginLeft: '33px' }}>{'Claim JP-Token success'}</p>
         </div>
       ),
-      description: <div>{'Claim JP-Token success'}</div>,
     });
   };
   const openNotificationerrorlend = (placement) => {
-    notification.info({
+    notification.open({
       message: (
-        <div className="messagetaberror" style={{ display: 'flex' }}>
-          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
-          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        <div
+          style={{
+            border: '1px solid #ff3369',
+            width: '340px',
+            height: '90px',
+            background: ' #fff',
+            borderRadius: '4px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            padding: '21px',
+          }}
+        >
+          <div
+            className="messagetaberror"
+            style={{
+              display: 'flex',
+            }}
+          >
+            <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+            <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
+          </div>
+          <p style={{ marginLeft: '33px' }}>{'Claim SP-Token error'}</p>
         </div>
       ),
-      description: <div>{'Claim SP-Token success'}</div>,
     });
   };
   const openNotificationerrorborrow = (placement) => {
-    notification.info({
+    notification.open({
       message: (
-        <div className="messagetaberror" style={{ display: 'flex' }}>
-          <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
-          <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600 }}>{placement}</p>
+        <div
+          style={{
+            border: '1px solid #ff3369',
+            width: '340px',
+            height: '90px',
+            background: ' #fff',
+            borderRadius: '4px',
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            padding: '21px',
+          }}
+        >
+          <div
+            className="messagetaberror"
+            style={{
+              display: 'flex',
+            }}
+          >
+            <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
+            <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
+          </div>
+          <p style={{ marginLeft: '33px' }}>{'Claim JP-Token error'}</p>
         </div>
       ),
-      description: <div>{'Claim JP-Token success'}</div>,
     });
   };
   const dealNumber_18 = (num) => {
