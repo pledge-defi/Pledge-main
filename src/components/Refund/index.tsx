@@ -5,6 +5,9 @@ import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { Progress, notification, Divider, Space } from 'antd';
 import Success from '_src/assets/images/Success.png';
 import Error from '_src/assets/images/Error.png';
+import icon3 from '_src/assets/images/icon (3).png';
+import icon4 from '_src/assets/images/icon (4).png';
+import Union from '_src/assets/images/union.png';
 
 import Button from '_components/Button';
 import OrderImg from '_components/OrderImg';
@@ -27,8 +30,13 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
   const [hasNoClaim, sethasNoClaim] = useState(false);
   const [balance, setbalance] = useState('0');
   const [loadings, setloadings] = useState(false);
+  const [stakeAmount, setstakeAmount] = useState('');
+  const [stakeAmountborrow, setstakeAmountborrow] = useState('');
 
   const openNotificationlend = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -51,12 +59,18 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim SP-Token success'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim refund success'}</p>{' '}
+            <img src={icon3} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationborrow = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -79,12 +93,18 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim JP-Token success'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim refund success'}</p>{' '}
+            <img src={icon3} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationerrorlend = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -107,12 +127,18 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim SP-Token error'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'laim refund error'}</p>{' '}
+            <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationerrorborrow = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -135,7 +161,10 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim JP-Token error'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim refund error'}</p>{' '}
+            <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
@@ -153,8 +182,14 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
     if (chainId !== undefined) {
       {
         mode == 'Lend'
-          ? services.PoolServer.getuserLendInfo((props.key - 1).toString())
-          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString());
+          ? services.PoolServer.getuserLendInfo((props.key - 1).toString()).then((data) => {
+              sethasNoClaim(data.hasNoRefund);
+              setstakeAmount(data.stakeAmount);
+            })
+          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString()).then((data) => {
+              sethasNoClaim(data.hasNoRefund);
+              setstakeAmountborrow(data.stakeAmount);
+            });
       }
       mode == 'Lend'
         ? services.ERC20Server.balanceOf(props.Sptoken).then((data) => {
@@ -167,7 +202,17 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       setbalance('0');
     }
   });
-
+  const refundLend =
+    Number(dealNumber_18(props.lendSupply)) !== 0
+      ? (Number(dealNumber_18(props.lendSupply)) - Number(dealNumber_18(stateinfo.settleAmountLend))) *
+        (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.lendSupply)))
+      : 0;
+  const refundBorrow =
+    Number(dealNumber_18(props.borrowSupply)) !== 0
+      ? (Number(dealNumber_18(props.borrowSupply)) - Number(dealNumber_18(stateinfo.settleAmountBorrow))) *
+        (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.borrowSupply)))
+      : 0;
+  console.log('refundLend', stakeAmountborrow);
   const getRefund = () => {
     console.log('getRefund');
     if (props.state == '4') {
@@ -249,9 +294,9 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   <span>{dealNumber_18(props.lendSupply)}</span>
                 </p>
                 <p>
-                  <span>{dealNumber_18(balance)}</span>
+                  <span>{hasNoClaim == false ? refundLend : 0}</span>
                 </p>
-                <Button onClick={getRefund} disabled={balance !== '0' ? false : true}>
+                <Button onClick={getRefund} disabled={refundLend !== 0 ? (hasNoClaim == false ? false : true) : true}>
                   Claim
                 </Button>
               </>
@@ -302,13 +347,13 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   </span>
                 </p>
                 <p>
-                  <span>{dealNumber_18(balance)}</span>
+                  <span>{hasNoClaim == false ? refundBorrow : 0}</span>
                 </p>
                 <Button
                   onClick={() => {
                     setloadings(true), getRefund();
                   }}
-                  disabled={balance !== '0' ? false : true}
+                  disabled={refundBorrow !== 0 ? (hasNoClaim == false ? false : true) : true}
                   loading={loadings}
                 >
                   Claim

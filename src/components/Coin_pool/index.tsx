@@ -20,6 +20,9 @@ import JP from '_src/assets/images/Jp.png';
 import SP from '_src/assets/images/Sp.png';
 import Success from '_src/assets/images/Success.png';
 import Error from '_src/assets/images/Error.png';
+import icon3 from '_src/assets/images/icon (3).png';
+import icon4 from '_src/assets/images/icon (4).png';
+import Union from '_src/assets/images/union.png';
 import LoadingSVG from '_src/assets/images/loading.svg';
 import { HomeOutlined, SettingFilled, SmileOutlined, SyncOutlined, LoadingOutlined } from '@ant-design/icons';
 
@@ -30,6 +33,7 @@ import pageURL from '_constants/pageURL';
 import { number } from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { render } from 'react-dom';
+import { use } from 'echarts';
 
 export interface ICoin_pool {
   mode: string;
@@ -48,11 +52,16 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [lendvalue, setlendvalue] = useState(0);
   const { connector, library, chainId, account } = useWeb3React();
   const [loadings, setloadings] = useState(false);
+  const [warning, setwarning] = useState('');
+  const [price, setprice] = useState(0);
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
   const { pid } = params;
   // const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -75,12 +84,18 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Approve success'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Approve success'}</p>{' '}
+            <img src={icon3} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationerror = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -103,12 +118,18 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Approve error'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Approve error'}</p>{' '}
+            <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationlend = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -131,12 +152,18 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Lend success'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Lend success'}</p>{' '}
+            <img src={icon3} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationborrow = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -159,12 +186,18 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Borrow success'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Borrow success'}</p>{' '}
+            <img src={icon3} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationerrorlend = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -187,12 +220,18 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Lend error'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Lend error'}</p>{' '}
+            <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationerrorborrow = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -215,7 +254,10 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Borrow error'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Borrow error'}</p>{' '}
+            <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
@@ -252,11 +294,24 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       return x.dividedBy(y).toString();
     }
   };
-
+  const dealNumber_Price = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e8);
+      return x.dividedBy(y).toString();
+    }
+  };
+  const getPrice = () => {
+    services.BscPledgeOracleServer.getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad').then((res) => {
+      setprice(Number(dealNumber_Price(res)));
+    });
+  };
+  // const Price = getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad').then((res) => {
+  //   console.log(res);
+  // });
+  // console.log(Price);
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
-    // 获取余额;
-
     console.log(datainfo);
     const res = datainfo.map((item, index) => {
       let maxSupply = dealNumber_18(item.maxSupply);
@@ -278,8 +333,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: settlementdate,
         length: `${days} day`,
-        margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
-        collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
+        margin_ratio: `${1 + dealNumber_8(item.autoLiquidateThreshold)}%`,
+        collateralization_ratio: dealNumber_8(item.martgageRate),
         poolname: poolAsset[item.lendToken],
         endTime: item.endTime,
         settleTime: item.settleTime,
@@ -292,8 +347,10 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     setpoolinfo(res);
   };
   console.log(poolinfo[pid]);
+
   useEffect(() => {
     getPoolInfo();
+    getPrice();
   }, []);
 
   function toThousands(num) {
@@ -401,7 +458,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <span className="info_title1">Margin Ratio</span>
           </p>
           <p>
-            <span className="info_title1_num">{poolinfo[pid]?.collateralization_ratio ?? 0}</span>
+            <span className="info_title1_num">{`${poolinfo[pid]?.collateralization_ratio ?? 0}%`}</span>
             <span className="info_title1">Collateralization Ratio</span>
           </p>
         </div>
@@ -412,7 +469,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         <p className="info_key">
           <span className="info_title">Collaterial In Escrow</span>
           <span className="info_key_info">
-            {poolinfo[pid]?.available_to_lend[0] ?? 0} {coin}
+            {(poolinfo[pid]?.available_to_lend[0] ?? 0) / price} {coin}
           </span>
         </p>
         <p className="info_key">
@@ -439,6 +496,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     style={{ width: '100%', fontSize: '24px' }}
                     placeholder="0.000....."
                   />
+                  <div style={{ width: '280px', marginLeft: '-400px', color: 'red' }}>{warning}</div>
                   <button
                     style={{
                       color: '#5D52FF',
@@ -477,7 +535,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     style={{ width: '100%', fontSize: '24px', paddingLeft: '18px' }}
                     placeholder="0.000....."
                   />
-
+                  <div style={{ width: '280px', marginLeft: '-400px', color: 'red' }}>{warning}</div>
                   <div className="coin_pool_box_title">
                     <img src={imglist[pool]} alt="" style={{ width: '28px', height: '28px' }} /> <h3>{pool}</h3>
                   </div>
@@ -528,8 +586,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           )}
         </div>
         <p className="info_key">
-          <span className="info_title">Fee</span>{' '}
-          <span className="info_key_info">{poolinfo[pid]?.fixed_rate ?? 0}%</span>
+          <span className="info_title">Fee</span> <span className="info_key_info">{0}</span>
         </p>
         <p className="info_key">
           <span className="info_title">Receive</span>{' '}
@@ -539,7 +596,11 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             ) : (
               <img src={JP} alt="" style={{ width: '24px', marginRight: '8px' }} />
             )}
-            {borrowvalue ? borrowvalue.toFixed(2) : lendvalue ? lendvalue.toFixed(2) : '0.00'}
+            {borrowvalue
+              ? Number(poolinfo[pid]?.collateralization_ratio / 100 ?? 0) * Number(borrowvalue.toFixed(2))
+              : lendvalue
+              ? Number(poolinfo[pid]?.collateralization_ratio / 100 ?? 0) * Number(lendvalue.toFixed(2))
+              : '0.00'}
             {'  '}
             {mode === 'Lend' ? 'SP-Token' : 'JP-Token'}
           </span>
@@ -576,8 +637,9 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                         loading={loadings}
                         onClick={async () => {
                           if (lendvalue < 100) {
-                            return alert('Minimum deposit quantity 100 BUSD');
+                            return setwarning('Minimum deposit quantity 100 BUSD');
                           }
+                          setwarning('');
                           setloadings(true);
                           services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
                             setbalance(res);
@@ -664,8 +726,9 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       loading={loadings}
                       onClick={async () => {
                         if (borrowvalue < 100) {
-                          return alert('Minimum deposit quantity 100 BUSD');
+                          return setwarning('Minimum deposit quantity 100 BUSD');
                         }
+                        setwarning('');
                         setloadings(true);
                         services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
                           setbalance(res);
@@ -721,7 +784,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       // // 授权
                       console.log(poolinfo[pid]?.Sp ?? 0, borrowvalue);
                       let borrownum = dealNumber(borrowvalue);
-                      // // //borrow方法
+                      //borrow方法
                       services.PoolServer.depositBorrow(pid, borrownum, timestamp, poolinfo[pid]?.Jp ?? 0)
                         .then(() => {
                           openNotificationborrow('Success');

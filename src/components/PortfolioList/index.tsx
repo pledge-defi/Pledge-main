@@ -43,9 +43,13 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
   const getBalance = () => {
     try {
       if (chainId !== undefined) {
-        services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
-          setbalance(res);
-        });
+        mode == 'Lend'
+          ? services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
+              setbalance(res);
+            })
+          : services.ERC20Server.balanceOf(props.props.Jp).then((res) => {
+              setbalance(res);
+            });
       } else {
         setbalance('0');
       }
@@ -58,23 +62,38 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
     getBalance();
   }, []);
   const expectedInterest =
-    ((Number(
-      dealNumber_18(
-        props.props.state == '2'
-          ? datainfo.finishAmountLend
-          : props.props.state == '1'
-          ? datainfo.settleAmountLend
-          : props.props.state == '3'
-          ? datainfo.liquidationAmounLend
-          : '0',
-      ),
-    ) *
-      Number(props.props.fixed_rate)) /
-      100 /
-      365) *
-    props.props.length;
-  console.log(22, datainfo.settleAmountLend);
-  console.log(expectedInterest);
+    mode == 'Lend'
+      ? ((Number(
+          dealNumber_18(
+            props.props.state == '2'
+              ? datainfo.finishAmountLend
+              : props.props.state == '1'
+              ? datainfo.settleAmountLend
+              : props.props.state == '3'
+              ? datainfo.liquidationAmounLend
+              : '0',
+          ),
+        ) *
+          Number(props.props.fixed_rate)) /
+          100 /
+          365) *
+        props.props.length
+      : ((Number(
+          dealNumber_18(
+            props.props.state == '2'
+              ? datainfo.finishAmountBorrow
+              : props.props.state == '1'
+              ? datainfo.settleAmountBorrow
+              : props.props.state == '3'
+              ? datainfo.liquidationAmounBorrow
+              : '0',
+          ),
+        ) *
+          Number(props.props.fixed_rate)) /
+          100 /
+          365) *
+        props.props.length;
+
   const DetailList = [
     {
       //利息 = 本金*fixed rate/365 * length（天数）
@@ -90,8 +109,28 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       )}  ${props.props.poolname}`,
       Balance:
         mode == 'Borrow'
-          ? `${parseInt(dealNumber_18(balance).toString())} JP-Token`
-          : `${parseInt(dealNumber_18(balance).toString())} SP-Token`,
+          ? `${
+              dealNumber_18(
+                props.props.state == '2'
+                  ? datainfo.finishAmountBorrow
+                  : props.props.state == '1'
+                  ? datainfo.settleAmountBorrow
+                  : props.props.state == '3'
+                  ? datainfo.liquidationAmounBorrow
+                  : 0,
+              ) + expectedInterest
+            } JP-Token`
+          : `${
+              dealNumber_18(
+                props.props.state == '2'
+                  ? datainfo.finishAmountLend
+                  : props.props.state == '1'
+                  ? datainfo.settleAmountLend
+                  : props.props.state == '3'
+                  ? datainfo.liquidationAmounLend
+                  : 0,
+              ) + expectedInterest
+            }  SP-Token`,
       Pledge: `${dealNumber_18(props.props.borrowSupply)}${props.props.underlying_asset}`,
       Time: `${props.props.settlement_date}`,
     },
@@ -136,7 +175,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
         365) *
         props.props.length,
     );
-  console.log(666666666, withdrawLendvalue);
+
   return (
     <div className={classNames('portfolio_list', className)} {...props}>
       <Collapse bordered={false} expandIconPosition="right" ghost={true}>
@@ -168,7 +207,6 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
         >
           <div className="order_box">
             {DetailList.map((item, index) => {
-              console.log(item);
               return item.title == 'Detail' ? (
                 <ul className="order_list" key={index}>
                   <p>{item.title}</p>
@@ -205,6 +243,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                 )
               );
             })}
+            {console.log(datainfo)}
             <ClaimTime
               endtime={props.props.endtime}
               state={props.props.state}

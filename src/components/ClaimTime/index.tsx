@@ -5,6 +5,9 @@ import { Collapse, Statistic, Row, Col, Table, Steps, message } from 'antd';
 import { Progress, notification, Divider, Space } from 'antd';
 import Success from '_src/assets/images/Success.png';
 import Error from '_src/assets/images/Error.png';
+import icon3 from '_src/assets/images/icon (3).png';
+import icon4 from '_src/assets/images/icon (4).png';
+import Union from '_src/assets/images/union.png';
 
 import BigNumber from 'bignumber.js';
 import Button from '_components/Button';
@@ -48,6 +51,9 @@ const ClaimTime: React.FC<IClaimTime> = ({
 
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
   const openNotificationlend = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -70,12 +76,18 @@ const ClaimTime: React.FC<IClaimTime> = ({
             <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim SP-Token success'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim reward success'}</p>{' '}
+            <img src={icon3} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationborrow = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -98,12 +110,18 @@ const ClaimTime: React.FC<IClaimTime> = ({
             <img src={Success} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim JP-Token success'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim reward success'}</p>{' '}
+            <img src={icon3} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationerrorlend = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -126,12 +144,18 @@ const ClaimTime: React.FC<IClaimTime> = ({
             <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim SP-Token error'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim reward error'}</p>{' '}
+            <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
   };
   const openNotificationerrorborrow = (placement) => {
+    notification.config({
+      closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
+    });
     notification.open({
       message: (
         <div
@@ -154,7 +178,10 @@ const ClaimTime: React.FC<IClaimTime> = ({
             <img src={Error} alt="" style={{ width: '22px', height: '22px', marginRight: '11px' }} />
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
-          <p style={{ marginLeft: '33px' }}>{'Claim JP-Token error'}</p>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim reward error'}</p>{' '}
+            <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
+          </div>
         </div>
       ),
     });
@@ -230,10 +257,10 @@ const ClaimTime: React.FC<IClaimTime> = ({
       {
         mode == 'Lend'
           ? services.PoolServer.getuserLendInfo(pid.toString()).then((data) => {
-              sethasNoClaim(data.hasNoClaim);
+              sethasNoClaim(data.hasNoRefund && data.hasNoClaim);
             })
           : services.PoolServer.getuserBorrowInfo(pid.toString()).then((data) => {
-              sethasNoClaim(data.hasNoClaim);
+              sethasNoClaim(data.hasNoRefund && data.hasNoClaim);
             });
       }
     }

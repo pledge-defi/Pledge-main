@@ -68,9 +68,10 @@ function HomePage() {
       return x.dividedBy(y).toString();
     }
   };
+
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
-    const datainfo1 = await services.PoolServer.getPoolDataInfo();
+    const datainfo6 = await services.PoolServer.getPoolDataInfo();
 
     console.log(datainfo);
     const res = datainfo.map((item, index) => {
@@ -109,6 +110,7 @@ function HomePage() {
     setdatastate(res);
     console.log(data);
   };
+
   useEffect(() => {
     history.push('BUSD');
     getPoolInfo();
@@ -131,8 +133,8 @@ function HomePage() {
           className="menutab"
           onClick={() => {
             const livelist = data.filter((item) => {
-              console.log(item);
-              return item.state < 3;
+              console.log(item.state < 3);
+              return item.state < 2;
             });
             setdatastate(data);
             setdatastate(livelist);
@@ -149,7 +151,7 @@ function HomePage() {
           onClick={() => {
             const livelist = data.filter((item) => {
               console.log(item);
-              return item.state >= 3;
+              return item.state >= 2;
             });
             setdatastate(data);
             setdatastate(livelist);
@@ -214,6 +216,7 @@ function HomePage() {
               strokeColor="#5D52FF"
               success={{ percent: val[0] / record.maxSupply }}
             />
+
             <p style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>
                 <span style={{ color: '#FFA011', fontSize: '12px' }}>{`${toThousands(val[0])}`}</span>/
@@ -425,7 +428,9 @@ function HomePage() {
           <TabPane tab="BUSD" key="BUSD">
             <Table
               columns={columns}
-              dataSource={datastate}
+              dataSource={datastate.filter((item, index) => {
+                return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
+              })}
               onChange={onChange}
               rowClassName={(record, index) => {
                 return record;
@@ -435,7 +440,9 @@ function HomePage() {
           <TabPane tab="USDT" key="USDT">
             <Table
               columns={columns}
-              dataSource={datastate}
+              dataSource={datastate.filter((item, index) => {
+                return item.Sp == '';
+              })}
               onChange={onChange}
               rowClassName={(record, index) => {
                 return record;
@@ -445,7 +452,9 @@ function HomePage() {
           <TabPane tab="DAI" key="DAI">
             <Table
               columns={columns}
-              dataSource={datastate}
+              dataSource={datastate.filter((item, index) => {
+                return item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096';
+              })}
               onChange={onChange}
               rowClassName={(record, index) => {
                 return record;

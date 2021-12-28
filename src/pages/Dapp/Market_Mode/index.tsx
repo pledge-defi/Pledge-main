@@ -14,24 +14,32 @@ import services from '_src/services';
 import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 
 import pageURL from '_constants/pageURL';
 
 import './index.less';
 import OrderImg from '_components/OrderImg';
 import { hexlify } from '@ethersproject/bytes';
+import { number } from 'echarts';
 
 type Iparams = {
   mode: 'Lend' | 'Borrow' | 'Provide';
 };
 function Market_Mode() {
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+
   const history = useHistory();
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
   const { mode } = params;
 
-  const [data, setdata] = useState([]);
+  const [datalend, setdatalend] = useState([]);
+  const [databorrow, setdataborrow] = useState([]);
   const [datastate, setdatastate] = useState([]);
-  const [datainfo, setdatainfo] = useState([]);
+  const [datainfo2, setdatainfo2] = useState(1);
+  const [datainfo1, setdatainfo1] = useState([]);
+  const [pidlend, setpidlend] = useState([]);
+  const [pidborrow, setpidborrow] = useState([]);
 
   const poolAsset = {
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
@@ -53,11 +61,18 @@ function Market_Mode() {
       return x.dividedBy(y).toString();
     }
   };
+  const getData = () => {
+    services.PoolServer.getPoolDataInfo().then((res) => {
+      setdatainfo1(res);
+      const datainfo4 = 2;
+      setdatainfo2(datainfo4);
+      console.log(4444444, res, datainfo1, datainfo2, datainfo4);
+    });
+  };
+  let [time, settime] = useState(0);
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
-    const datainfo1 = await services.PoolServer.getPoolDataInfo();
 
-    setdatainfo(datainfo1);
     const res = datainfo.map((item, index) => {
       let maxSupply = dealNumber_18(item.maxSupply);
       let borrowSupply = dealNumber_18(item.borrowSupply);
@@ -91,20 +106,41 @@ function Market_Mode() {
         Jptoken: item.jpCoin,
       };
     });
-    console.log(res);
-    setdata(res);
+
+    res.map((item, index) => {
+      services.PoolServer.getuserLendInfo(item.key - 1).then((res1) => {
+        console.error(res, '-----');
+        res1.stakeAmount == '0' ? console.log(1111111) : pidlend.push(item);
+        setdatalend(pidlend);
+        console.log(pidlend);
+      });
+      services.PoolServer.getuserBorrowInfo(item.key - 1).then((res) => {
+        res.stakeAmount == '0' ? console.log(1111111) : pidborrow.push(item);
+        setdataborrow(pidborrow);
+      });
+    });
+
+    let timetimer = setTimeout(() => {
+      settime((time += 1));
+      clearTimeout(timetimer);
+    }, 1000);
+    console.error(res);
+
     setdatastate(res);
-    console.log(data);
   };
   useEffect(() => {
-    getPoolInfo();
+    return () => {
+      mode == 'Lend' ? setpidborrow([]) : setpidlend([]);
+    };
   }, []);
-  console.log(mode);
   useEffect(() => {
     if (!['Lend', 'Borrow', 'Provide'].includes(mode)) {
       history.push(pageURL.Dapp);
     }
+    getData();
+    getPoolInfo();
   }, []);
+
   const LendTitle = [
     'Pool / Underlying Asset',
     'Total Lend Amount',
@@ -135,6 +171,7 @@ function Market_Mode() {
     <>
       {mode !== 'Provide' ? (
         <DappLayout title={`${mode} Order`} className="dapp_mode_page">
+          <p style={{ display: 'none' }}>{time}</p>
           <p className="prtfolioList_title">
             {PortfolioListTitle.map((item, index) => {
               return (
@@ -151,10 +188,16 @@ function Market_Mode() {
               );
             })}
           </p>
-          {console.log(data)}
-          {data.map((item, index) => {
-            return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo[index]} />;
-          })}
+
+          {datainfo1.length &&
+            datastate.length &&
+            (mode == 'Lend'
+              ? datalend.map((item, index) => {
+                  return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo1[item.key - 1]} />;
+                })
+              : databorrow.map((item, index) => {
+                  return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo1[item.key - 1]} />;
+                }))}
 
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
             <h3>Access to {mode == 'Borrow' ? 'Borrowing' : 'Lending'}</h3>
@@ -163,9 +206,15 @@ function Market_Mode() {
             </Tooltip>
           </div>
           <div className="access">
-            {data.map((item, index) => {
-              return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo[index]} />;
-            })}
+            {datainfo1.length &&
+              datastate.length &&
+              (mode == 'Lend'
+                ? datalend.map((item, index) => {
+                    return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                  })
+                : databorrow.map((item, index) => {
+                    return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                  }))}
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
@@ -191,9 +240,15 @@ function Market_Mode() {
                     );
                   })}
             </p>
-            {data.map((item, index) => {
-              return <Refund mode={mode} props={item} key={index} stateinfo={datainfo[index]} />;
-            })}
+            {datainfo1.length &&
+              datastate.length &&
+              (mode == 'Lend'
+                ? datalend.map((item, index) => {
+                    return <Refund mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                  })
+                : databorrow.map((item, index) => {
+                    return <Refund mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                  }))}
           </div>
         </DappLayout>
       ) : (

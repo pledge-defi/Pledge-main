@@ -61,6 +61,7 @@ export type PledgePoolEvents =
   | 'Redeem'
   | 'RefundBorrow'
   | 'RefundLend'
+  | 'StateChange'
   | 'Swap'
   | 'WithdrawBorrow'
   | 'WithdrawLend';
@@ -149,6 +150,15 @@ export interface PledgePoolEventsContext {
   RefundLend(
     parameters: {
       filter?: { from?: string | string[]; token?: string | string[] };
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
+  StateChange(
+    parameters: {
+      filter?: { pid?: string | string[]; beforeState?: string | string[]; afterState?: string | string[] };
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
@@ -275,6 +285,11 @@ export interface RefundLendEventEmittedResponse {
   from: string;
   token: string;
   refund: string;
+}
+export interface StateChangeEventEmittedResponse {
+  pid: string;
+  beforeState: string;
+  afterState: string;
 }
 export interface SwapEventEmittedResponse {
   fromCoin: string;
