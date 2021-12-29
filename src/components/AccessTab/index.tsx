@@ -19,6 +19,7 @@ import Union from '_src/assets/images/union.png';
 
 import './index.less';
 import { has } from 'immer/dist/internal';
+import { number } from 'prop-types';
 
 export interface IAccessTab {
   className?: string;
@@ -43,6 +44,12 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
   const [loadings, setloadings] = useState(false);
   const [stakeAmount, setstakeAmount] = useState('');
   const [stakeAmountborrow, setstakeAmountborrow] = useState('');
+  const [BUSDprice, setBUSD] = useState('');
+  const [BTCBprice, setBTCB] = useState('');
+
+  const [DAIprice, setDAI] = useState('');
+
+  const [BNBprice, setBNB] = useState('');
   const openNotificationlend = (placement) => {
     notification.config({
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
@@ -184,10 +191,9 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
+      return x.dividedBy(y).toFixed();
     }
   };
-
   const accessClaim = async () => {
     if (props.state == '1' || props.state == '2') {
       mode == 'Lend'
@@ -234,16 +240,45 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       setbalance('0');
     }
   });
+  const dealNumber_Price = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e8);
+      return x.dividedBy(y).toString();
+    }
+  };
+  useEffect(() => {
+    services.BscPledgeOracleServer.getPrices([
+      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
+      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
+      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
+      '0x0000000000000000000000000000000000000000',
+    ]).then((res) => {
+      console.log(res);
+      setBUSD(dealNumber_Price(res[0]));
+      setBTCB(dealNumber_Price(res[1]));
+      setDAI(dealNumber_Price(res[2]));
+      setBNB(dealNumber_Price(res[3]));
+    });
+  }, []);
   const claimAmount =
     Number(dealNumber_18(props.lendSupply)) !== 0
       ? Number(dealNumber_18(stateinfo.settleAmountLend)) *
         (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.lendSupply)))
       : 0;
-
+  console.log(stateinfo.settleAmountBorrow);
   const claimAmountborrow =
     Number(dealNumber_18(props.borrowSupply)) !== 0
-      ? Number(dealNumber_18(stateinfo.settleAmountBorrow)) *
-        (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.borrowSupply)))
+      ? Math.floor(
+          Number(dealNumber_18(stateinfo.settleAmountBorrow)) *
+            (Number(dealNumber_18(stakeAmountborrow)) /
+              Number(
+                dealNumber_18(
+                  (props.borrowSupply * Number(BTCBprice)) / Number(BUSDprice) / props.collateralization_ratio,
+                ),
+              )) *
+            1000000,
+        ) / 1000000
       : 0;
   return (
     <div className={classnames('access_tab')} style={style}>
@@ -270,7 +305,13 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
               <div style={{ display: 'inline-block' }}>
                 <p className="access_token">Loan amount</p>
                 <p className="access_num">
-                  {dealNumber_18(props.borrowSupply)} {props.poolname}
+                  {Math.floor(
+                    ((Number(dealNumber_18(props.borrowSupply)) * Number(BTCBprice)) /
+                      Number(BUSDprice) /
+                      props.collateralization_ratio) *
+                      10000,
+                  ) / 100}{' '}
+                  {props.poolname}
                 </p>
               </div>
               <div style={{ display: 'inline-block', float: 'right' }}>

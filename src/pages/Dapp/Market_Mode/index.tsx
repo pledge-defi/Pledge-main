@@ -95,7 +95,7 @@ function Market_Mode() {
         settlement_date: settlementdate,
         length: days,
         margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
-        collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
+        collateralization_ratio: dealNumber_8(item.martgageRate),
         poolname: poolAsset[item.lendToken],
         Sp: item.lendToken,
         Jp: item.borrowToken,

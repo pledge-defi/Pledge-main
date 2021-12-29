@@ -9,6 +9,12 @@ const BscPledgeOracleServer = {
     const rates = await contract.methods.getPrice(asset).call();
     return rates;
   },
+  async getPrices(asset) {
+    const contract = getBscPledgeOracleAbiContract(ORACLE_address);
+    const options = await gasOptions();
+    const rates = await contract.methods.getPrices(asset).call();
+    return rates;
+  },
 };
 
 export default BscPledgeOracleServer;

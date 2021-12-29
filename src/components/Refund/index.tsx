@@ -32,6 +32,12 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
   const [loadings, setloadings] = useState(false);
   const [stakeAmount, setstakeAmount] = useState('');
   const [stakeAmountborrow, setstakeAmountborrow] = useState('');
+  const [BUSDprice, setBUSD] = useState('');
+  const [BTCBprice, setBTCB] = useState('');
+
+  const [DAIprice, setDAI] = useState('');
+
+  const [BNBprice, setBNB] = useState('');
 
   const openNotificationlend = (placement) => {
     notification.config({
@@ -177,7 +183,27 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
     }
   };
   console.log(props.key - 1);
-
+  const dealNumber_Price = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e8);
+      return x.dividedBy(y).toString();
+    }
+  };
+  useEffect(() => {
+    services.BscPledgeOracleServer.getPrices([
+      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
+      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
+      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
+      '0x0000000000000000000000000000000000000000',
+    ]).then((res) => {
+      console.log(res);
+      setBUSD(dealNumber_Price(res[0]));
+      setBTCB(dealNumber_Price(res[1]));
+      setDAI(dealNumber_Price(res[2]));
+      setBNB(dealNumber_Price(res[3]));
+    });
+  }, []);
   useEffect(() => {
     if (chainId !== undefined) {
       {
@@ -202,6 +228,13 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       setbalance('0');
     }
   });
+  console.log(
+    Number(dealNumber_18(props.lendSupply)),
+    Number(dealNumber_18(stateinfo.settleAmountLend)),
+    Number(dealNumber_18(stakeAmount)),
+    Number(dealNumber_18(props.lendSupply)),
+  );
+
   const refundLend =
     Number(dealNumber_18(props.lendSupply)) !== 0
       ? (Number(dealNumber_18(props.lendSupply)) - Number(dealNumber_18(stateinfo.settleAmountLend))) *
@@ -212,6 +245,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       ? (Number(dealNumber_18(props.borrowSupply)) - Number(dealNumber_18(stateinfo.settleAmountBorrow))) *
         (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.borrowSupply)))
       : 0;
+
   console.log('refundLend', stakeAmountborrow);
   const getRefund = () => {
     console.log('getRefund');
@@ -265,36 +299,19 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             {props.state != 0 ? (
               <>
                 <p>
-                  <span>
-                    {dealNumber_18(
-                      props.state == '2'
-                        ? stateinfo.finishAmountLend
-                        : props.state == '1'
-                        ? stateinfo.settleAmountLend
-                        : props.state == '3'
-                        ? stateinfo.liquidationAmounLend
-                        : '0',
-                    )}
-                  </span>
-                </p>
-                <p>
-                  <span>
-                    {dealNumber_18(
-                      props.state == '2'
-                        ? stateinfo.finishAmountBorrow
-                        : props.state == '1'
-                        ? stateinfo.settleAmountBorrow
-                        : props.state == '3'
-                        ? stateinfo.liquidationAmounBorrow
-                        : '0',
-                    )}
-                  </span>
-                </p>
-                <p>
                   <span>{dealNumber_18(props.lendSupply)}</span>
                 </p>
                 <p>
-                  <span>{hasNoClaim == false ? refundLend : 0}</span>
+                  <span>{dealNumber_18(props.borrowSupply)}</span>
+                </p>
+                <p>
+                  <span>
+                    {dealNumber_18(props.state < '2' ? stateinfo.settleAmountLend : stateinfo.finishAmountLend)}
+                  </span>
+                </p>
+
+                <p>
+                  <span>{hasNoClaim == false ? Math.floor(refundLend * 10000000) / 10000000 : 0}</span>
                 </p>
                 <Button onClick={getRefund} disabled={refundLend !== 0 ? (hasNoClaim == false ? false : true) : true}>
                   Claim
@@ -318,36 +335,25 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             {props.state != 0 ? (
               <>
                 <p>
-                  <span>
-                    {dealNumber_18(
-                      props.state == '2'
-                        ? stateinfo.finishAmountLend
-                        : props.state == '1'
-                        ? stateinfo.settleAmountLend
-                        : props.state == '3'
-                        ? stateinfo.liquidationAmounLend
-                        : '0',
-                    )}
-                  </span>
-                </p>
-                <p>
-                  <span>{dealNumber_18(props.borrowSupply)}</span>
+                  <span>{dealNumber_18(props.lendSupply)}</span>
                 </p>
                 <p>
                   <span>
-                    {dealNumber_18(
-                      props.state == '2'
-                        ? stateinfo.finishAmountBorrow
-                        : props.state == '1'
-                        ? stateinfo.settleAmountBorrow
-                        : props.state == '3'
-                        ? stateinfo.liquidationAmounBorrow
-                        : '0',
-                    )}
+                    {Math.floor(
+                      ((dealNumber_18(props.borrowSupply) * Number(BTCBprice)) /
+                        Number(BUSDprice) /
+                        props.collateralization_ratio) *
+                        10000,
+                    ) / 100}
                   </span>
                 </p>
                 <p>
-                  <span>{hasNoClaim == false ? refundBorrow : 0}</span>
+                  <span>
+                    {dealNumber_18(props.state < '2' ? stateinfo.settleAmountBorrow : stateinfo.finishAmountBorrow)}
+                  </span>
+                </p>
+                <p>
+                  <span>{hasNoClaim == false ? Math.floor(refundBorrow * 10000000) / 10000000 : 0}</span>
                 </p>
                 <Button
                   onClick={() => {

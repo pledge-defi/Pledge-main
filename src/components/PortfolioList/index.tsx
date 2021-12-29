@@ -63,118 +63,47 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
   }, []);
   const expectedInterest =
     mode == 'Lend'
-      ? ((Number(
-          dealNumber_18(
-            props.props.state == '2'
-              ? datainfo.finishAmountLend
-              : props.props.state == '1'
-              ? datainfo.settleAmountLend
-              : props.props.state == '3'
-              ? datainfo.liquidationAmounLend
-              : '0',
-          ),
-        ) *
+      ? ((Number(dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)) *
           Number(props.props.fixed_rate)) /
           100 /
           365) *
         props.props.length
-      : ((Number(
-          dealNumber_18(
-            props.props.state == '2'
-              ? datainfo.finishAmountBorrow
-              : props.props.state == '1'
-              ? datainfo.settleAmountBorrow
-              : props.props.state == '3'
-              ? datainfo.liquidationAmounBorrow
-              : '0',
-          ),
-        ) *
+      : ((Number(dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow)) *
           Number(props.props.fixed_rate)) /
           100 /
           365) *
         props.props.length;
-
+  console.log(datainfo);
   const DetailList = [
     {
       //利息 = 本金*fixed rate/365 * length（天数）
       title: 'Detail',
       Total_financing: `${dealNumber_18(
-        props.props.state == '2'
-          ? datainfo.finishAmountLend
-          : props.props.state == '1'
-          ? datainfo.settleAmountLend
-          : props.props.state == '3'
-          ? datainfo.liquidationAmounLend
-          : '0',
+        props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow,
       )}  ${props.props.poolname}`,
       Balance:
         mode == 'Borrow'
           ? `${
-              dealNumber_18(
-                props.props.state == '2'
-                  ? datainfo.finishAmountBorrow
-                  : props.props.state == '1'
-                  ? datainfo.settleAmountBorrow
-                  : props.props.state == '3'
-                  ? datainfo.liquidationAmounBorrow
-                  : 0,
-              ) + expectedInterest
+              dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow) +
+              expectedInterest
             } JP-Token`
           : `${
-              dealNumber_18(
-                props.props.state == '2'
-                  ? datainfo.finishAmountLend
-                  : props.props.state == '1'
-                  ? datainfo.settleAmountLend
-                  : props.props.state == '3'
-                  ? datainfo.liquidationAmounLend
-                  : 0,
-              ) + expectedInterest
+              dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend) +
+              expectedInterest
             }  SP-Token`,
       Pledge: `${dealNumber_18(props.props.borrowSupply)}${props.props.underlying_asset}`,
       Time: `${props.props.settlement_date}`,
     },
     {
       title: 'Reward',
-      The_principal: `${dealNumber_18(
-        props.props.state == '2'
-          ? datainfo.finishAmountLend
-          : props.props.state == '1'
-          ? datainfo.settleAmountLend
-          : props.props.state == '3'
-          ? datainfo.liquidationAmounLend
-          : 0,
-      )} ${props.props.poolname}`,
+      The_principal: `${
+        mode == 'Lend'
+          ? dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow)
+          : dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)
+      } ${props.props.poolname}`,
       Expected_interest: `${expectedInterest} ${props.props.poolname}`,
     },
   ];
-  const withdrawLendvalue =
-    Number(
-      dealNumber_18(
-        props.props.state == '2'
-          ? datainfo.finishAmountLend
-          : props.props.state == '1'
-          ? datainfo.settleAmountLend
-          : props.props.state == '3'
-          ? datainfo.liquidationAmounLend
-          : '0',
-      ),
-    ) +
-    Number(
-      ((dealNumber_18(
-        props.props.state == '2'
-          ? datainfo.finishAmountLend
-          : props.props.state == '1'
-          ? datainfo.settleAmountLend
-          : props.props.state == '3'
-          ? datainfo.liquidationAmounLend
-          : '0',
-      ) *
-        Number(props.props.fixed_rate)) /
-        100 /
-        365) *
-        props.props.length,
-    );
 
   return (
     <div className={classNames('portfolio_list', className)} {...props}>

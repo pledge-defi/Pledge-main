@@ -54,6 +54,13 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [loadings, setloadings] = useState(false);
   const [warning, setwarning] = useState('');
   const [price, setprice] = useState(0);
+  const [BUSDprice, setBUSD] = useState('');
+  const [BTCBprice, setBTCB] = useState('');
+
+  const [DAIprice, setDAI] = useState('');
+
+  const [BNBprice, setBNB] = useState('');
+
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
   const { pid } = params;
   // const [api, contextHolder] = notification.useNotification();
@@ -306,10 +313,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       setprice(Number(dealNumber_Price(res)));
     });
   };
-  // const Price = getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad').then((res) => {
-  //   console.log(res);
-  // });
-  // console.log(Price);
+
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
     console.log(datainfo);
@@ -351,6 +355,18 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   useEffect(() => {
     getPoolInfo();
     getPrice();
+    services.BscPledgeOracleServer.getPrices([
+      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
+      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
+      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
+      '0x0000000000000000000000000000000000000000',
+    ]).then((res) => {
+      console.log(res);
+      setBUSD(dealNumber_Price(res[0]));
+      setBTCB(dealNumber_Price(res[1]));
+      setDAI(dealNumber_Price(res[2]));
+      setBNB(dealNumber_Price(res[3]));
+    });
   }, []);
 
   function toThousands(num) {
@@ -375,9 +391,9 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     BTCB: BTCB,
   };
   const coinlist = {
-    BTCB: 60000,
+    BTCB: Number(BTCBprice) / Number(BUSDprice),
     ETH: 4000,
-    BNB: 600,
+    BNB: Number(BNBprice) / Number(BUSDprice),
   };
   function handleOnChange(value) {
     setlendvalue(value);
@@ -433,17 +449,35 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             </span>
           </p>
           <Progress
-            percent={((poolinfo[pid]?.available_to_lend[1] ?? 0) / poolinfo[pid]?.maxSupply ?? 0) * 100}
+            percent={
+              (Math.floor(
+                (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(BTCBprice)) /
+                  Number(BUSDprice) /
+                  (poolinfo[pid]?.collateralization_ratio ?? 0)) *
+                  10000,
+              ) /
+                100 /
+                (poolinfo[pid]?.maxSupply ?? 0)) *
+              100
+            }
             showInfo={false}
             strokeColor="#5D52FF"
             success={{
-              percent: (poolinfo[pid]?.available_to_lend[0] ?? 0) / poolinfo[pid]?.maxSupply ?? 0,
+              percent: ((poolinfo[pid]?.available_to_lend[0] ?? 0) * price) / poolinfo[pid]?.maxSupply ?? 0,
             }}
           />
           <p style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>
-              <span style={{ color: '#ffa011' }}>{`${toThousands(poolinfo[pid]?.available_to_lend[0] ?? 0)}`}</span>/
-              <span style={{ color: '#5D52FF' }}>{`${toThousands(poolinfo[pid]?.available_to_lend[1] ?? 0)}`}</span>
+              {console.log(poolinfo[pid]?.fixed_rate ?? 0)}
+              <span style={{ color: '#ffa011' }}>{`${
+                Math.floor(
+                  (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(BTCBprice)) /
+                    Number(BUSDprice) /
+                    (poolinfo[pid]?.collateralization_ratio ?? 0)) *
+                    10000,
+                ) / 100
+              }`}</span>
+              /<span style={{ color: '#5D52FF' }}>{`${toThousands(poolinfo[pid]?.available_to_lend[1] ?? 0)}`}</span>
             </span>
             <span>{toThousands(poolinfo[pid]?.maxSupply ?? 0)}</span>
           </p>
@@ -469,7 +503,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         <p className="info_key">
           <span className="info_title">Collaterial In Escrow</span>
           <span className="info_key_info">
-            {(poolinfo[pid]?.available_to_lend[0] ?? 0) / price} {coin}
+            {poolinfo[pid]?.available_to_lend[0] ?? 0} {coin}
           </span>
         </p>
         <p className="info_key">
@@ -733,7 +767,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                         services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
                           setbalance(res);
                         });
-                        let borrownum = dealNumber(borrowvalue);
+                        let borrownum = dealNumber(data);
                         await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum)
                           .then(() => {
                             openNotification('Success');
@@ -783,7 +817,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       });
                       // // 授权
                       console.log(poolinfo[pid]?.Sp ?? 0, borrowvalue);
-                      let borrownum = dealNumber(borrowvalue);
+                      let borrownum = dealNumber(data);
                       //borrow方法
                       services.PoolServer.depositBorrow(pid, borrownum, timestamp, poolinfo[pid]?.Jp ?? 0)
                         .then(() => {

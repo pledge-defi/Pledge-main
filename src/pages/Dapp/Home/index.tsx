@@ -37,12 +37,19 @@ function HomePage() {
   const { testStore } = RootStore;
   const [pid, setpid] = useState(0);
   const { TabPane } = Tabs;
+  const [price, setprice] = useState(0);
   const [pool, setpool] = useState('BUSD');
   const [coin, setcoin] = useState('');
   const [visible, setvisible] = useState(false);
   const [show, setshow] = useState('100');
   const [data, setdata] = useState([]);
   const [datastate, setdatastate] = useState([]);
+  const [BUSDprice, setBUSD] = useState('');
+  const [BTCBprice, setBTCB] = useState('');
+
+  const [DAIprice, setDAI] = useState('');
+
+  const [BNBprice, setBNB] = useState('');
   const poolAsset = {
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
@@ -52,6 +59,11 @@ function HomePage() {
   const imglist = {
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCB,
     '0x0000000000000000000000000000000000000000': BNB,
+  };
+  const getPrice = () => {
+    services.BscPledgeOracleServer.getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad').then((res) => {
+      setprice(Number(dealNumber_Price(res)));
+    });
   };
   const dealNumber_18 = (num) => {
     if (num) {
@@ -68,7 +80,13 @@ function HomePage() {
       return x.dividedBy(y).toString();
     }
   };
-
+  const dealNumber_Price = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e8);
+      return x.dividedBy(y).toString();
+    }
+  };
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
     const datainfo6 = await services.PoolServer.getPoolDataInfo();
@@ -96,7 +114,7 @@ function HomePage() {
         settlement_date: times,
         length: `${days} day`,
         margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
-        collateralization_ratio: `${dealNumber_8(item.martgageRate)}%`,
+        collateralization_ratio: dealNumber_8(item.martgageRate),
         poolname: poolAsset[item.lendToken],
         endTime: item.endTime,
         settleTime: item.settleTime,
@@ -114,6 +132,19 @@ function HomePage() {
   useEffect(() => {
     history.push('BUSD');
     getPoolInfo();
+    getPrice();
+    services.BscPledgeOracleServer.getPrices([
+      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
+      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
+      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
+      '0x0000000000000000000000000000000000000000',
+    ]).then((res) => {
+      console.log(res);
+      setBUSD(dealNumber_Price(res[0]));
+      setBTCB(dealNumber_Price(res[1]));
+      setDAI(dealNumber_Price(res[2]));
+      setBNB(dealNumber_Price(res[3]));
+    });
   }, []);
 
   const callback = (key) => {
@@ -214,13 +245,24 @@ function HomePage() {
               percent={totalFinancing}
               showInfo={false}
               strokeColor="#5D52FF"
-              success={{ percent: val[0] / record.maxSupply }}
+              success={{
+                percent:
+                  Math.floor(
+                    ((val[0] * Number(BTCBprice)) / Number(BUSDprice) / record.collateralization_ratio) * 10000,
+                  ) /
+                  100 /
+                  record.maxSupply,
+              }}
             />
 
             <p style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>
-                <span style={{ color: '#FFA011', fontSize: '12px' }}>{`${toThousands(val[0])}`}</span>/
-                <span style={{ color: '#5D52FF', fontSize: '12px' }}>{`${toThousands(val[1])}`}</span>
+                <span style={{ color: '#FFA011', fontSize: '12px' }}>
+                  {Math.floor(
+                    ((val[0] * Number(BTCBprice)) / Number(BUSDprice) / record.collateralization_ratio) * 10000,
+                  ) / 100}
+                </span>
+                /<span style={{ color: '#5D52FF', fontSize: '12px' }}>{`${toThousands(val[1])}`}</span>
               </span>
               <span style={{ width: '10px' }}></span>
               <span style={{ fontSize: '12px' }}>{toThousands(record.maxSupply)}</span>
@@ -263,7 +305,7 @@ function HomePage() {
       render: (val, record) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            {val}
+            {`${val}%`}
             <Popover
               content={content}
               title="Choose a Role"
