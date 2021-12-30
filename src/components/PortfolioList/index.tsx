@@ -23,7 +23,8 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
 
   const { Panel } = Collapse;
-  const [balance, setbalance] = useState('initialState');
+  const [stakeAmount, setstakeAmount] = useState('');
+  const [stakeAmountborrow, setstakeAmountborrow] = useState('');
   const [BUSDprice, setBUSD] = useState('');
   const [BTCBprice, setBTCB] = useState('');
 
@@ -32,35 +33,35 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
   const [BNBprice, setBNB] = useState('');
 
   const PoolState = { 0: 'match', 1: 'running', 2: 'expired', 3: 'liquidation', 4: 'undone' };
-  const poolAsset = {
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
-    '0x0000000000000000000000000000000000000000': 'BNB',
+
+  const pricelist = {
+    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
+    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
+    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
+    '0x0000000000000000000000000000000000000000': BNBprice,
   };
-  const dealNumber_18 = (num) => {
+  const dealNumber_7 = (num) => {
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
       return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
-
+  const dealNumber_18 = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e18);
+      return x.dividedBy(y).toFixed();
+    }
+  };
   const getBalance = () => {
-    try {
-      if (chainId !== undefined) {
-        mode == 'Lend'
-          ? services.ERC20Server.balanceOf(props.props.Sp).then((res) => {
-              setbalance(res);
-            })
-          : services.ERC20Server.balanceOf(props.props.Jp).then((res) => {
-              setbalance(res);
-            });
-      } else {
-        setbalance('0');
-      }
-    } catch (error) {
-      console.log(error);
+    {
+      services.PoolServer.getuserLendInfo((props.props.key - 1).toString()).then((data) => {
+        setstakeAmount(data.stakeAmount);
+      });
+      services.PoolServer.getuserBorrowInfo((props.props.key - 1).toString()).then((data) => {
+        setstakeAmountborrow(data.stakeAmount);
+      });
     }
   };
   const dealNumber_Price = (num) => {
@@ -70,6 +71,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       return x.dividedBy(y).toString();
     }
   };
+
   useEffect(() => {
     getBalance();
     services.BscPledgeOracleServer.getPrices([
@@ -85,49 +87,77 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       setBNB(dealNumber_Price(res[3]));
     });
   }, []);
+  const claimAmount =
+    Number(dealNumber_18(props.props.lendSupply)) !== 0
+      ? Number(dealNumber_18(datainfo.settleAmountLend)) *
+        (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.props.lendSupply)))
+      : 0;
+
+  const claimAmountborrow =
+    Number(dealNumber_18(props.props.borrowSupply)) !== 0
+      ? Number(dealNumber_18(datainfo.settleAmountBorrow)) *
+        (Number(dealNumber_18(stakeAmountborrow)) /
+          Number(
+            dealNumber_18(
+              (props.props.borrowSupply * Number(pricelist[props.props.Jp])) /
+                Number(pricelist[props.props.Sp]) /
+                props.props.collateralization_ratio,
+            ),
+          ))
+      : 0;
   const expectedInterest =
     mode == 'Lend'
-      ? ((Number(dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)) *
+      ? ((Number(dealNumber_7(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)) *
           Number(props.props.fixed_rate)) /
           100 /
           365) *
         props.props.length
-      : ((Number(dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow)) *
+      : ((Number(dealNumber_7(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow)) *
           Number(props.props.fixed_rate)) /
           100 /
           365) *
         props.props.length;
-  console.log(datainfo);
+
   const DetailList = [
     {
       //利息 = 本金*fixed rate/365 * length（天数）
       title: 'Detail',
       Total_financing: `${
         mode == 'Lend'
-          ? dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)
+          ? dealNumber_7(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)
           : Math.floor(
-              ((dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow) *
-                Number(BTCBprice)) /
-                Number(BUSDprice) /
+              ((dealNumber_7(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow) *
+                Number(pricelist[props.props.Jp])) /
+                Number(pricelist[props.props.Sp]) /
                 props.props.collateralization_ratio) *
                 10000,
             ) / 100
-      }  ${props.props.poolname}`,
+      }  ${mode == 'Lend' ? props.props.poolname : props.props.underlying_asset} `,
 
-      Pledge: `${dealNumber_18(props.props.borrowSupply)}${props.props.underlying_asset}`,
+      Pledge: `${dealNumber_7(props.props.borrowSupply)}${props.props.underlying_asset}`,
       Time: `${props.props.settlement_date}`,
     },
+
     {
       title: 'Reward',
       The_principal: `${
         mode == 'Lend'
-          ? dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow)
-          : dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)
-      } ${props.props.poolname}`,
+          ? dealNumber_7(
+              props.props.state == '3'
+                ? datainfo.liquidationAmounLend
+                : (Number(claimAmount) / Number(dealNumber_18(datainfo.settleAmountLend))) * datainfo.finishAmountLend,
+            )
+          : dealNumber_7(
+              props.props.state == '3'
+                ? datainfo.liquidationAmoun
+                : (Number(claimAmountborrow) / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
+                    datainfo.finishAmountBorrow,
+            )
+      } ${mode == 'Lend' ? props.props.poolname : props.props.underlying_asset}`,
       Expected_interest: `${expectedInterest} ${props.props.poolname}`,
     },
   ];
-
+  console.log(555, claimAmount, claimAmountborrow);
   return (
     <div className={classNames('portfolio_list', className)} {...props}>
       <Collapse bordered={false} expandIconPosition="right" ghost={true}>

@@ -282,6 +282,12 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       return x.multipliedBy(y).toFixed();
     }
   };
+  const pricelist = {
+    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
+    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
+    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
+    '0x0000000000000000000000000000000000000000': BNBprice,
+  };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -390,21 +396,26 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     BNB: BNB,
     BTCB: BTCB,
   };
-  const coinlist = {
-    BTCB: Number(BTCBprice) / Number(BUSDprice),
-    ETH: 4000,
-    BNB: Number(BNBprice) / Number(BUSDprice),
-  };
+
   function handleOnChange(value) {
     setlendvalue(value);
   }
   function handleOnChange2(value) {
     setData(value);
-    setborrowvalue((value * coinlist[coin]) / 2);
+    setborrowvalue(
+      ((value * Number(pricelist[poolinfo[pid].Jp])) /
+        Number(pricelist[poolinfo[pid]?.Sp ?? 0]) /
+        (poolinfo[pid]?.collateralization_ratio ?? 0)) *
+        100,
+    );
   }
   function handleOnChange3(value) {
     setborrowvalue(value);
-    setData((value / coinlist[coin]) * 2);
+    setData(
+      ((value / Number(pricelist[poolinfo[pid].Jp]) / Number(pricelist[poolinfo[pid]?.Sp ?? 0])) *
+        (poolinfo[pid]?.collateralization_ratio ?? 0)) /
+        100,
+    );
   }
 
   const { Step } = Steps;
@@ -451,8 +462,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           <Progress
             percent={
               (Math.floor(
-                (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(BTCBprice)) /
-                  Number(BUSDprice) /
+                (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(pricelist[poolinfo[pid]?.Jp ?? 0])) /
+                  Number(pricelist[poolinfo[pid]?.Sp ?? 0]) /
                   (poolinfo[pid]?.collateralization_ratio ?? 0)) *
                   10000,
               ) /
@@ -471,8 +482,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
               {console.log(poolinfo[pid]?.fixed_rate ?? 0)}
               <span style={{ color: '#ffa011' }}>{`${
                 Math.floor(
-                  (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(BTCBprice)) /
-                    Number(BUSDprice) /
+                  (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(pricelist[poolinfo[pid]?.Jp ?? 0])) /
+                    Number(pricelist[poolinfo[pid]?.Sp ?? 0]) /
                     (poolinfo[pid]?.collateralization_ratio ?? 0)) *
                     10000,
                 ) / 100

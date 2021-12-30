@@ -228,13 +228,12 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       setbalance('0');
     }
   });
-  console.log(
-    Number(dealNumber_18(props.lendSupply)),
-    Number(dealNumber_18(stateinfo.settleAmountLend)),
-    Number(dealNumber_18(stakeAmount)),
-    Number(dealNumber_18(props.lendSupply)),
-  );
-
+  const pricelist = {
+    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
+    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
+    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
+    '0x0000000000000000000000000000000000000000': BNBprice,
+  };
   const refundLend =
     Number(dealNumber_18(props.lendSupply)) !== 0
       ? (Number(dealNumber_18(props.lendSupply)) - Number(dealNumber_18(stateinfo.settleAmountLend))) *
@@ -303,9 +302,10 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 </p>
                 <p>
                   <span>
+                    {console.log(props.Jp)}
                     {Math.floor(
-                      ((dealNumber_18(props.borrowSupply) * Number(BTCBprice)) /
-                        Number(BUSDprice) /
+                      ((dealNumber_18(props.borrowSupply) * Number(pricelist[props.Jp])) /
+                        Number(pricelist[props.Sp]) /
                         props.collateralization_ratio) *
                         10000,
                     ) / 100}
@@ -317,7 +317,9 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
 
                 <p>
                   <span>
-                    {hasNoClaim == false ? Math.floor(refundLend * Number(BUSDprice) * 10000000) / 10000000 : 0}
+                    {hasNoClaim == false
+                      ? Math.floor(refundLend * Number(pricelist[props.Sp]) * 10000000) / 10000000
+                      : 0}
                   </span>
                 </p>
                 <Button onClick={getRefund} disabled={refundLend !== 0 ? (hasNoClaim == false ? false : true) : true}>
@@ -347,8 +349,8 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 <p>
                   <span>
                     {Math.floor(
-                      ((dealNumber_18(props.borrowSupply) * Number(BTCBprice)) /
-                        Number(BUSDprice) /
+                      ((dealNumber_18(props.borrowSupply) * Number(pricelist[props.Jp])) /
+                        Number(pricelist[props.Sp]) /
                         props.collateralization_ratio) *
                         10000,
                     ) / 100}
@@ -359,7 +361,9 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 </p>
                 <p>
                   <span>
-                    {hasNoClaim == false ? Math.floor(refundBorrow * Number(BUSDprice) * 10000000) / 10000000 : 0}
+                    {hasNoClaim == false
+                      ? Math.floor(refundBorrow * Number(pricelist[props.Sp]) * 10000000) / 10000000
+                      : 0}
                   </span>
                 </p>
                 <Button

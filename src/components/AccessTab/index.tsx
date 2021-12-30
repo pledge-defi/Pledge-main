@@ -186,7 +186,12 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       ),
     });
   };
-
+  const pricelist = {
+    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
+    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
+    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
+    '0x0000000000000000000000000000000000000000': BNBprice,
+  };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -274,7 +279,9 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
             (Number(dealNumber_18(stakeAmountborrow)) /
               Number(
                 dealNumber_18(
-                  (props.borrowSupply * Number(BTCBprice)) / Number(BUSDprice) / props.collateralization_ratio,
+                  (props.borrowSupply * Number(pricelist[props.Jp])) /
+                    Number(pricelist[props.Sp]) /
+                    props.collateralization_ratio,
                 ),
               )) *
             1000000,
@@ -307,8 +314,8 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
                 <p className="access_token">Loan amount</p>
                 <p className="access_num">
                   {Math.floor(
-                    ((Number(dealNumber_18(props.borrowSupply)) * Number(BTCBprice)) /
-                      Number(BUSDprice) /
+                    ((Number(dealNumber_18(props.borrowSupply)) * Number(pricelist[props.Jp])) /
+                      Number(pricelist[props.Sp]) /
                       props.collateralization_ratio) *
                       10000,
                   ) / 100}{' '}
