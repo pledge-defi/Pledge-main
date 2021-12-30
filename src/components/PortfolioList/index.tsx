@@ -24,6 +24,12 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
 
   const { Panel } = Collapse;
   const [balance, setbalance] = useState('initialState');
+  const [BUSDprice, setBUSD] = useState('');
+  const [BTCBprice, setBTCB] = useState('');
+
+  const [DAIprice, setDAI] = useState('');
+
+  const [BNBprice, setBNB] = useState('');
 
   const PoolState = { 0: 'match', 1: 'running', 2: 'expired', 3: 'liquidation', 4: 'undone' };
   const poolAsset = {
@@ -57,9 +63,27 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       console.log(error);
     }
   };
-
+  const dealNumber_Price = (num) => {
+    if (num) {
+      let x = new BigNumber(num);
+      let y = new BigNumber(1e8);
+      return x.dividedBy(y).toString();
+    }
+  };
   useEffect(() => {
     getBalance();
+    services.BscPledgeOracleServer.getPrices([
+      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
+      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
+      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
+      '0x0000000000000000000000000000000000000000',
+    ]).then((res) => {
+      console.log(res);
+      setBUSD(dealNumber_Price(res[0]));
+      setBTCB(dealNumber_Price(res[1]));
+      setDAI(dealNumber_Price(res[2]));
+      setBNB(dealNumber_Price(res[3]));
+    });
   }, []);
   const expectedInterest =
     mode == 'Lend'
@@ -78,19 +102,18 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
     {
       //利息 = 本金*fixed rate/365 * length（天数）
       title: 'Detail',
-      Total_financing: `${dealNumber_18(
-        props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow,
-      )}  ${props.props.poolname}`,
-      Balance:
-        mode == 'Borrow'
-          ? `${
-              dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow) +
-              expectedInterest
-            } JP-Token`
-          : `${
-              dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend) +
-              expectedInterest
-            }  SP-Token`,
+      Total_financing: `${
+        mode == 'Lend'
+          ? dealNumber_18(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)
+          : Math.floor(
+              ((dealNumber_18(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow) *
+                Number(BTCBprice)) /
+                Number(BUSDprice) /
+                props.props.collateralization_ratio) *
+                10000,
+            ) / 100
+      }  ${props.props.poolname}`,
+
       Pledge: `${dealNumber_18(props.props.borrowSupply)}${props.props.underlying_asset}`,
       Time: `${props.props.settlement_date}`,
     },
@@ -142,9 +165,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                   <li>
                     <span>Total Lend</span> <span>{item.Total_financing}</span>
                   </li>
-                  <li>
-                    <span>Balance</span> <span>{item.Balance}</span>
-                  </li>
+
                   {mode == 'Borrow' ? (
                     <li>
                       <span>Pledge</span> <span>{item.Pledge}</span>

@@ -280,6 +280,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
             1000000,
         ) / 1000000
       : 0;
+
   return (
     <div className={classnames('access_tab')} style={style}>
       <div className="access_title">

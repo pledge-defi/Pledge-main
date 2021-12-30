@@ -302,16 +302,23 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   <span>{dealNumber_18(props.lendSupply)}</span>
                 </p>
                 <p>
-                  <span>{dealNumber_18(props.borrowSupply)}</span>
+                  <span>
+                    {Math.floor(
+                      ((dealNumber_18(props.borrowSupply) * Number(BTCBprice)) /
+                        Number(BUSDprice) /
+                        props.collateralization_ratio) *
+                        10000,
+                    ) / 100}
+                  </span>
                 </p>
                 <p>
-                  <span>
-                    {dealNumber_18(props.state < '2' ? stateinfo.settleAmountLend : stateinfo.finishAmountLend)}
-                  </span>
+                  <span>{dealNumber_18(stakeAmount)}</span>
                 </p>
 
                 <p>
-                  <span>{hasNoClaim == false ? Math.floor(refundLend * 10000000) / 10000000 : 0}</span>
+                  <span>
+                    {hasNoClaim == false ? Math.floor(refundLend * Number(BUSDprice) * 10000000) / 10000000 : 0}
+                  </span>
                 </p>
                 <Button onClick={getRefund} disabled={refundLend !== 0 ? (hasNoClaim == false ? false : true) : true}>
                   Claim
@@ -348,12 +355,12 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   </span>
                 </p>
                 <p>
-                  <span>
-                    {dealNumber_18(props.state < '2' ? stateinfo.settleAmountBorrow : stateinfo.finishAmountBorrow)}
-                  </span>
+                  <span>{dealNumber_18(stakeAmountborrow)}</span>
                 </p>
                 <p>
-                  <span>{hasNoClaim == false ? Math.floor(refundBorrow * 10000000) / 10000000 : 0}</span>
+                  <span>
+                    {hasNoClaim == false ? Math.floor(refundBorrow * Number(BUSDprice) * 10000000) / 10000000 : 0}
+                  </span>
                 </p>
                 <Button
                   onClick={() => {
