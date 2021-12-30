@@ -92,18 +92,11 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       ? Number(dealNumber_18(datainfo.settleAmountLend)) *
         (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.props.lendSupply)))
       : 0;
-
+  console.log(pricelist['0xF592aa48875a5FDE73Ba64B527477849C73787ad']);
   const claimAmountborrow =
     Number(dealNumber_18(props.props.borrowSupply)) !== 0
       ? Number(dealNumber_18(datainfo.settleAmountBorrow)) *
-        (Number(dealNumber_18(stakeAmountborrow)) /
-          Number(
-            dealNumber_18(
-              (props.props.borrowSupply * Number(pricelist[props.props.Jp])) /
-                Number(pricelist[props.props.Sp]) /
-                props.props.collateralization_ratio,
-            ),
-          ))
+        (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.props.borrowSupply)))
       : 0;
   const expectedInterest =
     mode == 'Lend'
@@ -124,40 +117,43 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       title: 'Detail',
       Total_financing: `${
         mode == 'Lend'
-          ? dealNumber_7(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)
-          : Math.floor(
-              ((dealNumber_7(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow) *
-                Number(pricelist[props.props.Jp])) /
-                Number(pricelist[props.props.Sp]) /
+          ? dealNumber_7(props.props.lendSupply)
+          : dealNumber_7(
+              ((props.props.borrowSupply * pricelist[props.props.Jp]) /
+                pricelist[props.props.Sp] /
                 props.props.collateralization_ratio) *
-                10000,
-            ) / 100
-      }  ${mode == 'Lend' ? props.props.poolname : props.props.underlying_asset} `,
-
+                100,
+            )
+      }
+${props.props.poolname} `,
       Pledge: `${dealNumber_7(props.props.borrowSupply)}${props.props.underlying_asset}`,
       Time: `${props.props.settlement_date}`,
+      Collateral_Amount: `${dealNumber_7(Number(stakeAmountborrow))} ${props.props.underlying_asset}`,
+      Deposit_Amount: `${dealNumber_7(Number(stakeAmount))} ${props.props.poolname}`,
     },
 
     {
       title: 'Reward',
       The_principal: `${
         mode == 'Lend'
-          ? dealNumber_7(
-              props.props.state == '3'
-                ? datainfo.liquidationAmounLend
-                : (Number(claimAmount) / Number(dealNumber_18(datainfo.settleAmountLend))) * datainfo.finishAmountLend,
-            )
-          : dealNumber_7(
-              props.props.state == '3'
-                ? datainfo.liquidationAmoun
-                : (Number(claimAmountborrow) / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
-                    datainfo.finishAmountBorrow,
-            )
+          ? props.props.state == '3'
+            ? dealNumber_18(datainfo.liquidationAmounLend)
+            : Math.floor(
+                (Number(claimAmount) / Number(dealNumber_18(datainfo.settleAmountLend))) *
+                  Number(dealNumber_18(datainfo.finishAmountLend)) *
+                  10000000,
+              ) / 10000000
+          : props.props.state == '3'
+          ? dealNumber_18(datainfo.liquidationAmoun)
+          : Math.floor(
+              (Number(claimAmountborrow) / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
+                Number(dealNumber_18(datainfo.finishAmountBorrow)) *
+                10000000,
+            ) / 10000000
       } ${mode == 'Lend' ? props.props.poolname : props.props.underlying_asset}`,
       Expected_interest: `${expectedInterest} ${props.props.poolname}`,
     },
   ];
-  console.log(555, claimAmount, claimAmountborrow);
   return (
     <div className={classNames('portfolio_list', className)} {...props}>
       <Collapse bordered={false} expandIconPosition="right" ghost={true}>
@@ -181,7 +177,7 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                 <Statistic title={props.props.margin_ratio} />
               </Col>
               <Col span={4} className="media_tab">
-                <Statistic title={props.props.collateralization_ratio} />
+                <Statistic title={[`${props.props.collateralization_ratio}%`]} />
               </Col>
             </Row>
           }
@@ -196,12 +192,16 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
                     <span>Total Lend</span> <span>{item.Total_financing}</span>
                   </li>
 
-                  {mode == 'Borrow' ? (
+                  {mode == 'Lend' ? (
                     <li>
-                      <span>Pledge</span> <span>{item.Pledge}</span>
+                      <span>Deposit Amount</span>
+                      <span>{item.Deposit_Amount}</span>
                     </li>
                   ) : (
-                    ''
+                    <li>
+                      <span>Collateral Amount</span>
+                      <span>{item.Collateral_Amount}</span>
+                    </li>
                   )}
                   <li>
                     <span>Order Time</span> <span>{item.Time}</span>

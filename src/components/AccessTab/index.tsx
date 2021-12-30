@@ -276,14 +276,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
     Number(dealNumber_18(props.borrowSupply)) !== 0
       ? Math.floor(
           Number(dealNumber_18(stateinfo.settleAmountBorrow)) *
-            (Number(dealNumber_18(stakeAmountborrow)) /
-              Number(
-                dealNumber_18(
-                  (props.borrowSupply * Number(pricelist[props.Jp])) /
-                    Number(pricelist[props.Sp]) /
-                    props.collateralization_ratio,
-                ),
-              )) *
+            (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.borrowSupply))) *
             1000000,
         ) / 1000000
       : 0;
@@ -324,7 +317,9 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
               </div>
               <div style={{ display: 'inline-block', float: 'right' }}>
                 <p className="access_token">{'JP-Token'}</p>
-                <p className="access_num">{hasNoClaim == false ? claimAmountborrow : 0}</p>
+                <p className="access_num">
+                  {hasNoClaim == false ? Math.floor(claimAmountborrow * pricelist[props.Jp] * 100) / 100 : 0}
+                </p>
               </div>
             </>
           )}
