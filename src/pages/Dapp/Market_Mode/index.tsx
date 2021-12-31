@@ -66,7 +66,6 @@ function Market_Mode() {
       setdatainfo1(res);
       const datainfo4 = 2;
       setdatainfo2(datainfo4);
-      console.log(4444444, res, datainfo1, datainfo2, datainfo4);
     });
   };
   let [time, settime] = useState(0);
@@ -77,14 +76,12 @@ function Market_Mode() {
       let maxSupply = dealNumber_18(item.maxSupply);
       let borrowSupply = dealNumber_18(item.borrowSupply);
       let lendSupply = dealNumber_18(item.lendSupply);
-      console.log(maxSupply);
 
       const settlementdate = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
 
       var difftime = item.endTime - item.settleTime;
 
       var days = parseInt(difftime / 86400 + '');
-      console.log('state', item.state);
       return {
         key: index + 1,
         state: item.state,
@@ -94,7 +91,7 @@ function Market_Mode() {
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: settlementdate,
         length: days,
-        margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
+        margin_ratio: dealNumber_8(item.autoLiquidateThreshold),
         collateralization_ratio: dealNumber_8(item.martgageRate),
         poolname: poolAsset[item.lendToken],
         Sp: item.lendToken,
@@ -109,10 +106,8 @@ function Market_Mode() {
 
     res.map((item, index) => {
       services.PoolServer.getuserLendInfo(item.key - 1).then((res1) => {
-        console.error(res, '-----');
         res1.stakeAmount == '0' ? console.log(1111111) : pidlend.push(item);
         setdatalend(pidlend);
-        console.log(pidlend);
       });
       services.PoolServer.getuserBorrowInfo(item.key - 1).then((res) => {
         res.stakeAmount == '0' ? console.log(1111111) : pidborrow.push(item);

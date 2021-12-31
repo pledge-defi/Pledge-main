@@ -71,16 +71,16 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       return x.dividedBy(y).toString();
     }
   };
-
   useEffect(() => {
     getBalance();
+  });
+  useEffect(() => {
     services.BscPledgeOracleServer.getPrices([
       '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
       '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
       '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
       '0x0000000000000000000000000000000000000000',
     ]).then((res) => {
-      console.log(res);
       setBUSD(dealNumber_Price(res[0]));
       setBTCB(dealNumber_Price(res[1]));
       setDAI(dealNumber_Price(res[2]));
@@ -92,7 +92,6 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       ? Number(dealNumber_18(datainfo.settleAmountLend)) *
         (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.props.lendSupply)))
       : 0;
-  console.log(pricelist['0xF592aa48875a5FDE73Ba64B527477849C73787ad']);
   const claimAmountborrow =
     Number(dealNumber_18(props.props.borrowSupply)) !== 0
       ? Number(dealNumber_18(datainfo.settleAmountBorrow)) *
@@ -174,7 +173,7 @@ ${props.props.poolname} `,
                 <Statistic title={props.props.settlement_date} />
               </Col>
               <Col span={4} className="media_tab">
-                <Statistic title={props.props.margin_ratio} />
+                <Statistic title={`${Number(props.props.margin_ratio) + 100}%`} />
               </Col>
               <Col span={4} className="media_tab">
                 <Statistic title={[`${props.props.collateralization_ratio}%`]} />
@@ -223,7 +222,6 @@ ${props.props.poolname} `,
                 )
               );
             })}
-            {console.log(datainfo)}
             <ClaimTime
               endtime={props.props.endtime}
               state={props.props.state}

@@ -205,7 +205,6 @@ const ClaimTime: React.FC<IClaimTime> = ({
           ? parseInt((a - days * 24 * 3600 - Number(hours) * 3600 - Number(minutes) * 60).toString())
           : '0';
       const times = days + ':' + hours + ':' + minutes + ':' + second;
-      console.log(times);
 
       setdays(days);
       sethours(Number(hours));
@@ -221,7 +220,6 @@ const ClaimTime: React.FC<IClaimTime> = ({
 
   const getclaim = () => {
     var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
-    console.log(timestamp);
 
     mode == 'Lend'
       ? services.PoolServer.getwithdrawLend(pid, Spnum)
@@ -241,28 +239,33 @@ const ClaimTime: React.FC<IClaimTime> = ({
             openNotificationerrorborrow('Error'), setloadings(false);
           });
   };
+  console.log(Spnum, Jpnum);
   useEffect(() => {
     if (chainId !== undefined) {
       {
         mode == 'Lend'
           ? services.ERC20Server.balanceOf(spToken).then((res) => {
               setSpnum(res);
-              console.log(res);
+              services.PoolServer.getuserLendInfo(pid.toString()).then((data) => {
+                sethasNoClaim(Spnum == '0' ? true : false);
+              });
             })
           : services.ERC20Server.balanceOf(jpToken).then((res) => {
               setJpnum(res);
-              console.log(res);
+              services.PoolServer.getuserBorrowInfo(pid.toString()).then((data) => {
+                sethasNoClaim(Jpnum == '0' ? true : false);
+              });
             });
       }
-      {
-        mode == 'Lend'
-          ? services.PoolServer.getuserLendInfo(pid.toString()).then((data) => {
-              sethasNoClaim(data.hasNoRefund && data.hasNoClaim);
-            })
-          : services.PoolServer.getuserBorrowInfo(pid.toString()).then((data) => {
-              sethasNoClaim(data.hasNoRefund && data.hasNoClaim);
-            });
-      }
+      // {
+      //   mode == 'Lend'
+      //     ? services.PoolServer.getuserLendInfo(pid.toString()).then((data) => {
+      //         sethasNoClaim(Spnum == '0' ? false : true);
+      //       })
+      //     : services.PoolServer.getuserBorrowInfo(pid.toString()).then((data) => {
+      //         sethasNoClaim(Jpnum == '0' ? false : true);
+      //       });
+      // }
     }
 
     if (state !== '4') {

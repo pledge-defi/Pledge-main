@@ -34,6 +34,7 @@ import { number } from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { render } from 'react-dom';
 import { use } from 'echarts';
+import { web3 } from '_src/services/web3';
 
 export interface ICoin_pool {
   mode: string;
@@ -54,6 +55,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [loadings, setloadings] = useState(false);
   const [warning, setwarning] = useState('');
   const [price, setprice] = useState(0);
+  const [accountbalance, setaccountbalance] = useState('');
   const [BUSDprice, setBUSD] = useState('');
   const [BTCBprice, setBTCB] = useState('');
 
@@ -334,6 +336,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
 
       var days = parseInt(difftime / 86400 + '');
       console.log('state', item.state);
+      console.log(item.autoLiquidateThreshold);
       return {
         key: index + 1,
         state: item.state,
@@ -343,7 +346,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: settlementdate,
         length: `${days} day`,
-        margin_ratio: `${1 + dealNumber_8(item.autoLiquidateThreshold)}%`,
+        margin_ratio: `${100 + Number(dealNumber_8(item.autoLiquidateThreshold))}%`,
         collateralization_ratio: dealNumber_8(item.martgageRate),
         poolname: poolAsset[item.lendToken],
         endTime: item.endTime,
@@ -357,10 +360,15 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     setpoolinfo(res);
   };
   console.log(poolinfo[pid]);
-
+  const getaccountbalance = async () => {
+    var balance = await web3.eth.getBalance(account);
+    setaccountbalance(balance);
+  };
   useEffect(() => {
     getPoolInfo();
     getPrice();
+
+    account && getaccountbalance();
     services.BscPledgeOracleServer.getPrices([
       '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
       '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
@@ -530,7 +538,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <>
               <div className="balance_input">
                 <p style={{ fontWeight: 400 }}>
-                  Balance: {balance && parseInt(dealNumber_18(balance).toString())} {pool}
+                  Balance: {balance && Math.floor(dealNumber_18(balance) * 1000) / 1000} {pool}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <InputNumber
@@ -596,7 +604,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
               <div style={{ marginBottom: '28px', paddingBottom: '28px', borderBottom: '1px dashed #E6E6EB' }}>
                 <div className="balance_input">
                   <p style={{ fontWeight: 400 }}>
-                    Balance: {(balance && parseInt(dealNumber_18(balance).toString())) || 0} {coin}
+                    Balance: {(balance && Math.floor(dealNumber_18(balance) * 1000) / 1000) || 0} {coin}
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <InputNumber
@@ -644,7 +652,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             {borrowvalue
               ? Number(poolinfo[pid]?.collateralization_ratio / 100 ?? 0) * Number(borrowvalue.toFixed(2))
               : lendvalue
-              ? Number(poolinfo[pid]?.collateralization_ratio / 100 ?? 0) * Number(lendvalue.toFixed(2))
+              ? Number(lendvalue.toFixed(2))
               : '0.00'}
             {'  '}
             {mode === 'Lend' ? 'SP-Token' : 'JP-Token'}
@@ -681,8 +689,13 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                         style={{ width: '48%', borderRadius: '15px' }}
                         loading={loadings}
                         onClick={async () => {
+                          var currentTime = Math.round(new Date().getTime() / 1000 + 300).toString();
                           if (lendvalue < 100) {
                             return setwarning('Minimum deposit quantity 100 BUSD');
+                          } else if (lendvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
+                            return setwarning('Maximum exceeded');
+                          } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
+                            return setwarning('Less than five minutes from settlement date');
                           }
                           setwarning('');
                           setloadings(true);
@@ -729,10 +742,19 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     onClick={async () => {
                       let num = dealNumber(lendvalue);
                       console.log(num, lendvalue);
+                      var currentTime = Math.round(new Date().getTime() / 1000 + 300).toString();
+
+                      if (lendvalue < 100) {
+                        return setwarning('Minimum deposit quantity 100 BUSD');
+                      } else if (lendvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
+                        return setwarning('Maximum exceeded');
+                      } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
+                        return setwarning('Less than five minutes from settlement date');
+                      }
                       setloadings(true);
                       // //lend方法
                       console.log(poolinfo[pid]?.Jp ?? 0);
-                      services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Jp ?? 0)
+                      services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Sp ?? 0)
                         .then(() => {
                           setloadings(false);
                           openNotificationlend('Success');
@@ -770,14 +792,24 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       style={{ width: '48%', borderRadius: '15px' }}
                       loading={loadings}
                       onClick={async () => {
+                        var currentTime = Math.round(new Date().getTime() / 1000 + 300).toString();
                         if (borrowvalue < 100) {
                           return setwarning('Minimum deposit quantity 100 BUSD');
+                        } else if (borrowvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
+                          return setwarning('Maximum exceeded');
+                        } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
+                          return setwarning('Less than five minutes from settlement date');
                         }
                         setwarning('');
                         setloadings(true);
-                        services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
-                          setbalance(res);
-                        });
+                        {
+                          (poolinfo[pid]?.Jp ?? 0) !== '0x0000000000000000000000000000000000000000'
+                            ? services.ERC20Server.balanceOf(poolinfo[pid]?.Jp ?? 0).then((res) => {
+                                setbalance(res);
+                              })
+                            : setbalance(accountbalance);
+                        }
+
                         let borrownum = dealNumber(data);
                         await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum)
                           .then(() => {
@@ -820,9 +852,17 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     loading={loadings}
                     onClick={async () => {
                       //  window.open(pageURL.Lend_Borrow.replace(':mode', `${mode}`));
+
                       setloadings(true);
                       var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
                       console.log(timestamp);
+                      if (borrowvalue < 100) {
+                        return setwarning('Minimum deposit quantity 100 BUSD');
+                      } else if (borrowvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
+                        return setwarning('Maximum exceeded');
+                      } else if (timestamp > (poolinfo[pid]?.settleTime ?? 0)) {
+                        return setwarning('Less than five minutes from settlement date');
+                      }
                       services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
                         setbalance(res);
                       });

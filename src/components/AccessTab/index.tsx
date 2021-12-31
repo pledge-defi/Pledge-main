@@ -38,7 +38,6 @@ const imglist = {
 const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, stateinfo }) => {
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
 
-  console.log('access状态' + props.state);
   const [hasNoClaim, sethasNoClaim] = useState(false);
   const [balance, setbalance] = useState('0');
   const [loadings, setloadings] = useState(false);
@@ -259,7 +258,6 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
       '0x0000000000000000000000000000000000000000',
     ]).then((res) => {
-      console.log(res);
       setBUSD(dealNumber_Price(res[0]));
       setBTCB(dealNumber_Price(res[1]));
       setDAI(dealNumber_Price(res[2]));
@@ -271,7 +269,6 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       ? Number(dealNumber_18(stateinfo.settleAmountLend)) *
         (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.lendSupply)))
       : 0;
-  console.log(stateinfo.settleAmountBorrow);
   const claimAmountborrow =
     Number(dealNumber_18(props.borrowSupply)) !== 0
       ? Math.floor(
@@ -302,7 +299,6 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
             </>
           ) : (
             <>
-              {console.log(33, stateinfo.settleAmountBorrow)}
               <div style={{ display: 'inline-block' }}>
                 <p className="access_token">Loan amount</p>
                 <p className="access_num">

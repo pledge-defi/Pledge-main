@@ -37,6 +37,7 @@ function HomePage() {
   const { testStore } = RootStore;
   const [pid, setpid] = useState(0);
   const { TabPane } = Tabs;
+  const [tab, settab] = useState('ALL');
   const [price, setprice] = useState(0);
   const [pool, setpool] = useState('BUSD');
   const [coin, setcoin] = useState('');
@@ -59,6 +60,12 @@ function HomePage() {
   const imglist = {
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCB,
     '0x0000000000000000000000000000000000000000': BNB,
+  };
+  const pricelist = {
+    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
+    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
+    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
+    '0x0000000000000000000000000000000000000000': BNBprice,
   };
   const getPrice = () => {
     services.BscPledgeOracleServer.getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad').then((res) => {
@@ -96,14 +103,12 @@ function HomePage() {
       let maxSupply = dealNumber_18(item.maxSupply);
       let borrowSupply = dealNumber_18(item.borrowSupply);
       let lendSupply = dealNumber_18(item.lendSupply);
-      console.log(maxSupply);
 
       const times = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
 
       var difftime = item.endTime - item.settleTime;
 
       var days = parseInt(difftime / 86400 + '');
-      console.log('state', item.state);
       return {
         key: index + 1,
         state: item.state,
@@ -112,8 +117,8 @@ function HomePage() {
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: times,
-        length: `${days} day`,
-        margin_ratio: `${dealNumber_8(item.autoLiquidateThreshold)}%`,
+        length: days,
+        margin_ratio: dealNumber_8(item.autoLiquidateThreshold),
         collateralization_ratio: dealNumber_8(item.martgageRate),
         poolname: poolAsset[item.lendToken],
         endTime: item.endTime,
@@ -123,10 +128,8 @@ function HomePage() {
         Jp: item.borrowToken,
       };
     });
-    console.log(res);
     setdata(res);
     setdatastate(res);
-    console.log(data);
   };
 
   useEffect(() => {
@@ -164,12 +167,11 @@ function HomePage() {
           className="menutab"
           onClick={() => {
             const livelist = data.filter((item) => {
-              console.log(item.state < 3);
               return item.state < 2;
             });
+            settab('Live');
             setdatastate(data);
             setdatastate(livelist);
-            console.log(livelist);
           }}
         >
           live
@@ -181,12 +183,11 @@ function HomePage() {
           className="menutab"
           onClick={() => {
             const livelist = data.filter((item) => {
-              console.log(item);
               return item.state >= 2;
             });
+            settab('Finished');
             setdatastate(data);
             setdatastate(livelist);
-            console.log(livelist);
           }}
         >
           Finished
@@ -213,7 +214,6 @@ function HomePage() {
       title: 'Underlying Asset',
       dataIndex: 'underlying_asset',
       render: (val, record) => {
-        // console.log(record);
         return (
           <div className="underlyingAsset">
             <img src={record.logo} alt="" />
@@ -248,7 +248,7 @@ function HomePage() {
               success={{
                 percent:
                   Math.floor(
-                    ((val[0] * Number(BTCBprice)) / Number(BUSDprice) / record.collateralization_ratio) * 10000,
+                    ((val[0] * pricelist[record.Jp]) / pricelist[record.Sp] / record.collateralization_ratio) * 10000,
                   ) /
                   100 /
                   record.maxSupply,
@@ -259,7 +259,7 @@ function HomePage() {
               <span>
                 <span style={{ color: '#FFA011', fontSize: '12px' }}>
                   {Math.floor(
-                    ((val[0] * Number(BTCBprice)) / Number(BUSDprice) / record.collateralization_ratio) * 10000,
+                    ((val[0] * pricelist[record.Jp]) / pricelist[record.Sp] / record.collateralization_ratio) * 10000,
                   ) / 100}
                 </span>
                 /<span style={{ color: '#5D52FF', fontSize: '12px' }}>{`${toThousands(val[1])}`}</span>
@@ -279,7 +279,7 @@ function HomePage() {
       title: 'Settlement Date',
       dataIndex: 'settlement_date',
       sorter: {
-        compare: (a, b) => a.settlement_date - b.settlement_date,
+        compare: (a, b) => a.settleTime - b.settleTime,
         multiple: 1,
       },
     },
@@ -290,6 +290,9 @@ function HomePage() {
         compare: (a, b) => a.length - b.length,
         multiple: 5,
       },
+      render: (val, record) => {
+        return <div>{`${val} day`}</div>;
+      },
     },
     {
       title: 'Margin Ratio',
@@ -297,6 +300,9 @@ function HomePage() {
       sorter: {
         compare: (a, b) => a.margin_ratio - b.margin_ratio,
         multiple: 6,
+      },
+      render: (val, record) => {
+        return `${Number(val) + 100}%`;
       },
     },
     {
@@ -338,7 +344,6 @@ function HomePage() {
       title: 'Underlying Asset',
       dataIndex: 'underlying_asset',
       render: (val, record) => {
-        // console.log(record);
         return (
           <Popover
             content={content}
@@ -462,7 +467,7 @@ function HomePage() {
       <DappLayout title="Market Pool" className="trust_code">
         <Dropdown overlay={menu} trigger={['click']}>
           <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-            Live
+            {tab}
             <DownOutlined />
           </a>
         </Dropdown>

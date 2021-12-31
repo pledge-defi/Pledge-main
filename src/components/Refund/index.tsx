@@ -182,7 +182,6 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
-  console.log(props.key - 1);
   const dealNumber_Price = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -197,7 +196,6 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
       '0x0000000000000000000000000000000000000000',
     ]).then((res) => {
-      console.log(res);
       setBUSD(dealNumber_Price(res[0]));
       setBTCB(dealNumber_Price(res[1]));
       setDAI(dealNumber_Price(res[2]));
@@ -245,7 +243,6 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
         (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.borrowSupply)))
       : 0;
 
-  console.log('refundLend', stakeAmountborrow);
   const getRefund = () => {
     console.log('getRefund');
     if (props.state == '4') {
@@ -302,7 +299,6 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 </p>
                 <p>
                   <span>
-                    {console.log(props.Jp)}
                     {Math.floor(
                       ((dealNumber_18(props.borrowSupply) * Number(pricelist[props.Jp])) /
                         Number(pricelist[props.Sp]) /
