@@ -37,7 +37,7 @@ function HomePage() {
   const { testStore } = RootStore;
   const [pid, setpid] = useState(0);
   const { TabPane } = Tabs;
-  const [tab, settab] = useState('ALL');
+  const [tab, settab] = useState('Live');
   const [price, setprice] = useState(0);
   const [pool, setpool] = useState('BUSD');
   const [coin, setcoin] = useState('');
@@ -129,7 +129,11 @@ function HomePage() {
       };
     });
     setdata(res);
-    setdatastate(res);
+    setdatastate(
+      res.filter((item) => {
+        return item.state < 2;
+      }),
+    );
   };
 
   useEffect(() => {
@@ -174,7 +178,22 @@ function HomePage() {
             setdatastate(livelist);
           }}
         >
-          live
+          Live
+        </p>
+      </Menu.Item>
+      <Menu.Item>
+        <p
+          className="menutab"
+          onClick={() => {
+            const livelist = data.filter((item) => {
+              return item;
+            });
+            settab('All');
+            setdatastate(data);
+            setdatastate(livelist);
+          }}
+        >
+          All
         </p>
       </Menu.Item>
 

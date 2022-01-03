@@ -257,15 +257,6 @@ const ClaimTime: React.FC<IClaimTime> = ({
               });
             });
       }
-      // {
-      //   mode == 'Lend'
-      //     ? services.PoolServer.getuserLendInfo(pid.toString()).then((data) => {
-      //         sethasNoClaim(Spnum == '0' ? false : true);
-      //       })
-      //     : services.PoolServer.getuserBorrowInfo(pid.toString()).then((data) => {
-      //         sethasNoClaim(Jpnum == '0' ? false : true);
-      //       });
-      // }
     }
 
     if (state !== '4') {
@@ -281,12 +272,10 @@ const ClaimTime: React.FC<IClaimTime> = ({
   return (
     <div className={classnames('claim_time', className)} style={style}>
       <div className="component_time">
-        <span className="component_time_span"></span>
         <p className="claim_time_title">Matures in</p>
         <p className="claim_time_time">
           <span>{`${days}d`}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{second}</span>
         </p>
-        <span className="component_time_span"></span>
       </div>
 
       <div className="claim_button">

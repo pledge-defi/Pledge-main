@@ -131,27 +131,27 @@ ${props.props.poolname} `,
       Deposit_Amount: `${dealNumber_7(Number(stakeAmount))} ${props.props.poolname}`,
     },
 
-    {
-      title: 'Reward',
-      The_principal: `${
-        mode == 'Lend'
-          ? props.props.state == '3'
-            ? dealNumber_18(datainfo.liquidationAmounLend)
-            : Math.floor(
-                (Number(claimAmount) / Number(dealNumber_18(datainfo.settleAmountLend))) *
-                  Number(dealNumber_18(datainfo.finishAmountLend)) *
-                  10000000,
-              ) / 10000000
-          : props.props.state == '3'
-          ? dealNumber_18(datainfo.liquidationAmoun)
-          : Math.floor(
-              (Number(claimAmountborrow) / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
-                Number(dealNumber_18(datainfo.finishAmountBorrow)) *
-                10000000,
-            ) / 10000000
-      } ${mode == 'Lend' ? props.props.poolname : props.props.underlying_asset}`,
-      Expected_interest: `${expectedInterest} ${props.props.poolname}`,
-    },
+    // {
+    //   title: 'Reward',
+    //   The_principal: `${
+    //     mode == 'Lend'
+    //       ? props.props.state == '3'
+    //         ? dealNumber_18(datainfo.liquidationAmounLend)
+    //         : Math.floor(
+    //             (Number(claimAmount) / Number(dealNumber_18(datainfo.settleAmountLend))) *
+    //               Number(dealNumber_18(datainfo.finishAmountLend)) *
+    //               10000000,
+    //           ) / 10000000
+    //       : props.props.state == '3'
+    //       ? dealNumber_18(datainfo.liquidationAmoun)
+    //       : Math.floor(
+    //           (Number(claimAmountborrow) / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
+    //             Number(dealNumber_18(datainfo.finishAmountBorrow)) *
+    //             10000000,
+    //         ) / 10000000
+    //   } ${mode == 'Lend' ? props.props.poolname : props.props.underlying_asset}`,
+    //   Expected_interest: `${expectedInterest} ${props.props.poolname}`,
+    // },
   ];
   return (
     <div className={classNames('portfolio_list', className)} {...props}>
@@ -184,54 +184,95 @@ ${props.props.poolname} `,
         >
           <div className="order_box">
             {DetailList.map((item, index) => {
-              return item.title == 'Detail' ? (
-                <ul className="order_list" key={index}>
-                  <p>{item.title}</p>
-                  <li>
-                    <span>Total Lend</span> <span>{item.Total_financing}</span>
-                  </li>
-
-                  {mode == 'Lend' ? (
-                    <li>
-                      <span>Deposit Amount</span>
-                      <span>{item.Deposit_Amount}</span>
-                    </li>
-                  ) : (
-                    <li>
-                      <span>Collateral Amount</span>
-                      <span>{item.Collateral_Amount}</span>
-                    </li>
-                  )}
-                  <li>
-                    <span>Order Time</span> <span>{item.Time}</span>
-                  </li>
-                </ul>
-              ) : (
-                props.props.state != 0 && props.props.state != 4 && (
+              return (
+                <>
                   <ul className="order_list" key={index}>
                     <p>{item.title}</p>
                     <li>
-                      <span>The Principal</span>
-                      <span>{item.The_principal}</span>
+                      <span>Total Lend</span> <span>{item.Total_financing}</span>
                     </li>
+
+                    {mode == 'Lend' ? (
+                      <li>
+                        <span>Deposit Amount</span>
+                        <span>{item.Deposit_Amount}</span>
+                      </li>
+                    ) : (
+                      <li>
+                        <span>Collateral Amount</span>
+                        <span>{item.Collateral_Amount}</span>
+                      </li>
+                    )}
                     <li>
-                      <span>Expected Interest</span>
-                      <span>{item.Expected_interest}</span>
+                      <span>Order Time</span> <span>{item.Time}</span>
                     </li>
                   </ul>
-                )
+                  <div className="Reward">
+                    <p>Reward</p>
+                    <div className="rewardinfo">
+                      <div className="rewardtab">
+                        <p className="rewardkey">
+                          {mode == 'Lend' ? 'The principal+interest' : 'Remaining Collateral'}
+                        </p>
+                        <p className="rewardvalue">
+                          {mode == 'Lend'
+                            ? `${Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000}  ${
+                                props.props.poolname
+                              }`
+                            : `${
+                                Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) / 10000000
+                              }  ${props.props.underlying_asset}`}
+                        </p>
+                      </div>
+                      <ClaimTime
+                        endtime={props.props.endtime}
+                        state={props.props.state}
+                        pid={props.props.key - 1}
+                        value={datainfo.finishAmountLend}
+                        mode={mode}
+                        settlementAmountLend={datainfo.settleAmountLend}
+                        spToken={props.props.Sptoken}
+                        jpToken={props.props.Jptoken}
+                      />
+                    </div>
+                  </div>
+                </>
               );
+              // ) : (
+              //   props.props.state != 0 && props.props.state != 4 && (
+              //     // <ul className="order_list" key={index}>
+              //     //   <p>{item.title}</p>
+              //     //   <li>
+              //     //     <span>The Principal</span>
+              //     //     <span>{item.The_principal}</span>
+              //     //   </li>
+              //     //   <li>
+              //     //     <span>Expected Interest</span>
+              //     //     <span>{item.Expected_interest}</span>
+              //     //   </li>
+              //     // </ul>
+              //     <div>
+              //       <p>{item.title}</p>
+              //       <div className="rewardinfo">
+              //         <div className="rewardtab">
+              //           <p className="rewardkey">The principal+interest</p>
+              //           <p className="rewardvalue">100.00 BUSD</p>
+              //         </div>
+              //         <ClaimTime
+              //           endtime={props.props.endtime}
+              //           state={props.props.state}
+              //           pid={props.props.key - 1}
+              //           value={datainfo.finishAmountLend}
+              //           mode={mode}
+              //           settlementAmountLend={datainfo.settleAmountLend}
+              //           spToken={props.props.Sptoken}
+              //           jpToken={props.props.Jptoken}
+              //         />
+              //       </div>
+              //     </div>
+              //   )
+              // );
             })}
-            <ClaimTime
-              endtime={props.props.endtime}
-              state={props.props.state}
-              pid={props.props.key - 1}
-              value={datainfo.finishAmountLend}
-              mode={mode}
-              settlementAmountLend={datainfo.settleAmountLend}
-              spToken={props.props.Sptoken}
-              jpToken={props.props.Jptoken}
-            />
           </div>
         </Panel>
       </Collapse>
