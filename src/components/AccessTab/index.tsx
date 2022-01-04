@@ -18,8 +18,6 @@ import icon4 from '_src/assets/images/icon (4).png';
 import Union from '_src/assets/images/union.png';
 
 import './index.less';
-import { has } from 'immer/dist/internal';
-import { number } from 'prop-types';
 
 export interface IAccessTab {
   className?: string;
@@ -54,6 +52,8 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -88,6 +88,8 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -122,6 +124,8 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -156,16 +160,17 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
       message: (
         <div
           style={{
             border: '1px solid #ff3369',
-            width: '340px',
-            height: '90px',
             background: ' #fff',
             borderRadius: '4px',
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+            width: '340px',
             padding: '21px',
+            height: '90px',
           }}
         >
           <div

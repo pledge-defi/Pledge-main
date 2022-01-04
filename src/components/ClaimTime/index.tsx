@@ -55,6 +55,8 @@ const ClaimTime: React.FC<IClaimTime> = ({
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -89,6 +91,8 @@ const ClaimTime: React.FC<IClaimTime> = ({
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -123,6 +127,8 @@ const ClaimTime: React.FC<IClaimTime> = ({
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -157,6 +163,8 @@ const ClaimTime: React.FC<IClaimTime> = ({
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{

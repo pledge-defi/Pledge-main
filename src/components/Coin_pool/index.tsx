@@ -72,6 +72,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -106,6 +108,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -140,6 +144,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -174,6 +180,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -208,6 +216,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -242,6 +252,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
     });
     notification.open({
+      style: { width: '340px', height: '90px', padding: '0' },
+
       message: (
         <div
           style={{
@@ -345,7 +357,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: settlementdate,
-        length: `${days} day`,
+        length: days,
         margin_ratio: `${100 + Number(dealNumber_8(item.autoLiquidateThreshold))}%`,
         collateralization_ratio: dealNumber_8(item.martgageRate),
         poolname: poolAsset[item.lendToken],
@@ -468,21 +480,19 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             </span>
           </p>
           <Progress
-            percent={
-              (Math.floor(
-                (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(pricelist[poolinfo[pid]?.Jp ?? 0])) /
-                  Number(pricelist[poolinfo[pid]?.Sp ?? 0]) /
-                  (poolinfo[pid]?.collateralization_ratio ?? 0)) *
-                  10000,
-              ) /
-                100 /
-                (poolinfo[pid]?.maxSupply ?? 0)) *
-              100
-            }
+            percent={((poolinfo[pid]?.available_to_lend[1] ?? 0) / (poolinfo[pid]?.maxSupply ?? 0)) * 100}
             showInfo={false}
             strokeColor="#5D52FF"
             success={{
-              percent: ((poolinfo[pid]?.available_to_lend[0] ?? 0) * price) / poolinfo[pid]?.maxSupply ?? 0,
+              percent:
+                Math.floor(
+                  (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(pricelist[poolinfo[pid]?.Jp ?? 0])) /
+                    Number(pricelist[poolinfo[pid]?.Sp ?? 0]) /
+                    (poolinfo[pid]?.collateralization_ratio ?? 0)) *
+                    10000,
+                ) /
+                  100 /
+                  poolinfo[pid]?.maxSupply ?? 0,
             }}
           />
           <p style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -664,9 +674,11 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           <span className="info_title">Expected Interest</span>{' '}
           <span className="info_key_info">
             {borrowvalue
-              ? (poolinfo[pid]?.fixed_rate / 100 ?? 0) * borrowvalue
+              ? ((((poolinfo[pid]?.fixed_rate ?? 0) / 100) * borrowvalue) / 365) *
+                ((poolinfo[pid]?.length ?? 0) == 0 ? 1 : poolinfo[pid]?.length ?? 0)
               : lendvalue
-              ? (poolinfo[pid]?.fixed_rate / 100 ?? 0) * lendvalue
+              ? ((((poolinfo[pid]?.fixed_rate ?? 0) / 100) * lendvalue) / 365) *
+                ((poolinfo[pid]?.length ?? 0) == 0 ? 1 : poolinfo[pid]?.length ?? 0)
               : '0.00'}{' '}
             {pool}
           </span>
