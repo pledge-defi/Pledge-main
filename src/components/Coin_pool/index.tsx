@@ -549,7 +549,9 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     style={{ width: '100%', fontSize: '24px' }}
                     placeholder="0.000....."
                   />
-                  <div style={{ width: '280px', marginLeft: '-400px', color: 'red' }}>{warning}</div>
+                  <div className="warning" style={{ width: '280px', marginLeft: '-400px', color: 'red' }}>
+                    {warning}
+                  </div>
                   <button
                     style={{
                       color: '#5D52FF',
@@ -692,6 +694,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           var currentTime = Math.round(new Date().getTime() / 1000 + 300).toString();
                           if (lendvalue < 100) {
                             return setwarning('Minimum deposit quantity 100 BUSD');
+                          } else if ((poolinfo[pid]?.state ?? 0) > 2) {
+                            return setwarning('The pool has finished');
                           } else if (lendvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
                             return setwarning('Maximum exceeded');
                           } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
@@ -746,6 +750,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
 
                       if (lendvalue < 100) {
                         return setwarning('Minimum deposit quantity 100 BUSD');
+                      } else if ((poolinfo[pid]?.state ?? 0) > 2) {
+                        return setwarning('The pool has finished');
                       } else if (lendvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
                         return setwarning('Maximum exceeded');
                       } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
@@ -759,6 +765,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           setloadings(false);
                           openNotificationlend('Success');
                           prev();
+                          window.open(pageURL.Lend_Borrow.replace(':mode', `${mode}`));
                         })
                         .catch(() => {
                           openNotificationerrorlend('Error'), setloadings(false);
@@ -875,6 +882,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           openNotificationborrow('Success');
                           setloadings(false);
                           prev();
+                          window.open(pageURL.Lend_Borrow.replace(':mode', `${mode}`));
                         })
                         .catch(() => {
                           openNotificationerrorborrow('Error'), setloadings(false);

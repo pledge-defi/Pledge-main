@@ -207,35 +207,37 @@ ${props.props.poolname} `,
                       <span>Order Time</span> <span>{item.Time}</span>
                     </li>
                   </ul>
-                  <div className="Reward">
-                    <p>Reward</p>
-                    <div className="rewardinfo">
-                      <div className="rewardtab">
-                        <p className="rewardkey">
-                          {mode == 'Lend' ? 'The principal+interest' : 'Remaining Collateral'}
-                        </p>
-                        <p className="rewardvalue">
-                          {mode == 'Lend'
-                            ? `${Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000}  ${
-                                props.props.poolname
-                              }`
-                            : `${
-                                Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) / 10000000
-                              }  ${props.props.underlying_asset}`}
-                        </p>
+                  {props.props.state != 0 && props.props.state != 4 && (
+                    <div className="Reward">
+                      <p>Reward</p>
+                      <div className="rewardinfo">
+                        <div className="rewardtab">
+                          <p className="rewardkey">
+                            {mode == 'Lend' ? 'The principal+interest' : 'Remaining Collateral'}
+                          </p>
+                          <p className="rewardvalue">
+                            {mode == 'Lend'
+                              ? `${
+                                  Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000
+                                }  ${props.props.poolname}`
+                              : `${
+                                  Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) / 10000000
+                                }  ${props.props.underlying_asset}`}
+                          </p>
+                        </div>
+                        <ClaimTime
+                          endtime={props.props.endtime}
+                          state={props.props.state}
+                          pid={props.props.key - 1}
+                          value={datainfo.finishAmountLend}
+                          mode={mode}
+                          settlementAmountLend={datainfo.settleAmountLend}
+                          spToken={props.props.Sptoken}
+                          jpToken={props.props.Jptoken}
+                        />
                       </div>
-                      <ClaimTime
-                        endtime={props.props.endtime}
-                        state={props.props.state}
-                        pid={props.props.key - 1}
-                        value={datainfo.finishAmountLend}
-                        mode={mode}
-                        settlementAmountLend={datainfo.settleAmountLend}
-                        spToken={props.props.Sptoken}
-                        jpToken={props.props.Jptoken}
-                      />
                     </div>
-                  </div>
+                  )}
                 </>
               );
               // ) : (

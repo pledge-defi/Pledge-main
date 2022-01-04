@@ -15,8 +15,9 @@ import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
-
+import Defaultpage from '_components/Defaultpage';
 import pageURL from '_constants/pageURL';
+import TestnetTokens from '_components/TestnetTokens';
 
 import './index.less';
 import OrderImg from '_components/OrderImg';
@@ -165,91 +166,12 @@ function Market_Mode() {
   return (
     <>
       {mode !== 'Provide' ? (
-        <DappLayout title={`${mode} Order`} className="dapp_mode_page">
-          <p style={{ display: 'none' }}>{time}</p>
-          <p className="prtfolioList_title">
-            {PortfolioListTitle.map((item, index) => {
-              return (
-                <span className="all_tab" key={index}>
-                  {item}
-                </span>
-              );
-            })}
-            {PortfolioListTitle1.map((item, index) => {
-              return (
-                <span className="media_tab" key={index}>
-                  {item}
-                </span>
-              );
-            })}
-          </p>
-
-          {datainfo1.length &&
-            datastate.length &&
-            (mode == 'Lend'
-              ? datalend.map((item, index) => {
-                  return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo1[item.key - 1]} />;
-                })
-              : databorrow.map((item, index) => {
-                  return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo1[item.key - 1]} />;
-                }))}
-
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
-            <h3>Access to {mode == 'Borrow' ? 'Borrowing' : 'Lending'}</h3>
-            <Tooltip placement="top" title={'Access to Borrowing'}>
-              <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
-            </Tooltip>
-          </div>
-          <div className="access">
-            {datainfo1.length &&
-              datastate.length &&
-              (mode == 'Lend'
-                ? datalend.map((item, index) => {
-                    return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
-                  })
-                : databorrow.map((item, index) => {
-                    return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
-                  }))}
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
-              <h3>{mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}</h3>
-              <Tooltip placement="top" title={mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}>
-                <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
-              </Tooltip>
-            </div>
-            <p className="prtfolioList_title">
-              {mode == 'Lend'
-                ? LendTitle.map((item, index) => {
-                    return (
-                      <span className="all_tab" key={index}>
-                        {item}
-                      </span>
-                    );
-                  })
-                : BorrowTitle.map((item, index) => {
-                    return (
-                      <span className="all_tab" key={index}>
-                        {item}
-                      </span>
-                    );
-                  })}
-            </p>
-            {datainfo1.length &&
-              datastate.length &&
-              (mode == 'Lend'
-                ? datalend.map((item, index) => {
-                    return <Refund mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
-                  })
-                : databorrow.map((item, index) => {
-                    return <Refund mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
-                  }))}
-          </div>
-        </DappLayout>
-      ) : (
-        <DappLayout title={`${mode} Order`} className="dapp_mode_page">
-          <div className="order_empty">
-            <p style={{ color: 'blue' }}>(用来展示Borrow页空页效果)</p>
+        (mode == 'Lend' ? datalend.length == 0 : databorrow.length == 0) ? (
+          <Defaultpage mode={mode} />
+        ) : (
+          <DappLayout title={`${mode} Order`} className="dapp_mode_page">
+            {console.log(datalend)}
+            <p style={{ display: 'none' }}>{time}</p>
             <p className="prtfolioList_title">
               {PortfolioListTitle.map((item, index) => {
                 return (
@@ -259,22 +181,79 @@ function Market_Mode() {
                 );
               })}
               {PortfolioListTitle1.map((item, index) => {
-                return <span className="media_tab" key={index}></span>;
+                return (
+                  <span className="media_tab" key={index}>
+                    {item}
+                  </span>
+                );
               })}
             </p>
-            <Empty
-              image={Emptyimg}
-              imageStyle={{
-                height: 60,
-              }}
-              description={<span>No {mode} order</span>}
-            >
-              <Button type="primary" className="emptybutton">
-                <a href="/">Go to maket pool</a>
-              </Button>
-            </Empty>
-          </div>
-        </DappLayout>
+
+            {datainfo1.length &&
+              datastate.length &&
+              (mode == 'Lend'
+                ? datalend.map((item, index) => {
+                    return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo1[item.key - 1]} />;
+                  })
+                : databorrow.map((item, index) => {
+                    return <PortfolioList mode={mode} props={item} key={index} datainfo={datainfo1[item.key - 1]} />;
+                  }))}
+
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
+              <h3>Access to {mode == 'Borrow' ? 'Borrowing' : 'Lending'}</h3>
+              <Tooltip placement="top" title={'Access to Borrowing'}>
+                <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
+              </Tooltip>
+            </div>
+            <div className="access">
+              {datainfo1.length &&
+                datastate.length &&
+                (mode == 'Lend'
+                  ? datalend.map((item, index) => {
+                      return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                    })
+                  : databorrow.map((item, index) => {
+                      return <AccessTab mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                    }))}
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: '64px' }}>
+                <h3>{mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}</h3>
+                <Tooltip placement="top" title={mode == 'Lend' ? 'Refund Deposit' : 'Refund Borrow'}>
+                  <QuestionCircleOutlined style={{ color: '#0A0B11' }} />
+                </Tooltip>
+              </div>
+              <p className="prtfolioList_title">
+                {mode == 'Lend'
+                  ? LendTitle.map((item, index) => {
+                      return (
+                        <span className="all_tab" key={index}>
+                          {item}
+                        </span>
+                      );
+                    })
+                  : BorrowTitle.map((item, index) => {
+                      return (
+                        <span className="all_tab" key={index}>
+                          {item}
+                        </span>
+                      );
+                    })}
+              </p>
+              {datainfo1.length &&
+                datastate.length &&
+                (mode == 'Lend'
+                  ? datalend.map((item, index) => {
+                      return <Refund mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                    })
+                  : databorrow.map((item, index) => {
+                      return <Refund mode={mode} props={item} key={index} stateinfo={datainfo1[item.key - 1]} />;
+                    }))}
+            </div>
+          </DappLayout>
+        )
+      ) : (
+        <TestnetTokens />
       )}
     </>
   );

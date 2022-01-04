@@ -151,24 +151,65 @@
       font-weight: 500;
       font-size: 14px;
       line-height: 21px;
-    }
 
-    .order_box {
-      flex-direction: column;
+      .components_order_img {
+        width: 41px !important;
+      }
 
-      .order_list {
-        width: 100%;
+      .ant-col {
+        flex: 1;
+        padding: 0 !important;
       }
     }
+  }
 
-    .ant-collapse-content-box {
-      padding: 20px;
+  .order_box {
+    flex-direction: column;
+
+    .order_list {
+      width: 100%;
+    }
+  }
+
+  .ant-collapse-content-box {
+    padding: 20px;
+
+    .order_box {
+      display: flex;
 
       .order_list {
         display: block;
+        width: 100%;
+        margin: 0;
 
         li {
+          width: 100%;
           background: #fff !important;
+
+          span:nth-child(2) {
+            text-align: right;
+          }
+        }
+      }
+
+      .components_button {
+        border-radius: 10px;
+      }
+
+      .rewardinfo {
+        display: block;
+        width: 100%;
+        padding: 0 20px 20px !important;
+        background-color: #fff;
+
+        .rewardtab {
+          display: flex;
+          justify-content: space-between;
+
+          p {
+            font-size: 14px;
+            line-height: 21px;
+          }
         }
       }
     }

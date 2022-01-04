@@ -61,14 +61,14 @@ const Header: React.FC<IHeaderProps> = () => {
           >
             Borrow
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')}
             className={location.pathname == '/Market/Provide' ? 'menu-item' : ''}
             activeStyle={{ color: '#5d52ff' }}
             activeClassName="active"
           >
             Provide Liquidity
-          </NavLink>
+          </NavLink> */}
           <ConnectWallet />
         </div>
         <div className="modile_list">

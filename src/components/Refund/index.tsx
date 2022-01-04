@@ -295,9 +295,11 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             {props.state != 0 ? (
               <>
                 <p>
+                  <span className="media_list">Total Lend Amount</span>
                   <span>{dealNumber_18(props.lendSupply)}</span>
                 </p>
                 <p>
+                  <span className="media_list">Total Borrow Amount</span>
                   <span>
                     {Math.floor(
                       ((dealNumber_18(props.borrowSupply) * Number(pricelist[props.Jp])) /
@@ -308,10 +310,14 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   </span>
                 </p>
                 <p>
+                  <span className="media_list">Quantity Deposit</span>
+
                   <span>{dealNumber_18(stakeAmount)}</span>
                 </p>
 
                 <p>
+                  <span className="media_list">Refund Deposit</span>
+
                   <span>
                     {hasNoClaim == false
                       ? Math.floor(refundLend * Number(pricelist[props.Sp]) * 10000000) / 10000000
@@ -340,9 +346,13 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             {props.state != 0 ? (
               <>
                 <p>
+                  <span className="media_list">Total Lend Amount</span>
+
                   <span>{dealNumber_18(props.lendSupply)}</span>
                 </p>
                 <p>
+                  <span className="media_list">Total Borrow Amount</span>
+
                   <span>
                     {Math.floor(
                       ((dealNumber_18(props.borrowSupply) * Number(pricelist[props.Jp])) /
@@ -353,9 +363,13 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   </span>
                 </p>
                 <p>
+                  <span className="media_list">Quantity Borrow</span>
+
                   <span>{dealNumber_18(stakeAmountborrow)}</span>
                 </p>
                 <p>
+                  <span className="media_list">Refund Borrow</span>
+
                   <span>
                     {hasNoClaim == false
                       ? Math.floor(refundBorrow * Number(pricelist[props.Sp]) * 10000000) / 10000000

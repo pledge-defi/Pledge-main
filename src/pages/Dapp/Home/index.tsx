@@ -371,7 +371,14 @@ function HomePage() {
             visible={show === record.key && visible}
             onVisibleChange={(e) => handleVisibleChange(e, record.key)}
           >
-            <div className="underlyingAsset" onClick={() => Changecoin(val)}>
+            <div
+              className="underlyingAsset"
+              onClick={() => {
+                Changecoin(val), setcoin(record.underlying_asset);
+                setshow(record.key);
+                setpid(record.key - 1);
+              }}
+            >
               <img src={record.logo} alt="" />
               <p>{val}</p>
             </div>
@@ -402,47 +409,6 @@ function HomePage() {
     },
   ];
 
-  const data1 = [
-    {
-      key: '1',
-      underlying_asset: 'BTCB',
-      fixed_rate: `${5} `,
-
-      settlement_date: '2021/11/01 12:00',
-
-      logo: img1,
-    },
-    {
-      key: '2',
-      underlying_asset: 'ETH',
-      fixed_rate: `${5} `,
-
-      settlement_date: '2021/11/01 12:00',
-
-      logo: img2,
-    },
-    {
-      key: '3',
-      underlying_asset: 'BNB',
-      fixed_rate: `${5} `,
-      settlement_date: '2021/11/01 12:00',
-      logo: img3,
-    },
-    {
-      key: '4',
-      underlying_asset: 'BTCB',
-      fixed_rate: `${5} `,
-      settlement_date: '2021/11/01 12:00',
-      logo: img4,
-    },
-    {
-      key: '5',
-      underlying_asset: 'BNB',
-      fixed_rate: `${5} `,
-      settlement_date: '2021/11/01 12:00',
-      logo: img5,
-    },
-  ];
   function onChange(pagination, filters, sorter, extra) {
     console.log('params', pagination, filters, sorter, extra);
   }
@@ -484,7 +450,7 @@ function HomePage() {
   return (
     <div className="dapp_home_page">
       <DappLayout title="Market Pool" className="trust_code">
-        <Dropdown overlay={menu} trigger={['click']}>
+        <Dropdown overlay={menu} trigger={['click']} className="dropdown">
           <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
             {tab}
             <DownOutlined />
@@ -532,7 +498,9 @@ function HomePage() {
           <TabPane tab="BUSD" key="BUSD">
             <Table
               columns={columns1}
-              dataSource={data1}
+              dataSource={data.filter((item, index) => {
+                return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
+              })}
               onChange={onChange}
               rowClassName={(record, index) => {
                 return record;
@@ -542,7 +510,9 @@ function HomePage() {
           <TabPane tab="USDT" key="USDT">
             <Table
               columns={columns1}
-              dataSource={data1}
+              dataSource={data.filter((item, index) => {
+                return item.Sp == '';
+              })}
               onChange={onChange}
               rowClassName={(record, index) => {
                 return record;
@@ -552,7 +522,9 @@ function HomePage() {
           <TabPane tab="DAI" key="DAI">
             <Table
               columns={columns1}
-              dataSource={data1}
+              dataSource={data.filter((item, index) => {
+                return item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096';
+              })}
               onChange={onChange}
               rowClassName={(record, index) => {
                 return record;
