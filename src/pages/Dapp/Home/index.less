@@ -136,7 +136,7 @@
       .ant-table-tbody > tr {
         display: none;
         box-sizing: border-box;
-        margin: 8px 0;
+        margin: 16px 0;
         color: #262533;
         font-weight: 500;
         font-size: 18px;
@@ -256,6 +256,10 @@
   background-color: #fff;
 }
 
+.ant-dropdown-menu {
+  border-radius: 12px;
+}
+
 .menutab {
   margin: 0;
   color: #262533;
@@ -269,6 +273,19 @@
 
 .menutab:hover {
   background: #f7f6ff;
+}
+
+.ant-table-content svg {
+  width: 12px;
+  height: 14px;
+}
+
+.ant-table-column-sorter-up + .ant-table-column-sorter-down {
+  display: block;
+
+  svg {
+    margin-top: -2px;
+  }
 }
 
 .ant-popover-inner {

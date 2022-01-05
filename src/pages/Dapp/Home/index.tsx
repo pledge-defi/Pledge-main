@@ -30,6 +30,7 @@ import services from '_src/services';
 import { errors } from 'ethers';
 import BigNumber from 'bignumber.js';
 import { poll } from 'ethers/lib/utils';
+import { object } from 'prop-types';
 
 function HomePage() {
   const history = useHistory();
@@ -459,6 +460,13 @@ function HomePage() {
         <Tabs defaultActiveKey="1" onChange={callback} className="all_tab">
           <TabPane tab="BUSD" key="BUSD">
             <Table
+              pagination={
+                datastate.filter((item, index) => {
+                  return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
+                }).length < 10
+                  ? false
+                  : {}
+              }
               columns={columns}
               dataSource={datastate.filter((item, index) => {
                 return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
@@ -471,6 +479,13 @@ function HomePage() {
           </TabPane>
           <TabPane tab="USDT" key="USDT">
             <Table
+              pagination={
+                datastate.filter((item, index) => {
+                  return item.Sp == '';
+                }).length < 10
+                  ? false
+                  : {}
+              }
               columns={columns}
               dataSource={datastate.filter((item, index) => {
                 return item.Sp == '';
@@ -483,6 +498,13 @@ function HomePage() {
           </TabPane>
           <TabPane tab="DAI" key="DAI">
             <Table
+              pagination={
+                datastate.filter((item, index) => {
+                  return item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096';
+                }).length < 10
+                  ? false
+                  : {}
+              }
               columns={columns}
               dataSource={datastate.filter((item, index) => {
                 return item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096';

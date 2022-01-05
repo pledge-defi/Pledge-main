@@ -48,6 +48,8 @@ const Context = React.createContext({ name: 'Default' });
 const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [data, setData] = useState(0);
   const [balance, setbalance] = useState('');
+  const [balanceborrow, setbalanceborrow] = useState('');
+
   const [poolinfo, setpoolinfo] = useState({});
   const [borrowvalue, setborrowvalue] = useState(0);
   const [lendvalue, setlendvalue] = useState(0);
@@ -58,9 +60,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [accountbalance, setaccountbalance] = useState('');
   const [BUSDprice, setBUSD] = useState('');
   const [BTCBprice, setBTCB] = useState('');
-
   const [DAIprice, setDAI] = useState('');
-
   const [BNBprice, setBNB] = useState('');
 
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
@@ -306,7 +306,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
+      return x.dividedBy(y).toFixed();
     }
   };
   const dealNumber_7 = (num) => {
@@ -379,7 +379,6 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   useEffect(() => {
     getPoolInfo();
     getPrice();
-
     account && getaccountbalance();
     services.BscPledgeOracleServer.getPrices([
       '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
@@ -394,7 +393,21 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
       setBNB(dealNumber_Price(res[3]));
     });
   }, []);
-
+  useEffect(() => {
+    chainId !== undefined &&
+      (services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0)
+        .then((res) => {
+          setbalance(res);
+        })
+        .catch(() => console.error()),
+      (poolinfo[pid]?.Jp ?? 0) !== '0x0000000000000000000000000000000000000000'
+        ? services.ERC20Server.balanceOf(poolinfo[pid]?.Jp ?? 0)
+            .then((res) => {
+              setbalanceborrow(res);
+            })
+            .catch(() => console.error())
+        : setbalanceborrow(accountbalance));
+  }, [poolinfo]);
   function toThousands(num) {
     var num = (num || 0).toString(),
       result = '';
@@ -464,7 +477,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     <div className="coin_pool">
       <div className="coin_pool_box">
         <div className="coin_pool_box_title">
-          <img src={imglist[pool]} /> <h3>{pool} Pool</h3>
+          <img src={imglist[pool]} style={{ width: '40px', height: '40px' }} /> <h3>{pool} Pool</h3>
         </div>
         <div className="coin_pool_box_info">
           <p className="info_title">
@@ -537,7 +550,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         </p>
         <p className="info_key">
           <span className="info_title">Settlement date</span>
-          <span className="info_key_info">{poolinfo[pid]?.settlement_date ?? 0}</span>
+          <span className="info_key_info">{poolinfo[pid]?.settlement_date ?? ''}</span>
         </p>
       </div>
 
@@ -548,12 +561,13 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <>
               <div className="balance_input">
                 <p style={{ fontWeight: 400 }}>
-                  Balance: {balance && Math.floor(dealNumber_18(balance) * 1000) / 1000} {pool}
+                  Balance: {balance && Math.floor(Number(dealNumber_18(balance)) * 1000) / 1000} {pool}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <InputNumber
                     name="input1"
                     type="number"
+                    value={lendvalue ? Math.floor(lendvalue * 10000000) / 10000000 : ''}
                     onChange={handleOnChange}
                     bordered={false}
                     style={{ width: '100%', fontSize: '24px' }}
@@ -564,23 +578,47 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   </div>
                   <button
                     style={{
-                      color: '#5D52FF',
-                      fontSize: '20px',
                       background: 'none',
-                      border: 'none',
-                      borderRight: '2px solid #E6E6EB',
+                      borderRight: '2px solid rgb(230, 230, 235)',
+                      borderLeft: 'none',
+                      borderTop: 'none',
+                      borderBottom: 'none',
                       paddingRight: '8px',
                       marginRight: '8px',
+                      cursor: 'pointer',
+                      zIndex: 1,
                     }}
+                    onClick={() => handleOnChange(Number(dealNumber_18(balance)))}
                   >
-                    Max
+                    <p
+                      style={{
+                        fontSize: '16px',
+                        margin: '0 ',
+                        color: '#5D52FF',
+                        backgroundColor: 'rgba(93, 82, 255, 0.1)',
+                        borderRadius: '10px',
+                        padding: '0 8px',
+                        lineHeight: '28px',
+                      }}
+                    >
+                      {' '}
+                      Max
+                    </p>
                   </button>
                   <div className="coin_pool_box_title" style={{ margin: '0' }}>
                     <img src={imglist[pool]} alt="" style={{ width: '28px', height: '28px' }} /> <h3>{pool}</h3>
                   </div>
                 </div>
               </div>
-              <p style={{ paddingBottom: '28px', marginBottom: '28px', borderBottom: '1px dashed #E6E6EB' }}>
+              <p
+                style={{
+                  paddingBottom: '28px',
+                  marginBottom: '28px',
+                  borderBottom: '1px dashed #E6E6EB',
+                  fontWeight: 400,
+                  color: '#4F4E66',
+                }}
+              >
                 Minimum deposit quantity{' '}
                 <span style={{ color: '#5D52FF' }}>
                   {100} {pool}
@@ -594,7 +632,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   <InputNumber
                     type="number"
                     name="input3"
-                    value={dealNumber_7(borrowvalue) ? dealNumber_7(borrowvalue) : ''}
+                    value={borrowvalue ? Math.floor(borrowvalue * 10000000) / 10000000 : ''}
                     onChange={handleOnChange3}
                     bordered={false}
                     style={{ width: '100%', fontSize: '24px', paddingLeft: '18px' }}
@@ -606,7 +644,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   </div>
                 </div>
               </div>
-              <p style={{ padding: '10px 0 32px' }}>
+              <p style={{ padding: '10px 0 32px', fontWeight: 400, color: '#4F4E66' }}>
                 Minimum deposit quantity{' '}
                 <span style={{ color: '#5D52FF' }}>
                   {100} {pool}
@@ -616,12 +654,13 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
               <div style={{ marginBottom: '28px', paddingBottom: '28px', borderBottom: '1px dashed #E6E6EB' }}>
                 <div className="balance_input">
                   <p style={{ fontWeight: 400 }}>
-                    Balance: {(balance && Math.floor(dealNumber_18(balance) * 1000) / 1000) || 0} {coin}
+                    Balance: {(balanceborrow && Math.floor(Number(dealNumber_18(balanceborrow)) * 1000) / 1000) || 0}{' '}
+                    {coin}
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <InputNumber
                       type="number"
-                      value={dealNumber_7(data) ? dealNumber_7(data) : ''}
+                      value={data ? Math.floor(data * 10000000) / 10000000 : ''}
                       name="input2"
                       onChange={handleOnChange2}
                       bordered={false}
@@ -630,16 +669,33 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     />
                     <button
                       style={{
-                        color: '#5D52FF',
-                        fontSize: '20px',
                         background: 'none',
-                        border: 'none',
-                        borderRight: '2px solid #E6E6EB',
+                        borderRight: '2px solid rgb(230, 230, 235)',
+                        borderLeft: 'none',
+                        borderTop: 'none',
+                        borderBottom: 'none',
                         paddingRight: '8px',
                         marginRight: '8px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        handleOnChange2(Number(dealNumber_18(balanceborrow)));
                       }}
                     >
-                      Max
+                      <p
+                        style={{
+                          fontSize: '16px',
+                          margin: '0 ',
+                          color: '#5D52FF',
+                          backgroundColor: 'rgba(93, 82, 255, 0.1)',
+                          borderRadius: '10px',
+                          padding: '0 8px',
+                          lineHeight: '28px',
+                        }}
+                      >
+                        {' '}
+                        Max
+                      </p>
                     </button>
                     <div className="coin_pool_box_title" style={{ margin: '0' }}>
                       <img src={imglist[coin]} alt="" style={{ width: '28px', height: '28px' }} /> <h3>{coin}</h3>
@@ -715,9 +771,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           }
                           setwarning('');
                           setloadings(true);
-                          services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
-                            setbalance(res);
-                          });
+
                           let num = dealNumber(lendvalue);
                           await services.ERC20Server.Approve(poolinfo[pid]?.Sp ?? 0, num)
                             .then(() => {
@@ -821,13 +875,6 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                         }
                         setwarning('');
                         setloadings(true);
-                        {
-                          (poolinfo[pid]?.Jp ?? 0) !== '0x0000000000000000000000000000000000000000'
-                            ? services.ERC20Server.balanceOf(poolinfo[pid]?.Jp ?? 0).then((res) => {
-                                setbalance(res);
-                              })
-                            : setbalance(accountbalance);
-                        }
 
                         let borrownum = dealNumber(data);
                         await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum)
@@ -882,9 +929,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       } else if (timestamp > (poolinfo[pid]?.settleTime ?? 0)) {
                         return setwarning('Less than five minutes from settlement date');
                       }
-                      services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0).then((res) => {
-                        setbalance(res);
-                      });
+
                       // // 授权
                       console.log(poolinfo[pid]?.Sp ?? 0, borrowvalue);
                       let borrownum = dealNumber(data);

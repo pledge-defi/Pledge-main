@@ -25,8 +25,7 @@ const Header: React.FC<IHeaderProps> = () => {
     <div className={classnames('components_header_landing', { no_opacity: isOpacity })}>
       <div className="continer">
         <a className="findora-logo" href={PageUrl.Dapp} target="_self">
-          <img src={logo} alt="" width="32.59px" height="32.59px" />
-          <span className="logo_name">Pledge</span>
+          <img src={logo} alt="" width="146px" height="44px" />
         </a>
         <div className="home_menu_list">
           <NavLink
