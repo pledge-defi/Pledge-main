@@ -545,7 +545,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         <p className="info_key">
           <span className="info_title">Collaterial In Escrow</span>
           <span className="info_key_info">
-            {poolinfo[pid]?.available_to_lend[0] ?? 0} {coin}
+            {dealNumber_7(poolinfo[pid]?.available_to_lend[0] ?? 0)} {coin}
           </span>
         </p>
         <p className="info_key">

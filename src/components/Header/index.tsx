@@ -7,6 +7,7 @@ import Button from '_components/Button';
 import ConnectWallet from '_components/ConnectWallet';
 import PageUrl from '_constants/pageURL';
 import logo from '_assets/images/vector.png';
+import logo2 from '_assets/images/vector2.png';
 import list from '_assets/images/Icon (1).png';
 import close from '_assets/images/Icon (2).png';
 
@@ -25,7 +26,8 @@ const Header: React.FC<IHeaderProps> = () => {
     <div className={classnames('components_header_landing', { no_opacity: isOpacity })}>
       <div className="continer">
         <a className="findora-logo" href={PageUrl.Dapp} target="_self">
-          <img src={logo} alt="" width="146px" height="44px" />
+          <img src={logo} alt="" width="146px" height="44px" className="logo" />
+          <img src={logo2} alt="" width="27.82px" height="27.82px" className="logo2" />
         </a>
         <div className="home_menu_list">
           <NavLink
