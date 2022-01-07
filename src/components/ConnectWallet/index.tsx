@@ -32,7 +32,7 @@ const ConnectWallet: React.FC<IConnectWallet> = ({ className, style, children })
       if (error instanceof UnsupportedChainIdError) {
         const fraNetworkDefault = ChainBridge.chains
           .filter((item) => item.type === 'Ethereum')
-          .find((item) => item.networkId === 525);
+          .find((item) => item.networkId === 97);
         try {
           await services.PoolServer.switchNetwork(fraNetworkDefault);
         } catch {

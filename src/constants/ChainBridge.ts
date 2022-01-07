@@ -44,27 +44,6 @@ const ChainBridge: ChainBridgeConfig = {
         },
       ],
     },
-    // {
-    //   chainId: 2,
-    //   networkId: 524,
-    //   name: 'findora-forge',
-    //   decimals: 18,
-    //   bridgeAddress: '0x26925046a09d9AEfe6903eae0aD090be06186Bd9',
-    //   erc20HandlerAddress: '0xE75Fb7714B5098E20A2D224693A1c210ad0c1A42',
-    //   rpcUrl: 'https://prod-forge.prod.findora.org:8545',
-    //   explorerUrl: 'https://blockscout.findorascan.io',
-    //   type: 'Ethereum',
-    //   nativeTokenSymbol: 'FRA',
-    //   tokens: [
-    //     {
-    //       address: '0x0000000000000000000000000000000000001000',
-    //       name: 'Findora',
-    //       symbol: 'FRA',
-    //       imageUri: 'FRAIcon',
-    //       resourceId: '0x000000000000000000000000000000c76ebe4a02bbc34786d860b355f5a5ce00',
-    //     },
-    //   ],
-    // },
   ],
 };
 
