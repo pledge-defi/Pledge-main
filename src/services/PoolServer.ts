@@ -110,7 +110,27 @@ const PoolServer = {
     const data = await contract.methods.refundBorrow(pid).send(options);
     return data;
   },
-
+  // async switchNetwork(value: AddEthereumChainParameter) {
+  //   try {
+  //     return await window.ethereum.request({
+  //       method: 'wallet_switchEthereumChain',
+  //       params: [{ chainId: value.chainId }],
+  //     });
+  //   } catch (switchError: any) {
+  //     // This error code indicates that the chain has not been added to MetaMask.
+  //     if (switchError.code === 4902) {
+  //       try {
+  //         return await window.ethereum.request({
+  //           method: 'wallet_addEthereumChain',
+  //           params: [value],
+  //         });
+  //       } catch (addError) {
+  //         // handle "add" error
+  //       }
+  //     }
+  //     // handle other "switch" errors
+  //   }
+  // },
   async switchNetwork(value: BridgeConfigSimple) {
     return await window.ethereum.request({
       method: 'wallet_addEthereumChain',

@@ -91,9 +91,9 @@ const Header: React.FC<IHeaderProps> = () => {
               <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Borrow')} className="menu-item">
                 Borrow
               </NavLink>
-              <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
+              {/* <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
                 Provide Liquidity
-              </NavLink>
+              </NavLink> */}
             </div>
           </Drawer>
         </div>

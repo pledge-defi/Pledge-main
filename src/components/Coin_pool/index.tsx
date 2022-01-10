@@ -710,6 +710,12 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           <span className="info_title">Fee</span> <span className="info_key_info">{0}</span>
         </p>
         <p className="info_key">
+          <span className="info_title">{mode == 'Lend' ? 'Sp-Token' : 'Jp-Token'}</span>{' '}
+          <span className="info_key_info sp_jp">
+            {mode == 'Lend' ? poolinfo[pid]?.Sp ?? 0 : poolinfo[pid]?.Jp ?? 0}
+          </span>
+        </p>
+        <p className="info_key">
           <span className="info_title">Receive</span>{' '}
           <span className="info_key_info">
             {mode === 'Lend' ? (

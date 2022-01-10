@@ -97,6 +97,7 @@ function HomePage() {
   };
   const getPoolInfo = async () => {
     const datainfo = await services.PoolServer.getPoolBaseData();
+
     const datainfo6 = await services.PoolServer.getPoolDataInfo();
 
     console.log(datainfo);
@@ -462,6 +463,7 @@ function HomePage() {
             <Table
               pagination={
                 datastate.filter((item, index) => {
+                  console.log(datastate);
                   return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
                 }).length < 10
                   ? false

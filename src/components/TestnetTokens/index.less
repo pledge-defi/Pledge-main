@@ -4,6 +4,7 @@
   ul {
     display: flex;
     justify-content: space-between;
+    margin-top: 24px;
 
     li {
       box-sizing: border-box;
@@ -36,6 +37,24 @@
         line-height: 24px;
         text-align: center;
         word-wrap: break-word;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 576px) {
+  display: block;
+
+  .testnetpages {
+    display: block;
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px;
+
+      li {
+        width: 100%;
+        margin-bottom: 16px;
       }
     }
   }

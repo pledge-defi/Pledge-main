@@ -51,6 +51,10 @@
   .order_box {
     display: flex;
 
+    .medialist {
+      display: none;
+    }
+
     .order_list {
       display: block;
       width: 30%;
@@ -177,13 +181,27 @@
     .order_box {
       display: flex;
 
+      .medialist {
+        display: block;
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px dashed #e6e6eb;
+      }
+
       .order_list {
         display: block;
         width: 100%;
         margin: 0;
 
+        p {
+          padding-bottom: 10px;
+          border-bottom: 1px solid #e6e6eb;
+        }
+
         li {
           width: 100%;
+          margin: 0;
+          padding: 7px 20px;
           background: #fff !important;
 
           span:nth-child(2) {
@@ -196,19 +214,28 @@
         border-radius: 10px;
       }
 
-      .rewardinfo {
-        display: block;
-        width: 100%;
-        padding: 0 20px 20px !important;
-        background-color: #fff;
+      .Reward {
+        margin-top: 32px;
 
-        .rewardtab {
-          display: flex;
-          justify-content: space-between;
+        & > p {
+          padding-bottom: 10px;
+          border-bottom: 1px solid #e6e6eb;
+        }
 
-          p {
-            font-size: 14px;
-            line-height: 21px;
+        .rewardinfo {
+          display: block;
+          width: 100%;
+          padding: 0 20px 20px !important;
+          background-color: #fff;
+
+          .rewardtab {
+            display: flex;
+            justify-content: space-between;
+
+            p {
+              font-size: 14px;
+              line-height: 21px;
+            }
           }
         }
       }

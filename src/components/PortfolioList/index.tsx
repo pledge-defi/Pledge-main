@@ -176,7 +176,7 @@ ${props.props.poolname} `,
                 <Statistic title={`${Number(props.props.margin_ratio) + 100}%`} />
               </Col>
               <Col span={4} className="media_tab">
-                <Statistic title={[`${props.props.collateralization_ratio}%`]} />
+                <Statistic title={`${props.props.collateralization_ratio}%`} />
               </Col>
             </Row>
           }
@@ -188,6 +188,20 @@ ${props.props.poolname} `,
                 <>
                   <ul className="order_list" key={index}>
                     <p>{item.title}</p>
+                    <ul className="medialist">
+                      <li>
+                        <span>Margin Ratio</span>
+                        <span>{`${Number(props.props.margin_ratio) + 100}%`}</span>
+                      </li>
+                      <li>
+                        <span>Collateralization Ratio</span>
+                        <span>{`${props.props.collateralization_ratio}%`}</span>
+                      </li>
+                      <li>
+                        <span>Settlement Date</span>
+                        <span>{props.props.settlement_date}</span>
+                      </li>
+                    </ul>
                     <li>
                       <span>Total Lend</span> <span>{item.Total_financing}</span>
                     </li>
@@ -207,6 +221,7 @@ ${props.props.poolname} `,
                       <span>Order Time</span> <span>{item.Time}</span>
                     </li>
                   </ul>
+
                   {props.props.state != 0 && props.props.state != 4 && (
                     <div className="Reward">
                       <p>Reward</p>
