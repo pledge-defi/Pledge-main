@@ -133,7 +133,7 @@ function HomePage() {
     setdata(res);
     setdatastate(
       res.filter((item) => {
-        return item.state < 2;
+        return item.state < 1;
       }),
     );
   };
@@ -173,7 +173,7 @@ function HomePage() {
           className="menutab"
           onClick={() => {
             const livelist = data.filter((item) => {
-              return item.state < 2;
+              return item.state < 1;
             });
             settab('Live');
             setdatastate(data);
@@ -204,7 +204,7 @@ function HomePage() {
           className="menutab"
           onClick={() => {
             const livelist = data.filter((item) => {
-              return item.state >= 2;
+              return item.state >= 1;
             });
             settab('Finished');
             setdatastate(data);
