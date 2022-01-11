@@ -10,14 +10,10 @@ import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
 import { DappLayout } from '_src/Layout';
 import { Link } from 'react-router-dom';
 import PageUrl from '_constants/pageURL';
-import Web3 from 'web3';
-import img1 from '_src/assets/images/4023 1.png';
-import img2 from '_src/assets/images/4023 2.png';
-import img3 from '_src/assets/images/4023 3.png';
-import img4 from '_src/assets/images/4023 4.png';
-import img5 from '_src/assets/images/4023 5.png';
 import BTCB from '_src/assets/images/order_BTCB.png';
 import BNB from '_src/assets/images/order_BNB.png';
+import BUSD from '_src/assets/images/order_BUSD.png';
+import DAI from '_src/assets/images/order_DAI.png';
 import Lender1 from '_src/assets/images/Group 1843.png';
 import Borrower from '_src/assets/images/Group 1842.png';
 import Close from '_assets/images/Close Square.png';
@@ -25,12 +21,8 @@ import RootStore from '_src/stores/index';
 
 import './index.less';
 import Button from '_components/Button';
-import { number } from 'echarts';
 import services from '_src/services';
-import { errors } from 'ethers';
 import BigNumber from 'bignumber.js';
-import { poll } from 'ethers/lib/utils';
-import { object } from 'prop-types';
 
 function HomePage() {
   const history = useHistory();
@@ -61,6 +53,8 @@ function HomePage() {
   const imglist = {
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCB,
     '0x0000000000000000000000000000000000000000': BNB,
+    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAI,
+    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSD,
   };
   const pricelist = {
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,

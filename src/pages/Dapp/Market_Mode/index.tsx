@@ -6,9 +6,7 @@ import Button1 from '_components/Button';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { DappLayout } from '_src/Layout';
 import PortfolioList from '_components/PortfolioList';
-import ClaimList from '_components/ClaimList';
 import AccessTab from '_components/AccessTab';
-import Emptyimg from '_assets/images/empty.png';
 import Refund from '_components/Refund';
 import services from '_src/services';
 import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
@@ -20,9 +18,6 @@ import pageURL from '_constants/pageURL';
 import TestnetTokens from '_components/TestnetTokens';
 
 import './index.less';
-import OrderImg from '_components/OrderImg';
-import { hexlify } from '@ethersproject/bytes';
-import { number } from 'echarts';
 
 type Iparams = {
   mode: 'Lend' | 'Borrow' | 'Provide';
