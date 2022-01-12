@@ -325,15 +325,35 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 <p>
                   <span className="media_list">Refund Deposit</span>
 
-                  <span>
-                    {hasNoClaim == false
-                      ? Math.floor(refundLend * Number(pricelist[props.Sp]) * 10000000) / 10000000
-                      : 0}
-                  </span>
+                  {props.state == '4' ? (
+                    <span>{hasNoClaim == false ? dealNumber_18(stakeAmount) : 0}</span>
+                  ) : (
+                    <span>
+                      {hasNoClaim == false
+                        ? Math.floor(refundLend * Number(pricelist[props.Sp]) * 10000000) / 10000000
+                        : 0}
+                    </span>
+                  )}
                 </p>
-                <Button onClick={getRefund} disabled={refundLend !== 0 ? (hasNoClaim == false ? false : true) : true}>
-                  Claim
-                </Button>
+                {props.state == '4' ? (
+                  <Button
+                    onClick={() => {
+                      setloadings(true), getRefund();
+                    }}
+                    disabled={hasNoClaim == false ? false : true}
+                  >
+                    Claim
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setloadings(true), getRefund();
+                    }}
+                    disabled={refundLend !== 0 ? (hasNoClaim == false ? false : true) : true}
+                  >
+                    Claim
+                  </Button>
+                )}
               </>
             ) : (
               <div className="statemask">
@@ -377,21 +397,37 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                 <p>
                   <span className="media_list">Refund Borrow</span>
 
-                  <span>
-                    {hasNoClaim == false
-                      ? Math.floor(refundBorrow * Number(pricelist[props.Sp]) * 10000000) / 10000000
-                      : 0}
-                  </span>
+                  {props.state == '4' ? (
+                    <span>{hasNoClaim == false ? dealNumber_18(stakeAmountborrow) : 0}</span>
+                  ) : (
+                    <span>
+                      {hasNoClaim == false
+                        ? Math.floor(refundBorrow * Number(pricelist[props.Sp]) * 10000000) / 10000000
+                        : 0}
+                    </span>
+                  )}
                 </p>
-                <Button
-                  onClick={() => {
-                    setloadings(true), getRefund();
-                  }}
-                  disabled={refundBorrow !== 0 ? (hasNoClaim == false ? false : true) : true}
-                  loading={loadings}
-                >
-                  Claim
-                </Button>
+                {props.state == '4' ? (
+                  <Button
+                    onClick={() => {
+                      setloadings(true), getRefund();
+                    }}
+                    disabled={hasNoClaim == false ? false : true}
+                    loading={loadings}
+                  >
+                    Claim
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      setloadings(true), getRefund();
+                    }}
+                    disabled={refundBorrow !== 0 ? (hasNoClaim == false ? false : true) : true}
+                    loading={loadings}
+                  >
+                    Claim
+                  </Button>
+                )}
               </>
             ) : (
               <div className="statemask">

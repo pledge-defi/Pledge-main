@@ -300,7 +300,11 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
             <>
               <p className="access_token">{'SP-Token'}</p>
 
-              <p className="access_num">{hasNoClaim == false ? claimAmount : 0}</p>
+              {props.state == '4' ? (
+                <p className="access_num">{0}</p>
+              ) : (
+                <p className="access_num">{hasNoClaim == false ? claimAmount : 0}</p>
+              )}
             </>
           ) : (
             <>
@@ -318,9 +322,13 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
               </div>
               <div style={{ display: 'inline-block', float: 'right' }}>
                 <p className="access_token">{'JP-Token'}</p>
-                <p className="access_num">
-                  {hasNoClaim == false ? Math.floor(claimAmountborrow * pricelist[props.Jp] * 100) / 100 : 0}
-                </p>
+                {props.state == '4' ? (
+                  <p className="access_num">{0}</p>
+                ) : (
+                  <p className="access_num">
+                    {hasNoClaim == false ? Math.floor(claimAmountborrow * pricelist[props.Jp] * 100) / 100 : 0}
+                  </p>
+                )}
               </div>
             </>
           )}
