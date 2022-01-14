@@ -32,7 +32,6 @@ function Market_Mode() {
   const [datalend, setdatalend] = useState([]);
   const [databorrow, setdataborrow] = useState([]);
   const [datastate, setdatastate] = useState([]);
-  const [datainfo2, setdatainfo2] = useState(1);
   const [datainfo1, setdatainfo1] = useState([]);
   const [pidlend, setpidlend] = useState([]);
   const [pidborrow, setpidborrow] = useState([]);
@@ -58,11 +57,13 @@ function Market_Mode() {
     }
   };
   const getData = () => {
-    services.PoolServer.getPoolDataInfo().then((res) => {
-      setdatainfo1(res);
-      const datainfo4 = 2;
-      setdatainfo2(datainfo4);
-    });
+    services.PoolServer.getPoolDataInfo()
+      .then((res) => {
+        setdatainfo1(res);
+      })
+      .catch(() => {
+        console.error();
+      });
   };
   let [time, settime] = useState(0);
   const getPoolInfo = async () => {
@@ -101,11 +102,11 @@ function Market_Mode() {
     });
 
     res.map((item, index) => {
-      services.PoolServer.getuserLendInfo(item.key - 1).then((res1) => {
+      services.PoolServer.getuserLendInfo((Number(item.key) - 1).toString()).then((res1) => {
         res1.stakeAmount == '0' ? console.log(1111111) : pidlend.push(item);
         setdatalend(pidlend);
       });
-      services.PoolServer.getuserBorrowInfo(item.key - 1).then((res) => {
+      services.PoolServer.getuserBorrowInfo((Number(item.key) - 1).toString()).then((res) => {
         res.stakeAmount == '0' ? console.log(1111111) : pidborrow.push(item);
         setdataborrow(pidborrow);
       });
@@ -129,7 +130,9 @@ function Market_Mode() {
       history.push(pageURL.Dapp);
     }
     getData();
-    getPoolInfo();
+    getPoolInfo().catch(() => {
+      console.error();
+    });
   }, []);
 
   const LendTitle = [

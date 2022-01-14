@@ -1,4 +1,4 @@
-import { ChainBridgeConfig } from './ChainBridge.d';
+import type { ChainBridgeConfig } from './ChainBridge.d';
 
 const ChainBridge: ChainBridgeConfig = {
   chains: [

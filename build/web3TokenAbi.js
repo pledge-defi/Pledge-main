@@ -9,3 +9,10 @@ exec(
 exec(`abi-types-generator './src/abis/DebtToken.json' --output='./src/contracts' --name=DebtToken --provider=web3`);
 exec(`abi-types-generator './src/abis/PledgePool.json' --output='./src/contracts' --name=PledgePool --provider=web3`);
 exec(`abi-types-generator './src/abis/ERC20.json' --output='./src/contracts' --name=ERC20 --provider=web3`);
+exec(
+  `abi-types-generator './src/abis/PledgerBridgeBSC.json' --output='./src/contracts' --name=PledgerBridgeBSC --provider=web3`,
+);
+
+exec(
+  `abi-types-generator './src/abis/PledgerBridgeETH.json' --output='./src/contracts' --name=PledgerBridgeETH --provider=web3`,
+);

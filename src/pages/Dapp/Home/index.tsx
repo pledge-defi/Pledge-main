@@ -63,9 +63,13 @@ function HomePage() {
     '0x0000000000000000000000000000000000000000': BNBprice,
   };
   const getPrice = () => {
-    services.BscPledgeOracleServer.getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad').then((res) => {
-      setprice(Number(dealNumber_Price(res)));
-    });
+    services.BscPledgeOracleServer.getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad')
+      .then((res) => {
+        setprice(Number(dealNumber_Price(res)));
+      })
+      .catch(() => {
+        console.error();
+      });
   };
   const dealNumber_18 = (num) => {
     if (num) {
@@ -134,20 +138,24 @@ function HomePage() {
 
   useEffect(() => {
     history.push('BUSD');
-    getPoolInfo();
+    getPoolInfo().catch(() => {
+      console.error();
+    });
     getPrice();
     services.BscPledgeOracleServer.getPrices([
       '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
       '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
       '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
       '0x0000000000000000000000000000000000000000',
-    ]).then((res) => {
-      console.log(res);
-      setBUSD(dealNumber_Price(res[0]));
-      setBTCB(dealNumber_Price(res[1]));
-      setDAI(dealNumber_Price(res[2]));
-      setBNB(dealNumber_Price(res[3]));
-    });
+    ])
+      .then((res) => {
+        console.log(res);
+        setBUSD(dealNumber_Price(res[0]));
+        setBTCB(dealNumber_Price(res[1]));
+        setDAI(dealNumber_Price(res[2]));
+        setBNB(dealNumber_Price(res[3]));
+      })
+      .catch(() => console.error());
   }, []);
 
   const callback = (key) => {
@@ -264,9 +272,7 @@ function HomePage() {
                 percent:
                   Math.floor(
                     ((val[0] * pricelist[record.Jp]) / pricelist[record.Sp] / record.collateralization_ratio) * 10000,
-                  ) /
-                  100 /
-                  record.maxSupply,
+                  ) / record.maxSupply,
               }}
             />
 

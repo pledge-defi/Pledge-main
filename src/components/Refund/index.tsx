@@ -202,12 +202,16 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
       '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
       '0x0000000000000000000000000000000000000000',
-    ]).then((res) => {
-      setBUSD(dealNumber_Price(res[0]));
-      setBTCB(dealNumber_Price(res[1]));
-      setDAI(dealNumber_Price(res[2]));
-      setBNB(dealNumber_Price(res[3]));
-    });
+    ])
+      .then((res) => {
+        setBUSD(dealNumber_Price(res[0]));
+        setBTCB(dealNumber_Price(res[1]));
+        setDAI(dealNumber_Price(res[2]));
+        setBNB(dealNumber_Price(res[3]));
+      })
+      .catch(() => {
+        console.error();
+      });
   }, []);
   useEffect(() => {
     if (chainId !== undefined) {
@@ -292,13 +296,13 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
   };
   return (
     <div>
-      <p>
+      <div>
         {mode == 'Lend' ? (
           <li className="claim_list">
-            <p style={{ justifyContent: 'start' }}>
+            <div style={{ justifyContent: 'start' }} className="imgdiv">
               <OrderImg img1={props.poolname} img2={props.underlying_asset} />
               {props.poolname} / {props.underlying_asset}
-            </p>
+            </div>
             {props.state != 0 ? (
               <>
                 <p>
@@ -324,7 +328,6 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
 
                 <p>
                   <span className="media_list">Refund Deposit</span>
-
                   {props.state == '4' ? (
                     <span>{hasNoClaim == false ? dealNumber_18(stakeAmount) : 0}</span>
                   ) : (
@@ -340,6 +343,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                     onClick={() => {
                       setloadings(true), getRefund();
                     }}
+                    loading={loadings}
                     disabled={hasNoClaim == false ? false : true}
                   >
                     Claim
@@ -349,6 +353,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                     onClick={() => {
                       setloadings(true), getRefund();
                     }}
+                    loading={loadings}
                     disabled={refundLend !== 0 ? (hasNoClaim == false ? false : true) : true}
                   >
                     Claim
@@ -366,10 +371,10 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
           </li>
         ) : (
           <li className="claim_list">
-            <p style={{ justifyContent: 'start' }}>
+            <div style={{ justifyContent: 'start' }} className="imgdiv">
               <OrderImg img1={props.poolname} img2={props.underlying_asset} />
               {props.poolname} / {props.underlying_asset}
-            </p>
+            </div>
             {props.state != 0 ? (
               <>
                 <p>
@@ -439,7 +444,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             )}
           </li>
         )}
-      </p>
+      </div>
     </div>
   );
 };

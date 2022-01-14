@@ -158,80 +158,82 @@ ${props.props.poolname} `,
               </Col>
             </Row>
           }
-          key="1"
+          key={props.props.key}
         >
           <div className="order_box">
             {DetailList.map((item, index) => {
               return (
-                <>
-                  <ul className="order_list" key={index}>
-                    <p>{item.title}</p>
-                    <ul className="medialist">
+                <div key={index} style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                  <>
+                    <ul className="order_list">
+                      <p>{item.title}</p>
+                      <ul className="medialist">
+                        <li>
+                          <span>Margin Ratio</span>
+                          <span>{`${Number(props.props.margin_ratio) + 100}%`}</span>
+                        </li>
+                        <li>
+                          <span>Collateralization Ratio</span>
+                          <span>{`${props.props.collateralization_ratio}%`}</span>
+                        </li>
+                        <li>
+                          <span>Settlement Date</span>
+                          <span>{props.props.settlement_date}</span>
+                        </li>
+                      </ul>
                       <li>
-                        <span>Margin Ratio</span>
-                        <span>{`${Number(props.props.margin_ratio) + 100}%`}</span>
+                        <span>Total Lend</span> <span>{item.Total_financing}</span>
                       </li>
+
+                      {mode == 'Lend' ? (
+                        <li>
+                          <span>Deposit Amount</span>
+                          <span>{item.Deposit_Amount}</span>
+                        </li>
+                      ) : (
+                        <li>
+                          <span>Collateral Amount</span>
+                          <span>{item.Collateral_Amount}</span>
+                        </li>
+                      )}
                       <li>
-                        <span>Collateralization Ratio</span>
-                        <span>{`${props.props.collateralization_ratio}%`}</span>
-                      </li>
-                      <li>
-                        <span>Settlement Date</span>
-                        <span>{props.props.settlement_date}</span>
+                        <span>Order Time</span> <span>{item.Time}</span>
                       </li>
                     </ul>
-                    <li>
-                      <span>Total Lend</span> <span>{item.Total_financing}</span>
-                    </li>
 
-                    {mode == 'Lend' ? (
-                      <li>
-                        <span>Deposit Amount</span>
-                        <span>{item.Deposit_Amount}</span>
-                      </li>
-                    ) : (
-                      <li>
-                        <span>Collateral Amount</span>
-                        <span>{item.Collateral_Amount}</span>
-                      </li>
-                    )}
-                    <li>
-                      <span>Order Time</span> <span>{item.Time}</span>
-                    </li>
-                  </ul>
-
-                  {props.props.state != 0 && props.props.state != 4 && (
-                    <div className="Reward">
-                      <p>Reward</p>
-                      <div className="rewardinfo">
-                        <div className="rewardtab">
-                          <p className="rewardkey">
-                            {mode == 'Lend' ? 'The principal+interest' : 'Remaining Collateral'}
-                          </p>
-                          <p className="rewardvalue">
-                            {mode == 'Lend'
-                              ? `${
-                                  Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000
-                                }  ${props.props.poolname}`
-                              : `${
-                                  Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) / 10000000
-                                }  ${props.props.underlying_asset}`}
-                          </p>
+                    {props.props.state != 0 && props.props.state != 4 && (
+                      <div className="Reward">
+                        <p>Reward</p>
+                        <div className="rewardinfo">
+                          <div className="rewardtab">
+                            <p className="rewardkey">
+                              {mode == 'Lend' ? 'The principal+interest' : 'Remaining Collateral'}
+                            </p>
+                            <p className="rewardvalue">
+                              {mode == 'Lend'
+                                ? `${
+                                    Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000
+                                  }  ${props.props.poolname}`
+                                : `${
+                                    Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) / 10000000
+                                  }  ${props.props.underlying_asset}`}
+                            </p>
+                          </div>
+                          <ClaimTime
+                            endtime={props.props.endtime}
+                            state={props.props.state}
+                            pid={props.props.key - 1}
+                            value={datainfo.finishAmountLend}
+                            mode={mode}
+                            settlementAmountLend={datainfo.settleAmountLend}
+                            spToken={props.props.Sptoken}
+                            jpToken={props.props.Jptoken}
+                          />
                         </div>
-                        <ClaimTime
-                          endtime={props.props.endtime}
-                          state={props.props.state}
-                          pid={props.props.key - 1}
-                          value={datainfo.finishAmountLend}
-                          mode={mode}
-                          settlementAmountLend={datainfo.settleAmountLend}
-                          spToken={props.props.Sptoken}
-                          jpToken={props.props.Jptoken}
-                        />
                       </div>
-                    </div>
-                  )}
-                </>
+                    )}
+                  </>
+                </div>
               );
             })}
           </div>

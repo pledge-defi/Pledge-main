@@ -4,17 +4,31 @@ import { DebtToken } from '_src/contracts/DebtToken';
 import { BscPledgeOracle } from '_src/contracts/BscPledgeOracle';
 import { AddressPrivileges } from '_src/contracts/AddressPrivileges';
 import { ERC20 } from '_src/contracts/ERC20';
+import type { PledgerBridgeBSC } from '_src/contracts/PledgerBridgeBSC';
+import type { PledgerBridgeETH } from '_src/contracts/PledgerBridgeETH';
 
 const PledgePoolAbi = require('_abis/PledgePool.json');
 const DebtTokenAbi = require('_abis/DebtToken.json');
 const BscPledgeOracleAbi = require('_abis/BscPledgeOracle.json');
 const AddressPrivilegesAbi = require('_abis/AddressPrivileges.json');
+const PledgerBridgeBSCAbi = require('_abis/PledgerBridgeBSC.json');
+const PledgerBridgeETHAbi = require('_abis/PledgerBridgeETH.json');
 const ERC20Abi = require('_abis/ERC20.json');
+import type { Contract } from 'web3-eth-contract';
 
 import { ethers } from 'ethers';
+interface SubContract<T> extends Contract {
+  methods: T;
+}
 
 const web3 = new Web3(Web3.givenProvider);
+const getPledgerBridgeBSC = (address?: string) => {
+  return new web3.eth.Contract(PledgerBridgeBSCAbi, address) as SubContract<PledgerBridgeBSC>;
+};
 
+const getPledgerBridgeETH = (address?: string) => {
+  return new web3.eth.Contract(PledgerBridgeETHAbi, address) as SubContract<PledgerBridgeETH>;
+};
 const getAddressPrivilegesContract = () => {
   return (new web3.eth.Contract(AddressPrivilegesAbi) as unknown) as {
     methods: AddressPrivileges;
@@ -67,4 +81,6 @@ export {
   getDebtTokenContract,
   getPledgePoolContract,
   getDefaultAccount,
+  getPledgerBridgeBSC,
+  getPledgerBridgeETH,
 };

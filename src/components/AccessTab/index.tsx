@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
-
 import services from '_src/services';
 import Button from '_components/Button';
 import BUSD from '_src/assets/images/order_BUSD.png';
@@ -23,8 +22,8 @@ export interface IAccessTab {
   className?: string;
   style?: React.CSSProperties;
   mode: string;
-  props?: any;
-  stateinfo?: any;
+  props: any;
+  stateinfo: any;
 }
 const imglist = {
   BUSD: BUSD,
@@ -37,15 +36,12 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
 
   const [hasNoClaim, sethasNoClaim] = useState(false);
-  const [balance, setbalance] = useState('0');
   const [loadings, setloadings] = useState(false);
   const [stakeAmount, setstakeAmount] = useState('');
   const [stakeAmountborrow, setstakeAmountborrow] = useState('');
   const [BUSDprice, setBUSD] = useState('');
   const [BTCBprice, setBTCB] = useState('');
-
   const [DAIprice, setDAI] = useState('');
-
   const [BNBprice, setBNB] = useState('');
   const openNotificationlend = (placement) => {
     notification.config({
@@ -206,7 +202,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
   const accessClaim = async () => {
     if (props.state == '1' || props.state == '2') {
       mode == 'Lend'
-        ? await services.PoolServer.getclaimLend(props.key - 1)
+        ? await services.PoolServer.getclaimLend((Number(props.key) - 1).toString())
             .then(() => {
               openNotificationlend('Success');
               setloadings(false);
@@ -214,7 +210,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
             .catch(() => {
               openNotificationerrorlend('Error'), setloadings(false);
             })
-        : await services.PoolServer.getclaimBorrow(props.key - 1)
+        : await services.PoolServer.getclaimBorrow((Number(props.key) - 1).toString())
             .then(() => {
               openNotificationborrow('Success');
               setloadings(false);
@@ -229,24 +225,15 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
     if (chainId !== undefined) {
       {
         mode == 'Lend'
-          ? services.PoolServer.getuserLendInfo((props.key - 1).toString()).then((data) => {
+          ? services.PoolServer.getuserLendInfo((Number(props.key) - 1).toString()).then((data) => {
               sethasNoClaim(data.hasNoClaim);
               setstakeAmount(data.stakeAmount);
             })
-          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString()).then((data) => {
+          : services.PoolServer.getuserBorrowInfo((Number(props.key) - 1).toString()).then((data) => {
               sethasNoClaim(data.hasNoClaim);
               setstakeAmountborrow(data.stakeAmount);
             });
       }
-      mode == 'Lend'
-        ? services.ERC20Server.balanceOf(props.Sptoken).then((data) => {
-            console.log('余额', data), setbalance(data);
-          })
-        : services.ERC20Server.balanceOf(props.Jptoken).then((data) => {
-            console.log('余额', data), setbalance(data);
-          });
-    } else {
-      setbalance('0');
     }
   });
   const dealNumber_Price = (num) => {

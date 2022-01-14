@@ -1,38 +1,56 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { InjectedConnector } from '@web3-react/injected-connector';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
-import { notification } from 'antd';
-import classNames from 'classnames';
-
-import { injected } from './connector';
-import { useEagerConnect, useInactiveListener } from '_components/ConnectWallet/WalletHooks';
+import React, { useEffect, useState } from 'react';
 import ChainBridge from '_constants/ChainBridge';
+import services from '_src/services';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import type { InjectedConnector } from '@web3-react/injected-connector';
+import { Dropdown, Menu, notification } from 'antd';
+import styled from 'styled-components';
+import { injected } from './connector';
+import { useEagerConnect, useInactiveListener } from './WalletHooks';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Button from '_components/Button';
 
-import metamaskLogo from '_assets/images/metamask_logo.png';
+const WalletInfo = styled.div`
+  width: 160px;
+  padding: 3px 8px;
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 0;
+    > div {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    *:first-child {
+      padding-right: 10px;
+    }
+  }
+`;
+const WalletConnected = styled.div``;
+const WalletConnecting = styled.div``;
+const WalletNoConnected = styled.div``;
 
-import './index.less';
-import services from '_src/services';
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IConnectWallet {
   className?: string;
-  style?: React.CSSProperties;
 }
 
-const ConnectWallet: React.FC<IConnectWallet> = ({ className, style, children }) => {
+const ConnectWallet: React.FC<IConnectWallet> = ({ className }) => {
   const triedEager = useEagerConnect();
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { connector, chainId, account, activate, deactivate, error } = useWeb3React();
   const [activatingConnector, setActivatingConnector] = useState<InjectedConnector>();
-  console.log('====chainId', chainId);
 
   async function activatingConnectorFn() {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
     } else {
       if (error instanceof UnsupportedChainIdError) {
+        console.log(error);
         const fraNetworkDefault = ChainBridge.chains
           .filter((item) => item.type === 'Ethereum')
-          .find((item) => item.networkId === 97);
+          .find((item) => item.networkId === 525);
         try {
           await services.PoolServer.switchNetwork(fraNetworkDefault);
         } catch {
@@ -48,11 +66,12 @@ const ConnectWallet: React.FC<IConnectWallet> = ({ className, style, children })
 
   useEffect(() => {
     activatingConnectorFn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activatingConnector, connector]);
 
   const activating = injected === activatingConnector;
   const connected = injected === connector;
-  const disabled = !triedEager || !!activatingConnector || !!error;
+  // const disabled = !triedEager || !!activatingConnector || !!error;
   const isDisconnect = !error && chainId;
 
   useInactiveListener(!triedEager || !!activatingConnector);
@@ -62,20 +81,38 @@ const ConnectWallet: React.FC<IConnectWallet> = ({ className, style, children })
       setActivatingConnector(injected);
       activate(injected);
     } else {
-      deactivate();
+      // deactivate();
     }
   }
 
   function ButtonSwitchComponent() {
     if (connected && isDisconnect) {
       return (
-        <div className="wallet_connected">
-          <img src={metamaskLogo} />
-          <span>{`${account.slice(0, 6)}...${account.slice(-4)}`}</span>
-        </div>
+        <Dropdown
+          overlay={
+            <Menu>
+              <WalletInfo>
+                <div>
+                  <img src={require('_assets/images/meta-mask-border.svg')} alt="" />
+                  <span>MetaMask</span>
+                </div>
+                <div>
+                  <div>{`${account?.slice(0, 6)}···${account?.slice(-4)}`}</div>
+                  <CopyToClipboard text={account!}>
+                    <img src={require('_assets/images/copy-icon.svg')} alt="" style={{ cursor: 'pointer' }} />
+                  </CopyToClipboard>
+                </div>
+              </WalletInfo>
+            </Menu>
+          }
+        >
+          <WalletConnected onClick={handleOnCLickConnectWallet}>
+            <img src={require('_assets/images/meta-mask.svg')} alt="" />
+            <span className="address">{`${account?.slice(0, 6)}···${account?.slice(-4)}`}</span>
+          </WalletConnected>
+        </Dropdown>
       );
     }
-
     if (activating) {
       return <Button rightAngleDirection="leftBottom">Connectting</Button>;
     }

@@ -16,6 +16,7 @@ import Routes from '_src/routes';
 import rootStore from '_src/stores';
 import i18n from '_utils/i18n';
 import { ThemeProvider } from '_components/SwitchThemes';
+import { RecoilRoot } from 'recoil';
 
 // antd 组件库 多语言
 import antdEnUS from 'antd/lib/locale/en_US';
@@ -31,7 +32,9 @@ const Root = () => {
       <ThemeProvider>
         <ConfigProvider locale={i18n.language === 'zhCN' ? antdZhCN : antdEnUS}>
           <BrowserRouter>
-            <Routes />
+            <RecoilRoot>
+              <Routes />
+            </RecoilRoot>
           </BrowserRouter>
         </ConfigProvider>
       </ThemeProvider>

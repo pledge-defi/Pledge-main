@@ -5,6 +5,8 @@ import { pledge_address, ORACLE_address } from '_src/utils/constants';
 
 import type { PledgePool } from '_src/contracts/PledgePool';
 import { pid, send } from 'process';
+import { concat } from 'ethers/lib/utils';
+import currencyInfos from '_constants/currencyInfos';
 
 const PoolServer = {
   async poolLength() {
@@ -33,13 +35,13 @@ const PoolServer = {
     return poolDataData;
   },
 
-  async getuserLendInfo(pid) {
+  async getuserLendInfo(pid: string) {
     const contract = getPledgePoolContract(pledge_address);
     const owner = await getDefaultAccount();
     const data = await contract.methods.userLendInfo(owner, pid).call();
     return await data;
   },
-  async getuserBorrowInfo(pid) {
+  async getuserBorrowInfo(pid: string) {
     const contract = getPledgePoolContract(pledge_address);
     const owner = await getDefaultAccount();
     const data = await contract.methods.userBorrowInfo(owner, pid).call();
@@ -62,7 +64,7 @@ const PoolServer = {
     const data = await contract.methods.depositBorrow(pid, value, time).send(options);
     return data;
   },
-  async getclaimLend(pid) {
+  async getclaimLend(pid: string) {
     const contract = getPledgePoolContract(pledge_address);
     let options = await gasOptions();
     const data = await contract.methods.claimLend(pid).send(options);
@@ -86,7 +88,7 @@ const PoolServer = {
     const data = await contract.methods.refundLend(pid).send(options);
     return data;
   },
-  async getclaimBorrow(pid) {
+  async getclaimBorrow(pid: string) {
     const contract = getPledgePoolContract(pledge_address);
     let options = await gasOptions();
     const data = await contract.methods.claimBorrow(pid).send(options);
@@ -110,44 +112,53 @@ const PoolServer = {
     const data = await contract.methods.refundBorrow(pid).send(options);
     return data;
   },
-  // async switchNetwork(value: AddEthereumChainParameter) {
-  //   try {
-  //     return await window.ethereum.request({
-  //       method: 'wallet_switchEthereumChain',
-  //       params: [{ chainId: value.chainId }],
-  //     });
-  //   } catch (switchError: any) {
-  //     // This error code indicates that the chain has not been added to MetaMask.
-  //     if (switchError.code === 4902) {
-  //       try {
-  //         return await window.ethereum.request({
-  //           method: 'wallet_addEthereumChain',
-  //           params: [value],
-  //         });
-  //       } catch (addError) {
-  //         // handle "add" error
-  //       }
-  //     }
-  //     // handle other "switch" errors
-  //   }
-  // },
-  async switchNetwork(value: BridgeConfigSimple) {
-    return await window.ethereum.request({
-      method: 'wallet_addEthereumChain',
-      params: [
-        {
-          chainId: web3.utils.toHex(value.networkId),
-          chainName: value.name,
-          nativeCurrency: {
-            name: value.nativeTokenSymbol,
-            symbol: value.nativeTokenSymbol,
-            decimals: value.decimals,
-          },
-          rpcUrls: [value.rpcUrl],
-          blockExplorerUrls: [value.explorerUrl],
-        } as AddEthereumChainParameter,
-      ],
-    });
+  async switchNetwork(value: AddEthereumChainParameter) {
+    try {
+      return await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: value.chainId }],
+      });
+    } catch (switchError: any) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        try {
+          return await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [value],
+          });
+        } catch (addError) {
+          // handle "add" error
+        }
+      }
+      if (switchError.code === 4001) {
+        console.log(value.chainId);
+
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [currencyInfos.Ethereum.netWorkInfo],
+        });
+      }
+
+      // handle other "switch" errors
+    }
   },
+  // async switchNetwork(value: BridgeConfigSimple) {
+  //   return await window.ethereum.request({
+  //     method: 'wallet_addEthereumChain',
+  //     params: [
+  //       {
+  //         chainId: web3.utils.toHex(value.networkId),
+  //         chainName: value.name,
+  //         nativeCurrency: {
+  //           name: value.nativeTokenSymbol,
+  //           symbol: value.nativeTokenSymbol,
+  //           decimals: value.decimals,
+  //         },
+  //         rpcUrls: [value.rpcUrl],
+  //         blockExplorerUrls: [value.explorerUrl],
+  //       } as AddEthereumChainParameter,
+  //     ],
+  //   });
+  // },
 };
 export default PoolServer;

@@ -492,6 +492,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
               <span style={{ backgroundColor: '#F5F5FA' }}></span>Total Lend
             </span>
           </p>
+
           <Progress
             percent={((poolinfo[pid]?.available_to_lend[1] ?? 0) / (poolinfo[pid]?.maxSupply ?? 0)) * 100}
             showInfo={false}
@@ -503,9 +504,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                     Number(pricelist[poolinfo[pid]?.Sp ?? 0]) /
                     (poolinfo[pid]?.collateralization_ratio ?? 0)) *
                     10000,
-                ) /
-                  100 /
-                  poolinfo[pid]?.maxSupply ?? 0,
+                ) / Number(poolinfo[pid]?.maxSupply ?? 0),
             }}
           />
           <p style={{ display: 'flex', justifyContent: 'space-between' }}>
