@@ -16,3 +16,4 @@ exec(
 exec(
   `abi-types-generator './src/abis/PledgerBridgeETH.json' --output='./src/contracts' --name=PledgerBridgeETH --provider=web3`,
 );
+exec(`abi-types-generator './src/abis/IBEP20.json' --output='./src/contracts' --name=IBEP20 --provider=web3`);

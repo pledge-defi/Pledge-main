@@ -39,6 +39,9 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
     '0x0000000000000000000000000000000000000000': BNBprice,
+    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSDprice,
+    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCBprice,
+    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAIprice,
   };
   const dealNumber_7 = (num) => {
     if (num) {
@@ -80,11 +83,18 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
       '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
       '0x0000000000000000000000000000000000000000',
+      '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA',
+      '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658',
+      '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B',
     ]).then((res) => {
       setBUSD(dealNumber_Price(res[0]));
       setBTCB(dealNumber_Price(res[1]));
       setDAI(dealNumber_Price(res[2]));
       setBNB(dealNumber_Price(res[3]));
+      setBUSD(dealNumber_Price(res[4]));
+
+      setBTCB(dealNumber_Price(res[5]));
+      setDAI(dealNumber_Price(res[6]));
     });
   }, []);
   const claimAmount =

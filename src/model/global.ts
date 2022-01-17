@@ -1,19 +1,19 @@
 import { atom } from 'recoil';
 
-export const currencies = ['BSC', 'Ethereum'] as const;
+export const currencies = ['BSC_Testnet', 'BSC_Mainnet'] as const;
 
 export type CurrencyType = typeof currencies[number];
 
 export const currencyState = atom<CurrencyType>({
   key: 'currencyState',
-  default: 'BSC',
+  default: 'BSC_Testnet',
 });
 
 export type BalanceType = Record<CurrencyType, string>;
 export const balanceState = atom<BalanceType>({
   key: 'balanceState',
   default: {
-    BSC: '',
-    Ethereum: '',
+    BSC_Testnet: '',
+    BSC_Mainnet: '',
   },
 });

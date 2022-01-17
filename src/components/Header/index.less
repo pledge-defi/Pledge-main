@@ -167,18 +167,80 @@
     display: block;
 
     .logo2 {
-      display: block;
+      display: block !important;
+      width: 27px !important;
+      height: 27px !important;
       margin-left: 20px;
     }
 
     .logo {
-      display: none;
+      display: none !important;
+    }
+
+    .changeWallet {
+      display: none !important;
+    }
+
+    .changeWallet2 {
+      display: flex !important;
+
+      .ant-dropdown-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        margin-right: 10px;
+        padding: 6px 10px !important;
+        color: #5d52ff;
+        font-size: 12px !important;
+        background: rgba(93, 82, 255, 0.1);
+        border: 1px solid rgba(93, 82, 255, 0.5);
+        border-radius: 22px;
+
+        img:nth-child(1) {
+          margin: 0 10px 0 0;
+        }
+
+        img:nth-child(3) {
+          width: 12px;
+          height: 7px;
+          margin: 0 0 0 6px;
+        }
+      }
+
+      .components_connect_wallet {
+        display: block;
+
+        .ant-dropdown-trigger {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+
+          img {
+            width: 30px;
+            height: 30px;
+            margin: 0;
+          }
+
+          .address {
+            display: none;
+          }
+        }
+      }
     }
 
     .modile_list {
       display: flex !important;
       align-items: center;
       justify-content: space-between;
+      width: 100%;
+
+      .list_right {
+        display: flex;
+        align-items: center;
+      }
 
       img {
         width: 20px;

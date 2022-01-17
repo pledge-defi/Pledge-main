@@ -49,7 +49,7 @@ const Header: React.FC<IHeaderProps> = () => {
       setCurrentChainId(chainId);
 
       const chainName = find(Object.values(currencyInfos), { chainId })?.chainName;
-      setCurrency(chainName || 'BSC');
+      setCurrency(chainName || 'BSC_Testnet');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
@@ -66,7 +66,6 @@ const Header: React.FC<IHeaderProps> = () => {
         <div className="home_menu_list">
           <a className="findora-logo" href={PageUrl.Dapp} target="_self" style={{ margin: '0' }}>
             <img src={logo} alt="" width="146px" height="44px" className="logo" />
-            <img src={logo2} alt="" width="27.82px" height="27.82px" className="logo2" />
           </a>
           <NavLink
             to={PageUrl.Dapp}
@@ -100,14 +99,14 @@ const Header: React.FC<IHeaderProps> = () => {
           >
             Borrow
           </NavLink>
-          {/* <NavLink
+          <NavLink
             to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')}
             className={location.pathname == '/Market/Provide' ? 'menu-item' : ''}
             activeStyle={{ color: '#5d52ff' }}
             activeClassName="active"
           >
-            Provide Liquidity
-          </NavLink> */}
+            Get Testnet Tokens
+          </NavLink>
         </div>
         <div className="changeWallet">
           <Dropdown
@@ -119,16 +118,16 @@ const Header: React.FC<IHeaderProps> = () => {
                 style={{ width: '240px', height: '160px', padding: '16px' }}
               >
                 <p style={{ color: ' #8B89A3' }}>Select a network</p>
-                <Menu.Item key={'BSC'} style={{ borderRadius: '12px', marginBottom: '10px' }}>
+                <Menu.Item key={'BSC_Testnet'} style={{ borderRadius: '12px', marginBottom: '10px' }}>
                   <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
-                    <img src={get(currencyInfos, ['BSC', 'chainImageAsset'])} alt="" width={24} height={24} />
-                    <span>BSC</span>
+                    <img src={get(currencyInfos, ['BSC_Testnet', 'chainImageAsset'])} alt="" width={24} height={24} />
+                    <span>BSC-Testnet</span>
                   </FlexDiv>
                 </Menu.Item>
-                <Menu.Item key={'Ethereum'} style={{ borderRadius: '12px' }}>
+                <Menu.Item key={'BSC_Mainnet'} style={{ borderRadius: '12px' }}>
                   <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
-                    <img src={get(currencyInfos, ['Ethereum', 'chainImageAsset'])} alt="" width={24} height={24} />
-                    <span>Ethereum</span>
+                    <img src={get(currencyInfos, ['BSC_Mainnet', 'chainImageAsset'])} alt="" width={24} height={24} />
+                    <span>BSC-Mainnet</span>
                   </FlexDiv>
                 </Menu.Item>
               </Menu>
@@ -143,9 +142,57 @@ const Header: React.FC<IHeaderProps> = () => {
           <ConnectWallet />
         </div>
         <div className="modile_list">
-          <ConnectWallet />
-          <div className="mobile_select">
-            <img src={list} onClick={() => setVisable(true)} />
+          <div>
+            <img src={logo2} alt="" width="27.82px" height="27.82px" className="logo2" />
+          </div>
+          <div className="list_right">
+            <div className="changeWallet2">
+              <Dropdown
+                overlay={
+                  <Menu
+                    selectedKeys={[currency]}
+                    onClick={handleClick}
+                    className="selecttab"
+                    style={{ width: '240px', height: '160px', padding: '16px' }}
+                  >
+                    <p style={{ color: ' #8B89A3' }}>Select a network</p>
+                    <Menu.Item key={'BSC_Testnet'} style={{ borderRadius: '12px', marginBottom: '10px' }}>
+                      <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
+                        <img
+                          src={get(currencyInfos, ['BSC_Testnet', 'chainImageAsset'])}
+                          alt=""
+                          width={20}
+                          height={20}
+                        />
+                        <span>BSC-Testnet</span>
+                      </FlexDiv>
+                    </Menu.Item>
+                    <Menu.Item key={'BSC_Mainnet'} style={{ borderRadius: '12px' }}>
+                      <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
+                        <img
+                          src={get(currencyInfos, ['BSC_Mainnet', 'chainImageAsset'])}
+                          alt=""
+                          width={20}
+                          height={20}
+                        />
+                        <span>BSC-Mainnet</span>
+                      </FlexDiv>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <div>
+                  <img src={get(currencyInfos, [currency, 'chainImageAsset'])} alt="" width={24} height={24} />
+                  <span>{currency}</span>
+                  <img src={require('_assets/images/dropDown.svg')} alt="" />
+                </div>
+              </Dropdown>
+              <ConnectWallet />
+            </div>
+
+            <div className="mobile_select">
+              <img src={list} onClick={() => setVisable(true)} />
+            </div>
           </div>
           <Drawer placement={'top'} closable={false} onClose={() => setVisable(false)} visible={visable} key={'top'}>
             <div className="drawer_header">
@@ -161,9 +208,9 @@ const Header: React.FC<IHeaderProps> = () => {
               <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Borrow')} className="menu-item">
                 Borrow
               </NavLink>
-              {/* <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
-                Provide Liquidity
-              </NavLink> */}
+              <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
+                Get Testnet Tokens
+              </NavLink>
             </div>
           </Drawer>
         </div>

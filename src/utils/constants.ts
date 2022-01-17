@@ -1,6 +1,7 @@
-export const pledge_address = '0x6BAa9219C87992e1663360E1f5f29BD86bFCc3e0';
+export const pledge_address = '0x460cD52E2bB8a0547F4fe2ff80cd354CC1A1f43a';
 export const ORACLE_address = '0x72D8E6144A46b7b51F59831A9D38C7f9E682B7C1';
-
+// export const pledge_address = '0x25d9226292c8B5dfdadAcD97B1A54981D680D311';
+// export const ORACLE_address = '0x272aCa56637FDaBb2064f19d64BC3dE64A85A1b2';
 export const FORMAT_TIME_STANDARD = 'YYYY-MM-DD HH:mm:ss';
 export const borderColor = '#e7e3eb';
 

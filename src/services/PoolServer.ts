@@ -131,11 +131,9 @@ const PoolServer = {
         }
       }
       if (switchError.code === 4001) {
-        console.log(value.chainId);
-
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
-          params: [currencyInfos.Ethereum.netWorkInfo],
+          params: [],
         });
       }
 

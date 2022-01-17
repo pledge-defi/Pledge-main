@@ -49,18 +49,27 @@ function HomePage() {
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
     '0x0000000000000000000000000000000000000000': 'BNB',
+    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': 'BUSD',
+    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': 'BTCB',
+    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': 'DAI',
   };
   const imglist = {
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCB,
     '0x0000000000000000000000000000000000000000': BNB,
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAI,
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSD,
+    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCB,
+    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAI,
+    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSD,
   };
   const pricelist = {
     '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
     '0x0000000000000000000000000000000000000000': BNBprice,
+    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSDprice,
+    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCBprice,
+    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAIprice,
   };
   const getPrice = () => {
     services.BscPledgeOracleServer.getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad')
@@ -98,7 +107,7 @@ function HomePage() {
 
     const datainfo6 = await services.PoolServer.getPoolDataInfo();
 
-    console.log(datainfo);
+    console.log(222, datainfo);
     const res = datainfo.map((item, index) => {
       let maxSupply = dealNumber_18(item.maxSupply);
       let borrowSupply = dealNumber_18(item.borrowSupply);
@@ -147,6 +156,9 @@ function HomePage() {
       '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
       '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
       '0x0000000000000000000000000000000000000000',
+      '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA',
+      '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658',
+      '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B',
     ])
       .then((res) => {
         console.log(res);
@@ -154,6 +166,9 @@ function HomePage() {
         setBTCB(dealNumber_Price(res[1]));
         setDAI(dealNumber_Price(res[2]));
         setBNB(dealNumber_Price(res[3]));
+        setBUSD(dealNumber_Price(res[4]));
+        setBTCB(dealNumber_Price(res[5]));
+        setDAI(dealNumber_Price(res[6]));
       })
       .catch(() => console.error());
   }, []);
@@ -464,14 +479,20 @@ function HomePage() {
               pagination={
                 datastate.filter((item, index) => {
                   console.log(datastate);
-                  return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
+                  return (
+                    item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2' ||
+                    item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
+                  );
                 }).length < 10
                   ? false
                   : {}
               }
               columns={columns}
               dataSource={datastate.filter((item, index) => {
-                return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
+                return (
+                  item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2' ||
+                  item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
+                );
               })}
               onChange={onChange}
               rowClassName={(record, index) => {
@@ -502,14 +523,20 @@ function HomePage() {
             <Table
               pagination={
                 datastate.filter((item, index) => {
-                  return item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096';
+                  return (
+                    item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096' ||
+                    item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
+                  );
                 }).length < 10
                   ? false
                   : {}
               }
               columns={columns}
               dataSource={datastate.filter((item, index) => {
-                return item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096';
+                return (
+                  item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096' ||
+                  item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
+                );
               })}
               onChange={onChange}
               rowClassName={(record, index) => {
@@ -523,7 +550,10 @@ function HomePage() {
             <Table
               columns={columns1}
               dataSource={data.filter((item, index) => {
-                return item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2';
+                return (
+                  item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2' ||
+                  item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
+                );
               })}
               onChange={onChange}
               rowClassName={(record, index) => {
@@ -547,7 +577,10 @@ function HomePage() {
             <Table
               columns={columns1}
               dataSource={data.filter((item, index) => {
-                return item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096';
+                return (
+                  item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096' ||
+                  item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
+                );
               })}
               onChange={onChange}
               rowClassName={(record, index) => {

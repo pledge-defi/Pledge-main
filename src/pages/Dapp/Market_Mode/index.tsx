@@ -41,6 +41,9 @@ function Market_Mode() {
     '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
     '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
     '0x0000000000000000000000000000000000000000': 'BNB',
+    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': 'BUSD',
+    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': 'BTCB',
+    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': 'DAI',
   };
   const dealNumber_18 = (num) => {
     if (num) {
@@ -102,14 +105,18 @@ function Market_Mode() {
     });
 
     res.map((item, index) => {
-      services.PoolServer.getuserLendInfo((Number(item.key) - 1).toString()).then((res1) => {
-        res1.stakeAmount == '0' ? console.log(1111111) : pidlend.push(item);
-        setdatalend(pidlend);
-      });
-      services.PoolServer.getuserBorrowInfo((Number(item.key) - 1).toString()).then((res) => {
-        res.stakeAmount == '0' ? console.log(1111111) : pidborrow.push(item);
-        setdataborrow(pidborrow);
-      });
+      services.PoolServer.getuserLendInfo((Number(item.key) - 1).toString())
+        .then((res1) => {
+          res1.stakeAmount == '0' ? console.log(1111111) : pidlend.push(item);
+          setdatalend(pidlend);
+        })
+        .catch(() => console.error());
+      services.PoolServer.getuserBorrowInfo((Number(item.key) - 1).toString())
+        .then((res) => {
+          res.stakeAmount == '0' ? console.log(1111111) : pidborrow.push(item);
+          setdataborrow(pidborrow);
+        })
+        .catch(() => console.error());
     });
 
     let timetimer = setTimeout(() => {

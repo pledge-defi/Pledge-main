@@ -44,17 +44,21 @@ export interface MethodConstantReturnContext<TCallReturn> {
 
 export interface MethodReturnContext extends MethodPayableReturnContext {}
 
-export type ContractContext = Web3ContractContext<
-  DebtToken,
-  DebtTokenMethodNames,
-  DebtTokenEventsContext,
-  DebtTokenEvents
->;
-export type DebtTokenEvents = 'Approval' | 'Transfer';
-export interface DebtTokenEventsContext {
+export type ContractContext = Web3ContractContext<IBEP20, IBEP20MethodNames, IBEP20EventsContext, IBEP20Events>;
+export type IBEP20Events = 'Approval' | 'OwnershipTransferred' | 'Transfer';
+export interface IBEP20EventsContext {
   Approval(
     parameters: {
       filter?: { owner?: string | string[]; spender?: string | string[] };
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
+  OwnershipTransferred(
+    parameters: {
+      filter?: { previousOwner?: string | string[]; newOwner?: string | string[] };
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
@@ -71,56 +75,72 @@ export interface DebtTokenEventsContext {
     callback?: (error: Error, event: EventData) => void,
   ): EventResponse;
 }
-export type DebtTokenMethodNames =
+export type IBEP20MethodNames =
   | 'new'
-  | 'addMinter'
+  | '_decimals'
+  | '_name'
+  | '_symbol'
   | 'allowance'
   | 'approve'
   | 'balanceOf'
   | 'burn'
   | 'decimals'
   | 'decreaseAllowance'
-  | 'delMinter'
-  | 'getMinter'
-  | 'getMinterLength'
-  | 'getMultiSignatureAddress'
+  | 'faucet_transfer'
+  | 'getOwner'
   | 'increaseAllowance'
-  | 'isMinter'
   | 'mint'
   | 'name'
+  | 'owner'
+  | 'renounceOwnership'
   | 'symbol'
   | 'totalSupply'
   | 'transfer'
-  | 'transferFrom';
+  | 'transferFrom'
+  | 'transferOwnership';
 export interface ApprovalEventEmittedResponse {
   owner: string;
   spender: string;
   value: string;
+}
+export interface OwnershipTransferredEventEmittedResponse {
+  previousOwner: string;
+  newOwner: string;
 }
 export interface TransferEventEmittedResponse {
   from: string;
   to: string;
   value: string;
 }
-export interface DebtToken {
+export interface IBEP20 {
   /**
    * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: constructor
-   * @param _name Type: string, Indexed: false
-   * @param _symbol Type: string, Indexed: false
-   * @param multiSignature Type: address, Indexed: false
    */
-  'new'(_name: string, _symbol: string, multiSignature: string): MethodReturnContext;
+  'new'(): MethodReturnContext;
   /**
    * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
+   * Constant: true
+   * StateMutability: view
    * Type: function
-   * @param _addMinter Type: address, Indexed: false
    */
-  addMinter(_addMinter: string): MethodReturnContext;
+  _decimals(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  _name(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  _symbol(): MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
@@ -152,10 +172,9 @@ export interface DebtToken {
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param _from Type: address, Indexed: false
-   * @param _amount Type: uint256, Indexed: false
+   * @param amount Type: uint256, Indexed: false
    */
-  burn(_from: string, _amount: string): MethodReturnContext;
+  burn(amount: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: true
@@ -177,31 +196,16 @@ export interface DebtToken {
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param _delMinter Type: address, Indexed: false
+   * @param to Type: address, Indexed: false
    */
-  delMinter(_delMinter: string): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   * @param _index Type: uint256, Indexed: false
-   */
-  getMinter(_index: string): MethodConstantReturnContext<string>;
+  faucet_transfer(to: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  getMinterLength(): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
-  getMultiSignatureAddress(): MethodConstantReturnContext<string>;
+  getOwner(): MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: false
@@ -213,21 +217,12 @@ export interface DebtToken {
   increaseAllowance(spender: string, addedValue: string): MethodReturnContext;
   /**
    * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   * @param account Type: address, Indexed: false
-   */
-  isMinter(account: string): MethodConstantReturnContext<boolean>;
-  /**
-   * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param _to Type: address, Indexed: false
-   * @param _amount Type: uint256, Indexed: false
+   * @param amount Type: uint256, Indexed: false
    */
-  mint(_to: string, _amount: string): MethodReturnContext;
+  mint(amount: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: true
@@ -235,6 +230,20 @@ export interface DebtToken {
    * Type: function
    */
   name(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  owner(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
+   */
+  renounceOwnership(): MethodReturnContext;
   /**
    * Payable: false
    * Constant: true
@@ -268,4 +277,12 @@ export interface DebtToken {
    * @param amount Type: uint256, Indexed: false
    */
   transferFrom(sender: string, recipient: string, amount: string): MethodReturnContext;
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
+   * @param newOwner Type: address, Indexed: false
+   */
+  transferOwnership(newOwner: string): MethodReturnContext;
 }
