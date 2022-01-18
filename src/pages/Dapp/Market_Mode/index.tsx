@@ -258,7 +258,7 @@ function Market_Mode() {
           </DappLayout>
         )
       ) : (
-        <TestnetTokens />
+        <TestnetTokens mode={mode} props={datainfo1} />
       )}
     </>
   );

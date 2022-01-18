@@ -325,15 +325,36 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       ) : (
         <div>
           {mode == 'Lend' ? (
-            <>
-              <p className="access_token">{'SP-Token'}</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                {' '}
+                <p className="access_token">{'SP-Token'}</p>
+                {props.state == '4' ? (
+                  <p className="access_num">{0}</p>
+                ) : (
+                  <p className="access_num">{hasNoClaim == false ? Math.floor(claimAmount * 100) / 100 : 0}</p>
+                )}
+              </div>
 
-              {props.state == '4' ? (
-                <p className="access_num">{0}</p>
-              ) : (
-                <p className="access_num">{hasNoClaim == false ? claimAmount : 0}</p>
-              )}
-            </>
+              <Button
+                style={{
+                  background: ' rgba(93, 82, 255, 0.1)',
+                  border: '1px solid rgba(93, 82, 255, 0.5)',
+                  borderRadius: '10px',
+                  width: '134px',
+                  height: '44px',
+                  color: '#5D52FF',
+                  lineHeight: '24px',
+                  padding: '10px 24px',
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  boxSizing: 'border-box',
+                }}
+                onClick={getImporttoken}
+              >
+                Add Token
+              </Button>
+            </div>
           ) : (
             <>
               <div style={{ display: 'inline-block' }}>
@@ -348,15 +369,35 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
                   {props.poolname}
                 </p>
               </div>
-              <div style={{ display: 'inline-block', float: 'right' }}>
-                <p className="access_token">{'JP-Token'}</p>
-                {props.state == '4' ? (
-                  <p className="access_num">{0}</p>
-                ) : (
-                  <p className="access_num">
-                    {hasNoClaim == false ? Math.floor(claimAmountborrow * pricelist[props.Jp] * 100) / 100 : 0}
-                  </p>
-                )}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <p className="access_token">{'JP-Token'}</p>
+                  {props.state == '4' ? (
+                    <p className="access_num">{0}</p>
+                  ) : (
+                    <p className="access_num">
+                      {hasNoClaim == false ? Math.floor(claimAmountborrow * pricelist[props.Jp] * 100) / 100 : 0}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  style={{
+                    background: ' rgba(93, 82, 255, 0.1)',
+                    border: '1px solid rgba(93, 82, 255, 0.5)',
+                    borderRadius: '10px',
+                    width: '134px',
+                    height: '44px',
+                    color: '#5D52FF',
+                    lineHeight: '24px',
+                    padding: '10px 24px',
+                    fontSize: '16px',
+                    fontWeight: 500,
+                    boxSizing: 'border-box',
+                  }}
+                  onClick={getImporttoken}
+                >
+                  Add Token
+                </Button>
               </div>
             </>
           )}
@@ -390,9 +431,6 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
         }
       >
         Claim
-      </Button>
-      <Button style={{ marginTop: '10px' }} onClick={getImporttoken}>
-        import token
       </Button>
     </div>
   );
