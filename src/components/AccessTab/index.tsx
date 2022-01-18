@@ -202,6 +202,41 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       return x.dividedBy(y).toFixed();
     }
   };
+  const getImporttoken = () => {
+    mode == 'Lend'
+      ? library.provider
+          .request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: props.Sptoken,
+                symbol: 'SP',
+                decimals: 18,
+              },
+            },
+          })
+          .then((success) => {
+            console.log(success);
+          })
+          .catch(() => console.log(false))
+      : library.provider
+          .request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: props.Jptoken,
+                symbol: 'JP',
+                decimals: 18,
+              },
+            },
+          })
+          .then((success) => {
+            console.log(success);
+          })
+          .catch(() => console.log(false));
+  };
   const accessClaim = async () => {
     if (props.state == '1' || props.state == '2') {
       mode == 'Lend'
@@ -335,6 +370,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
         <span className="access_key">settlement Date</span>
         <span className="access_value">{props.settlement_date}</span>
       </p>
+
       <Button
         style={{ marginTop: '40px' }}
         loading={loadings}
@@ -354,6 +390,9 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
         }
       >
         Claim
+      </Button>
+      <Button style={{ marginTop: '10px' }} onClick={getImporttoken}>
+        import token
       </Button>
     </div>
   );

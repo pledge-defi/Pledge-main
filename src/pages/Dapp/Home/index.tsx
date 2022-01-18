@@ -235,16 +235,16 @@ function HomePage() {
   );
   //每三位加一个小数点
   function toThousands(num) {
-    var num = (num || 0).toString(),
-      result = '';
-    while (num.length > 3) {
-      result = ',' + num.slice(-3) + result;
-      num = num.slice(0, num.length - 3);
-    }
-    if (num) {
-      result = num + result;
-    }
-    return result;
+    var st1 = String(num);
+    var index = st1.indexOf('.');
+    var st2 = st1.slice(0, index);
+    var len = st2.length;
+    if (len < 3) return st2.concat(st1.slice(index));
+    var r = len % 3;
+    return (r > 0
+      ? st2.slice(0, r) + ',' + st2.slice(r, len).match(/\d{3}/g).join()
+      : st2.slice(r, len).match(/\d{3}/g).join()
+    ).concat(st1.slice(index));
   }
 
   const columns = [
@@ -294,9 +294,11 @@ function HomePage() {
             <p style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>
                 <span style={{ color: '#FFA011', fontSize: '12px' }}>
-                  {Math.floor(
-                    ((val[0] * pricelist[record.Jp]) / pricelist[record.Sp] / record.collateralization_ratio) * 10000,
-                  ) / 100}
+                  {toThousands(
+                    Math.floor(
+                      ((val[0] * pricelist[record.Jp]) / pricelist[record.Sp] / record.collateralization_ratio) * 10000,
+                    ) / 100,
+                  )}
                 </span>
                 /<span style={{ color: '#5D52FF', fontSize: '12px' }}>{`${toThousands(val[1])}`}</span>
               </span>
@@ -435,24 +437,24 @@ function HomePage() {
 
   const content = (
     <div className="choose">
-      <div className="choose_lender">
-        <img src={Lender1} alt="" />
-        <Link
-          to={PageUrl.Market_Pool.replace(':pid/:pool/:coin/:mode', `${pid}/${pool}/${coin}/Lender`)}
-          style={{ color: '#FFF' }}
-        >
+      <Link
+        to={PageUrl.Market_Pool.replace(':pid/:pool/:coin/:mode', `${pid}/${pool}/${coin}/Lender`)}
+        style={{ color: '#FFF' }}
+      >
+        <div className="choose_lender">
+          <img src={Lender1} alt="" />
           <span>Lender</span> <span> Lock in a fixed interest rate today. Fixed rates guarantee your APY.</span>
-        </Link>
-      </div>
-      <div className="choose_borrow">
-        <img src={Borrower} alt="" />
-        <Link
-          to={PageUrl.Market_Pool.replace(':pid/:pool/:coin/:mode', `${pid}/${pool}/${coin}/Borrower`)}
-          style={{ color: '#FFF' }}
-        >
+        </div>
+      </Link>
+      <Link
+        to={PageUrl.Market_Pool.replace(':pid/:pool/:coin/:mode', `${pid}/${pool}/${coin}/Borrower`)}
+        style={{ color: '#FFF' }}
+      >
+        <div className="choose_borrow">
+          <img src={Borrower} alt="" />
           <span>Borrower</span> <span>Borrow with certainty. Fixed rates lock in what you pay.</span>
-        </Link>
-      </div>
+        </div>
+      </Link>
       <img
         src={Close}
         alt=""

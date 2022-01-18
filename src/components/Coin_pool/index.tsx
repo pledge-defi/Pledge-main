@@ -427,17 +427,18 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             .catch(() => console.error())
         : setbalanceborrow(accountbalance));
   }, [poolinfo]);
+  //每三位加一个小数点
   function toThousands(num) {
-    var num = (num || 0).toString(),
-      result = '';
-    while (num.length > 3) {
-      result = ',' + num.slice(-3) + result;
-      num = num.slice(0, num.length - 3);
-    }
-    if (num) {
-      result = num + result;
-    }
-    return result;
+    var st1 = String(num);
+    var index = st1.indexOf('.');
+    var st2 = st1.slice(0, index);
+    var len = st2.length;
+    if (len < 3) return st2.concat(st1.slice(index));
+    var r = len % 3;
+    return (r > 0
+      ? st2.slice(0, r) + ',' + st2.slice(r, len).match(/\d{3}/g).join()
+      : st2.slice(r, len).match(/\d{3}/g).join()
+    ).concat(st1.slice(index));
   }
 
   const imglist = {
@@ -529,14 +530,14 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           <p style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>
               {console.log(poolinfo[pid]?.fixed_rate ?? 0)}
-              <span style={{ color: '#ffa011' }}>{`${
+              <span style={{ color: '#ffa011' }}>{`${toThousands(
                 Math.floor(
                   (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(pricelist[poolinfo[pid]?.Jp ?? 0])) /
                     Number(pricelist[poolinfo[pid]?.Sp ?? 0]) /
                     (poolinfo[pid]?.collateralization_ratio ?? 0)) *
                     10000,
-                ) / 100
-              }`}</span>
+                ) / 100,
+              )}`}</span>
               /<span style={{ color: '#5D52FF' }}>{`${toThousands(poolinfo[pid]?.available_to_lend[1] ?? 0)}`}</span>
             </span>
             <span>{toThousands(poolinfo[pid]?.maxSupply ?? 0)}</span>
@@ -637,10 +638,10 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                   color: '#4F4E66',
                 }}
               >
-                Minimum deposit quantity{' '}
+                {/* Minimum deposit quantity{' '}
                 <span style={{ color: '#5D52FF' }}>
                   {100} {pool}
-                </span>
+                </span> */}
               </p>
             </>
           ) : (
@@ -663,10 +664,10 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                 </div>
               </div>
               <p style={{ padding: '10px 0 32px', fontWeight: 400, color: '#4F4E66' }}>
-                Minimum deposit quantity{' '}
+                {/* Minimum deposit quantity{' '}
                 <span style={{ color: '#5D52FF' }}>
                   {100} {pool}
-                </span>
+                </span> */}
               </p>
               <p className="info_title2">How much collateral do you want to pledge?</p>
               <div style={{ marginBottom: '28px', paddingBottom: '28px', borderBottom: '1px dashed #E6E6EB' }}>
@@ -784,14 +785,14 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                         loading={loadings}
                         onClick={async () => {
                           var currentTime = Math.round(new Date().getTime() / 1000 + 300).toString();
-                          if (lendvalue < 100) {
-                            return setwarning('Minimum deposit quantity 100 BUSD');
-                          } else if ((poolinfo[pid]?.state ?? 0) > 2) {
+                          if ((poolinfo[pid]?.state ?? 0) > 2) {
                             return setwarning('The pool has finished');
                           } else if (lendvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
                             return setwarning('Maximum exceeded');
                           } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
                             return setwarning('Less than five minutes from settlement date');
+                          } else if (lendvalue > (balance && Number(dealNumber_18(balance)))) {
+                            return setwarning('transfer amount exceeds balance');
                           }
                           setwarning('');
                           setloadings(true);
@@ -838,14 +839,14 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       console.log(num, lendvalue);
                       var currentTime = Math.round(new Date().getTime() / 1000 + 300).toString();
 
-                      if (lendvalue < 100) {
-                        return setwarning('Minimum deposit quantity 100 BUSD');
-                      } else if ((poolinfo[pid]?.state ?? 0) > 2) {
+                      if ((poolinfo[pid]?.state ?? 0) > 2) {
                         return setwarning('The pool has finished');
                       } else if (lendvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
                         return setwarning('Maximum exceeded');
                       } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
                         return setwarning('Less than five minutes from settlement date');
+                      } else if (lendvalue > (balance && Number(dealNumber_18(balance)))) {
+                        return setwarning('transfer amount exceeds balance');
                       }
                       setloadings(true);
                       // //lend方法
@@ -890,13 +891,14 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       loading={loadings}
                       onClick={async () => {
                         var currentTime = Math.round(new Date().getTime() / 1000 + 300).toString();
-                        if (borrowvalue < 100) {
-                          return setwarning('Minimum deposit quantity 100 BUSD');
-                        } else if (borrowvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
+                        if (borrowvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
                           return setwarning('Maximum exceeded');
                         } else if (currentTime > (poolinfo[pid]?.settleTime ?? 0)) {
                           return setwarning('Less than five minutes from settlement date');
+                        } else if (borrowvalue > (balanceborrow && Number(dealNumber_18(balanceborrow)))) {
+                          return setwarning('transfer amount exceeds balance');
                         }
+
                         setwarning('');
                         setloadings(true);
 
@@ -946,12 +948,12 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       setloadings(true);
                       var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
                       console.log(timestamp);
-                      if (borrowvalue < 100) {
-                        return setwarning('Minimum deposit quantity 100 BUSD');
-                      } else if (borrowvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
+                      if (borrowvalue > (poolinfo[pid]?.maxSupply ?? 0)) {
                         return setwarning('Maximum exceeded');
                       } else if (timestamp > (poolinfo[pid]?.settleTime ?? 0)) {
                         return setwarning('Less than five minutes from settlement date');
+                      } else if (borrowvalue > (balanceborrow && Number(dealNumber_18(balanceborrow)))) {
+                        return setwarning('transfer amount exceeds balance');
                       }
 
                       // // 授权
