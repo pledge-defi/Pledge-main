@@ -140,7 +140,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             <p style={{ fontSize: '16px', lineHeight: '24px', fontWeight: 600, margin: '0' }}>{placement}</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <p style={{ margin: '0 9.4px 0 33px' }}>{'laim refund error'}</p>{' '}
+            <p style={{ margin: '0 9.4px 0 33px' }}>{'Claim refund error'}</p>{' '}
             <img src={icon4} alt="" style={{ width: '11.2px', height: '11.2px' }} />
           </div>
         </div>
@@ -196,38 +196,16 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       return x.dividedBy(y).toString();
     }
   };
-  useEffect(() => {
-    services.BscPledgeOracleServer.getPrices([
-      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
-      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
-      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
-      '0x0000000000000000000000000000000000000000',
-      '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA',
-      '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658',
-      '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B',
-    ])
-      .then((res) => {
-        setBUSD(dealNumber_Price(res[0]));
-        setBTCB(dealNumber_Price(res[1]));
-        setDAI(dealNumber_Price(res[2]));
-        setBNB(dealNumber_Price(res[3]));
-        setBUSD(dealNumber_Price(res[4]));
-        setBTCB(dealNumber_Price(res[5]));
-        setDAI(dealNumber_Price(res[6]));
-      })
-      .catch(() => {
-        console.error();
-      });
-  }, []);
+  useEffect(() => {}, []);
   useEffect(() => {
     if (chainId !== undefined) {
       {
         mode == 'Lend'
-          ? services.PoolServer.getuserLendInfo((props.key - 1).toString()).then((data) => {
+          ? services.PoolServer.getuserLendInfo((props.key - 1).toString(), chainId).then((data) => {
               sethasNoClaim(data.hasNoRefund);
               setstakeAmount(data.stakeAmount);
             })
-          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString()).then((data) => {
+          : services.PoolServer.getuserBorrowInfo((props.key - 1).toString(), chainId).then((data) => {
               sethasNoClaim(data.hasNoRefund);
               setstakeAmountborrow(data.stakeAmount);
             });
@@ -243,15 +221,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       setbalance('0');
     }
   });
-  const pricelist = {
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
-    '0x0000000000000000000000000000000000000000': BNBprice,
-    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSDprice,
-    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCBprice,
-    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAIprice,
-  };
+
   const refundLend =
     Number(dealNumber_18(props.lendSupply)) !== 0
       ? (Number(dealNumber_18(props.lendSupply)) - Number(dealNumber_18(stateinfo.settleAmountLend))) *
@@ -267,7 +237,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
     console.log('getRefund');
     if (props.state == '4') {
       mode == 'Lend'
-        ? services.PoolServer.getemergencyLendWithdrawal(props.key - 1)
+        ? services.PoolServer.getemergencyLendWithdrawal(props.key - 1, chainId)
             .then(() => {
               openNotificationlend('Success');
               setloadings(false);
@@ -275,7 +245,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             .catch(() => {
               openNotificationerrorlend('Error'), setloadings(false);
             })
-        : services.PoolServer.getemergencyBorrowWithdrawal(props.key - 1)
+        : services.PoolServer.getemergencyBorrowWithdrawal(props.key - 1, chainId)
             .then(() => {
               openNotificationborrow('Success');
               setloadings(false);
@@ -285,7 +255,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             });
     } else {
       mode == 'Lend'
-        ? services.PoolServer.getrefundLend(props.key - 1)
+        ? services.PoolServer.getrefundLend(props.key - 1, chainId)
             .then(() => {
               openNotificationlend('Success');
               setloadings(false);
@@ -293,7 +263,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
             .catch(() => {
               openNotificationerrorlend('Error'), setloadings(false);
             })
-        : services.PoolServer.getrefundBorrow(props.key - 1)
+        : services.PoolServer.getrefundBorrow(props.key - 1, chainId)
             .then(() => {
               openNotificationborrow('Success');
               setloadings(false);
@@ -309,7 +279,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
         {mode == 'Lend' ? (
           <li className="claim_list">
             <div style={{ justifyContent: 'start' }} className="imgdiv">
-              <OrderImg img1={props.poolname} img2={props.underlying_asset} />
+              <OrderImg img1={props.logo2} img2={props.logo} />
               {props.poolname} / {props.underlying_asset}
             </div>
             {props.state != 0 ? (
@@ -322,8 +292,8 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   <span className="media_list">Total Borrow Amount</span>
                   <span>
                     {Math.floor(
-                      ((dealNumber_18(props.borrowSupply) * Number(pricelist[props.Jp])) /
-                        Number(pricelist[props.Sp]) /
+                      ((dealNumber_18(props.borrowSupply) * Number(props.borrowPrice)) /
+                        Number(props.lendPrice) /
                         props.collateralization_ratio) *
                         10000,
                     ) / 100}
@@ -341,9 +311,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                     <span>{hasNoClaim == false ? dealNumber_18(stakeAmount) : 0}</span>
                   ) : (
                     <span>
-                      {hasNoClaim == false
-                        ? Math.floor(refundLend * Number(pricelist[props.Sp]) * 10000000) / 10000000
-                        : 0}
+                      {hasNoClaim == false ? Math.floor(refundLend * Number(props.lendPrice) * 10000000) / 10000000 : 0}
                     </span>
                   )}
                 </p>
@@ -381,7 +349,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
         ) : (
           <li className="claim_list">
             <div style={{ justifyContent: 'start' }} className="imgdiv">
-              <OrderImg img1={props.poolname} img2={props.underlying_asset} />
+              <OrderImg img1={props.logo2} img2={props.logo} />
               {props.poolname} / {props.underlying_asset}
             </div>
             {props.state != 0 ? (
@@ -396,8 +364,8 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
 
                   <span>
                     {Math.floor(
-                      ((dealNumber_18(props.borrowSupply) * Number(pricelist[props.Jp])) /
-                        Number(pricelist[props.Sp]) /
+                      ((dealNumber_18(props.borrowSupply) * Number(props.borrowPrice)) /
+                        Number(props.lendPrice) /
                         props.collateralization_ratio) *
                         10000,
                     ) / 100}
@@ -416,7 +384,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
                   ) : (
                     <span>
                       {hasNoClaim == false
-                        ? Math.floor(refundBorrow * Number(pricelist[props.Sp]) * 10000000) / 10000000
+                        ? Math.floor(refundBorrow * Number(props.lendPrice) * 10000000) / 10000000
                         : 0}
                     </span>
                   )}

@@ -9,7 +9,7 @@ import Coin_pool from '_components/Coin_pool';
 import './index.less';
 
 type Iparams = {
-  coin: 'BTCB' | 'ETH' | 'BNB' | 'BTCB' | 'BNB';
+  coin: string;
   pool: 'BUSD' | 'USDC' | 'DAI';
   mode: 'Borrower' | 'Lender';
 };
@@ -25,18 +25,16 @@ function MarketPage() {
   useEffect(() => {}, []);
   console.log(params);
   return (
-    ['BTCB', 'ETH', 'BNB', 'BTCB', 'BNB'].includes(coin) && (
-      <DappLayout className="dapp_coin_page">
-        <Tabs defaultActiveKey="1" onChange={callback} activeKey={mode}>
-          <TabPane tab="Lender" key="Lender">
-            <Coin_pool mode="Lend" pool={pool} coin={coin} />
-          </TabPane>
-          <TabPane tab="Borrower" key="Borrower">
-            <Coin_pool mode="Borrow" pool={pool} coin={coin} />
-          </TabPane>
-        </Tabs>
-      </DappLayout>
-    )
+    <DappLayout className="dapp_coin_page">
+      <Tabs defaultActiveKey="1" onChange={callback} activeKey={mode}>
+        <TabPane tab="Lender" key="Lender">
+          <Coin_pool mode="Lend" pool={pool} coin={coin} />
+        </TabPane>
+        <TabPane tab="Borrower" key="Borrower">
+          <Coin_pool mode="Borrow" pool={pool} coin={coin} />
+        </TabPane>
+      </Tabs>
+    </DappLayout>
   );
 }
 

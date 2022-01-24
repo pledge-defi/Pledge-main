@@ -38,48 +38,7 @@ function HomePage() {
   const [show, setshow] = useState('100');
   const [data, setdata] = useState([]);
   const [datastate, setdatastate] = useState([]);
-  const [BUSDprice, setBUSD] = useState('');
-  const [BTCBprice, setBTCB] = useState('');
 
-  const [DAIprice, setDAI] = useState('');
-
-  const [BNBprice, setBNB] = useState('');
-  const poolAsset = {
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
-    '0x0000000000000000000000000000000000000000': 'BNB',
-    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': 'BUSD',
-    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': 'BTCB',
-    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': 'DAI',
-  };
-  const imglist = {
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCB,
-    '0x0000000000000000000000000000000000000000': BNB,
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAI,
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSD,
-    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCB,
-    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAI,
-    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSD,
-  };
-  const pricelist = {
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
-    '0x0000000000000000000000000000000000000000': BNBprice,
-    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSDprice,
-    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCBprice,
-    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAIprice,
-  };
-  const getPrice = () => {
-    services.BscPledgeOracleServer.getPrice('0xf592aa48875a5fde73ba64b527477849c73787ad')
-      .then((res) => {
-        setprice(Number(dealNumber_Price(res)));
-      })
-      .catch(() => {
-        console.error();
-      });
-  };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -95,49 +54,44 @@ function HomePage() {
       return x.dividedBy(y).toString();
     }
   };
-  const dealNumber_Price = (num) => {
-    if (num) {
-      let x = new BigNumber(num);
-      let y = new BigNumber(1e8);
-      return x.dividedBy(y).toString();
-    }
-  };
   const getPoolInfo = async () => {
-    const datainfo = await services.PoolServer.getPoolBaseData();
-
-    const datainfo6 = await services.PoolServer.getPoolDataInfo();
+    const datainfo = await services.userServer.getpoolBaseInfo(chainId && chainId);
 
     console.log(222, datainfo);
-    const res = datainfo.map((item, index) => {
-      let maxSupply = dealNumber_18(item.maxSupply);
-      let borrowSupply = dealNumber_18(item.borrowSupply);
-      let lendSupply = dealNumber_18(item.lendSupply);
+    const res = datainfo.data.data.map((item, index) => {
+      console.log(item.pool_data);
+      let maxSupply = dealNumber_18(item.pool_data.maxSupply);
+      let borrowSupply = dealNumber_18(item.pool_data.borrowSupply);
+      let lendSupply = dealNumber_18(item.pool_data.lendSupply);
 
-      const times = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
+      const times = moment.unix(item.pool_data.settleTime).format(FORMAT_TIME_STANDARD);
 
-      var difftime = item.endTime - item.settleTime;
+      var difftime = item.pool_data.endTime - item.pool_data.settleTime;
 
       var days = parseInt(difftime / 86400 + '');
       return {
         key: index + 1,
-        state: item.state,
-        underlying_asset: poolAsset[item.borrowToken],
-        fixed_rate: dealNumber_8(item.interestRate),
+        state: item.pool_data.state,
+        underlying_asset: item.pool_data.borrowTokenInfo.tokenName,
+        fixed_rate: dealNumber_8(item.pool_data.interestRate),
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: times,
         length: days,
-        margin_ratio: dealNumber_8(item.autoLiquidateThreshold),
-        collateralization_ratio: dealNumber_8(item.martgageRate),
-        poolname: poolAsset[item.lendToken],
-        endTime: item.endTime,
-        settleTime: item.settleTime,
-        logo: imglist[item.borrowToken],
-        Sp: item.lendToken,
-        Jp: item.borrowToken,
+        margin_ratio: dealNumber_8(item.pool_data.autoLiquidateThreshold),
+        collateralization_ratio: dealNumber_8(item.pool_data.martgageRate),
+        poolname: item.pool_data.lendTokenInfo.tokenName,
+        endTime: item.pool_data.endTime,
+        settleTime: item.pool_data.settleTime,
+        logo: item.pool_data.borrowTokenInfo.tokenLogo,
+        Sp: item.pool_data.lendToken,
+        Jp: item.pool_data.borrowToken,
+        borrowPrice: item.pool_data.borrowTokenInfo.tokenPrice,
+        lendPrice: item.pool_data.lendTokenInfo.tokenPrice,
       };
     });
     setdata(res);
+
     setdatastate(
       res.filter((item) => {
         return item.state < 1;
@@ -150,29 +104,12 @@ function HomePage() {
     getPoolInfo().catch(() => {
       console.error();
     });
-    getPrice();
-    services.BscPledgeOracleServer.getPrices([
-      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
-      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
-      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
-      '0x0000000000000000000000000000000000000000',
-      '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA',
-      '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658',
-      '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B',
-    ])
-      .then((res) => {
-        console.log(res);
-        setBUSD(dealNumber_Price(res[0]));
-        setBTCB(dealNumber_Price(res[1]));
-        setDAI(dealNumber_Price(res[2]));
-        setBNB(dealNumber_Price(res[3]));
-        setBUSD(dealNumber_Price(res[4]));
-        setBTCB(dealNumber_Price(res[5]));
-        setDAI(dealNumber_Price(res[6]));
-      })
-      .catch(() => console.error());
   }, []);
-
+  useEffect(() => {
+    getPoolInfo().catch(() => {
+      console.error();
+    });
+  }, [chainId]);
   const callback = (key) => {
     history.push(key);
     setpool(key);
@@ -286,7 +223,7 @@ function HomePage() {
               success={{
                 percent:
                   Math.floor(
-                    ((val[0] * pricelist[record.Jp]) / pricelist[record.Sp] / record.collateralization_ratio) * 10000,
+                    ((val[0] * record.borrowPrice) / record.lendPrice / record.collateralization_ratio) * 10000,
                   ) / record.maxSupply,
               }}
             />
@@ -296,11 +233,14 @@ function HomePage() {
                 <span style={{ color: '#FFA011', fontSize: '12px' }}>
                   {toThousands(
                     Math.floor(
-                      ((val[0] * pricelist[record.Jp]) / pricelist[record.Sp] / record.collateralization_ratio) * 10000,
+                      ((val[0] * record.borrowPrice) / record.lendPrice / record.collateralization_ratio) * 10000,
                     ) / 100,
                   )}
                 </span>
-                /<span style={{ color: '#5D52FF', fontSize: '12px' }}>{`${toThousands(val[1])}`}</span>
+                /
+                <span style={{ color: '#5D52FF', fontSize: '12px' }}>{`${toThousands(
+                  Math.floor(val[1] * 100) / 100,
+                )}`}</span>
               </span>
               <span style={{ width: '10px' }}></span>
               <span style={{ fontSize: '12px' }}>{toThousands(record.maxSupply)}</span>

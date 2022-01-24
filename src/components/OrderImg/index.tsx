@@ -17,17 +17,10 @@ export interface IOrderImg {
 }
 
 const OrderImg: React.FC<IOrderImg> = ({ className, style, img1, img2 }) => {
-  const imglist = {
-    BUSD: BUSD,
-    BTCB: BTCB,
-    USDT: USDT,
-    DAI: DAI,
-    BNB: BNB,
-  };
   return (
     <div className={classnames('components_order_img')} style={style}>
-      <img src={imglist[img1]} alt="" className="img1" />
-      <img src={imglist[img2]} alt="" className="img2" />
+      <img src={img1} alt="" className="img1" />
+      <img src={img2} alt="" className="img2" />
     </div>
   );
 };

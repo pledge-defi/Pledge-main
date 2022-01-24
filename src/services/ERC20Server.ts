@@ -1,6 +1,6 @@
 import { gasOptions, getERC20Contract, getDefaultAccount } from './web3';
 import type { ERC20 } from '_src/contracts/ERC20';
-import { pledge_address, ORACLE_address } from '_src/utils/constants';
+import { pledge_address, ORACLE_address, pledge_mainaddress } from '_src/utils/constants';
 
 const ERC20Server = {
   //获取余额
@@ -12,18 +12,27 @@ const ERC20Server = {
   },
 
   //授权
-  async Approve(contractAddress, amount) {
+  async Approve(contractAddress, amount, chainId) {
     const contract = getERC20Contract(contractAddress);
     const options = await gasOptions();
-    const rates = await contract.methods.approve(pledge_address, amount).send(options);
+    const rates = await contract.methods
+      .approve(chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address, amount)
+      .send(options);
     return rates;
   },
   //
-  async allowance(contractAddress) {
+  async allowance(contractAddress, chainId) {
     // sp_token \ jp_token
     const contract = getERC20Contract(contractAddress);
     const owner = await getDefaultAccount();
-    return await contract.methods.allowance(owner, pledge_address).call();
+    return await contract.methods
+      .allowance(owner, chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address)
+      .call();
+  },
+  async getname(contractAddress) {
+    const contract = getERC20Contract(contractAddress);
+    const owner = await getDefaultAccount();
+    return await contract.methods.symbol().call();
   },
 };
 

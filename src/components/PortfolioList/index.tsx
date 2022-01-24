@@ -21,28 +21,12 @@ export interface IPortfolioList {
 
 const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ...props }) => {
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
-
   const { Panel } = Collapse;
   const [stakeAmount, setstakeAmount] = useState('');
   const [stakeAmountborrow, setstakeAmountborrow] = useState('');
-  const [BUSDprice, setBUSD] = useState('');
-  const [BTCBprice, setBTCB] = useState('');
-
-  const [DAIprice, setDAI] = useState('');
-
-  const [BNBprice, setBNB] = useState('');
 
   const PoolState = { 0: 'match', 1: 'running', 2: 'expired', 3: 'liquidation', 4: 'undone' };
 
-  const pricelist = {
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
-    '0x0000000000000000000000000000000000000000': BNBprice,
-    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSDprice,
-    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCBprice,
-    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAIprice,
-  };
   const dealNumber_7 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -59,44 +43,19 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
   };
   const getBalance = () => {
     {
-      services.PoolServer.getuserLendInfo((props.props.key - 1).toString()).then((data) => {
+      services.PoolServer.getuserLendInfo((props.props.key - 1).toString(), chainId).then((data) => {
         setstakeAmount(data.stakeAmount);
       });
-      services.PoolServer.getuserBorrowInfo((props.props.key - 1).toString()).then((data) => {
+      services.PoolServer.getuserBorrowInfo((props.props.key - 1).toString(), chainId).then((data) => {
         setstakeAmountborrow(data.stakeAmount);
       });
     }
   };
-  const dealNumber_Price = (num) => {
-    if (num) {
-      let x = new BigNumber(num);
-      let y = new BigNumber(1e8);
-      return x.dividedBy(y).toString();
-    }
-  };
+
   useEffect(() => {
     getBalance();
   });
-  useEffect(() => {
-    services.BscPledgeOracleServer.getPrices([
-      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
-      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
-      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
-      '0x0000000000000000000000000000000000000000',
-      '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA',
-      '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658',
-      '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B',
-    ]).then((res) => {
-      setBUSD(dealNumber_Price(res[0]));
-      setBTCB(dealNumber_Price(res[1]));
-      setDAI(dealNumber_Price(res[2]));
-      setBNB(dealNumber_Price(res[3]));
-      setBUSD(dealNumber_Price(res[4]));
-
-      setBTCB(dealNumber_Price(res[5]));
-      setDAI(dealNumber_Price(res[6]));
-    });
-  }, []);
+  useEffect(() => {}, []);
   const claimAmount =
     Number(dealNumber_18(props.props.lendSupply)) !== 0
       ? Number(dealNumber_18(datainfo.settleAmountLend)) *
@@ -126,10 +85,19 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       title: 'Detail',
       Total_financing: `${
         mode == 'Lend'
-          ? dealNumber_7(props.props.lendSupply)
+          ? dealNumber_7(props.props.lendSupply) == undefined
+            ? 0
+            : dealNumber_7(props.props.lendSupply)
           : dealNumber_7(
-              ((props.props.borrowSupply * pricelist[props.props.Jp]) /
-                pricelist[props.props.Sp] /
+              ((props.props.borrowSupply * props.props.borrowPrice) /
+                props.props.lendPrice /
+                props.props.collateralization_ratio) *
+                100,
+            ) == undefined
+          ? 0
+          : dealNumber_7(
+              ((props.props.borrowSupply * props.props.borrowPrice) /
+                props.props.lendPrice /
                 props.props.collateralization_ratio) *
                 100,
             )
@@ -148,7 +116,7 @@ ${props.props.poolname} `,
           header={
             <Row gutter={16}>
               <Col span={4}>
-                <OrderImg img1={props.props.poolname} img2={props.props.underlying_asset} />
+                <OrderImg img1={props.props.logo2} img2={props.props.logo} />
                 <Statistic title={`${props.props.poolname}/${props.props.underlying_asset}`} />
               </Col>
               <Col span={4}>

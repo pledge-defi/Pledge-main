@@ -36,15 +36,6 @@ function Market_Mode() {
   const [pidlend, setpidlend] = useState([]);
   const [pidborrow, setpidborrow] = useState([]);
 
-  const poolAsset = {
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': 'BUSD',
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': 'BTCB',
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': 'DAI',
-    '0x0000000000000000000000000000000000000000': 'BNB',
-    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': 'BUSD',
-    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': 'BTCB',
-    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': 'DAI',
-  };
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -60,58 +51,59 @@ function Market_Mode() {
     }
   };
   const getData = () => {
-    services.PoolServer.getPoolDataInfo()
-      .then((res) => {
-        setdatainfo1(res);
-      })
-      .catch(() => {
-        console.error();
-      });
+    services.userServer.getpoolDataInfo(chainId && chainId).then((res) => {
+      console.log(res.data.data);
+      setdatainfo1(res.data.data);
+    });
   };
   let [time, settime] = useState(0);
   const getPoolInfo = async () => {
-    const datainfo = await services.PoolServer.getPoolBaseData();
+    const datainfo = await services.userServer.getpoolBaseInfo(chainId && chainId);
 
-    const res = datainfo.map((item, index) => {
-      let maxSupply = dealNumber_18(item.maxSupply);
-      let borrowSupply = dealNumber_18(item.borrowSupply);
-      let lendSupply = dealNumber_18(item.lendSupply);
+    const res = datainfo.data.data.map((item, index) => {
+      let maxSupply = dealNumber_18(item.pool_data.maxSupply);
+      let borrowSupply = dealNumber_18(item.pool_data.borrowSupply);
+      let lendSupply = dealNumber_18(item.pool_data.lendSupply);
 
-      const settlementdate = moment.unix(item.settleTime).format(FORMAT_TIME_STANDARD);
+      const settlementdate = moment.unix(item.pool_data.settleTime).format(FORMAT_TIME_STANDARD);
 
-      var difftime = item.endTime - item.settleTime;
+      var difftime = item.pool_data.endTime - item.pool_data.settleTime;
 
       var days = parseInt(difftime / 86400 + '');
       return {
         key: index + 1,
-        state: item.state,
-        underlying_asset: poolAsset[item.borrowToken],
-        fixed_rate: dealNumber_8(item.interestRate),
+        state: item.pool_data.state,
+        underlying_asset: item.pool_data.borrowTokenInfo.tokenName,
+        fixed_rate: dealNumber_8(item.pool_data.interestRate),
         maxSupply: maxSupply,
         available_to_lend: [borrowSupply, lendSupply],
         settlement_date: settlementdate,
         length: days,
-        margin_ratio: dealNumber_8(item.autoLiquidateThreshold),
-        collateralization_ratio: dealNumber_8(item.martgageRate),
-        poolname: poolAsset[item.lendToken],
-        Sp: item.lendToken,
-        Jp: item.borrowToken,
-        endtime: item.endTime,
-        lendSupply: item.lendSupply,
-        borrowSupply: item.borrowSupply,
-        Sptoken: item.spCoin,
-        Jptoken: item.jpCoin,
+        margin_ratio: dealNumber_8(item.pool_data.autoLiquidateThreshold),
+        collateralization_ratio: dealNumber_8(item.pool_data.martgageRate),
+        poolname: item.pool_data.lendTokenInfo.tokenName,
+        Sp: item.pool_data.lendToken,
+        Jp: item.pool_data.borrowToken,
+        endtime: item.pool_data.endTime,
+        lendSupply: item.pool_data.lendSupply,
+        borrowSupply: item.pool_data.borrowSupply,
+        Sptoken: item.pool_data.spCoin,
+        Jptoken: item.pool_data.jpCoin,
+        logo: item.pool_data.borrowTokenInfo.tokenLogo,
+        logo2: item.pool_data.lendTokenInfo.tokenLogo,
+        borrowPrice: dealNumber_8(item.pool_data.borrowTokenInfo.tokenPrice / 100),
+        lendPrice: dealNumber_8(item.pool_data.lendTokenInfo.tokenPrice / 100),
       };
     });
 
     res.map((item, index) => {
-      services.PoolServer.getuserLendInfo((Number(item.key) - 1).toString())
+      services.PoolServer.getuserLendInfo((Number(item.key) - 1).toString(), chainId && chainId)
         .then((res1) => {
           res1.stakeAmount == '0' ? console.log(1111111) : pidlend.push(item);
           setdatalend(pidlend);
         })
         .catch(() => console.error());
-      services.PoolServer.getuserBorrowInfo((Number(item.key) - 1).toString())
+      services.PoolServer.getuserBorrowInfo((Number(item.key) - 1).toString(), chainId && chainId)
         .then((res) => {
           res.stakeAmount == '0' ? console.log(1111111) : pidborrow.push(item);
           setdataborrow(pidborrow);
@@ -140,7 +132,7 @@ function Market_Mode() {
     getPoolInfo().catch(() => {
       console.error();
     });
-  }, []);
+  }, [chainId]);
 
   const LendTitle = [
     'Pool / Underlying Asset',
@@ -245,6 +237,7 @@ function Market_Mode() {
                       );
                     })}
               </p>
+
               {datainfo1.length &&
                 datastate.length &&
                 (mode == 'Lend'

@@ -61,6 +61,10 @@ export type PledgePoolEvents =
   | 'Redeem'
   | 'RefundBorrow'
   | 'RefundLend'
+  | 'SetFee'
+  | 'SetFeeAddress'
+  | 'SetMinAmount'
+  | 'SetSwapRouterAddress'
   | 'StateChange'
   | 'Swap'
   | 'WithdrawBorrow'
@@ -156,6 +160,42 @@ export interface PledgePoolEventsContext {
     },
     callback?: (error: Error, event: EventData) => void,
   ): EventResponse;
+  SetFee(
+    parameters: {
+      filter?: { newLendFee?: string | string[]; newBorrowFee?: string | string[] };
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
+  SetFeeAddress(
+    parameters: {
+      filter?: { oldFeeAddress?: string | string[]; newFeeAddress?: string | string[] };
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
+  SetMinAmount(
+    parameters: {
+      filter?: { oldMinAmount?: string | string[]; newMinAmount?: string | string[] };
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
+  SetSwapRouterAddress(
+    parameters: {
+      filter?: { oldSwapAddress?: string | string[]; newSwapAddress?: string | string[] };
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
   StateChange(
     parameters: {
       filter?: { pid?: string | string[]; beforeState?: string | string[]; afterState?: string | string[] };
@@ -230,7 +270,6 @@ export type PledgePoolMethodNames =
   | 'settle'
   | 'swapRouter'
   | 'transferOwnership'
-  | 'updatePoolBaseInfo'
   | 'userBorrowInfo'
   | 'userLendInfo'
   | 'withdrawBorrow'
@@ -285,6 +324,22 @@ export interface RefundLendEventEmittedResponse {
   from: string;
   token: string;
   refund: string;
+}
+export interface SetFeeEventEmittedResponse {
+  newLendFee: string;
+  newBorrowFee: string;
+}
+export interface SetFeeAddressEventEmittedResponse {
+  oldFeeAddress: string;
+  newFeeAddress: string;
+}
+export interface SetMinAmountEventEmittedResponse {
+  oldMinAmount: string;
+  newMinAmount: string;
+}
+export interface SetSwapRouterAddressEventEmittedResponse {
+  oldSwapAddress: string;
+  newSwapAddress: string;
 }
 export interface StateChangeEventEmittedResponse {
   pid: string;
@@ -437,9 +492,8 @@ export interface PledgePool {
    * Type: function
    * @param _pid Type: uint256, Indexed: false
    * @param _stakeAmount Type: uint256, Indexed: false
-   * @param _deadLine Type: uint256, Indexed: false
    */
-  depositBorrow(_pid: string, _stakeAmount: string, _deadLine: string): MethodPayableReturnContext;
+  depositBorrow(_pid: string, _stakeAmount: string): MethodPayableReturnContext;
   /**
    * Payable: true
    * Constant: false
@@ -650,22 +704,6 @@ export interface PledgePool {
   transferOwnership(newOwner: string): MethodReturnContext;
   /**
    * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param _pid Type: uint256, Indexed: false
-   * @param _interestRate Type: uint64, Indexed: false
-   * @param _maxSupply Type: uint256, Indexed: false
-   * @param _autoLiquidateThreshold Type: uint256, Indexed: false
-   */
-  updatePoolBaseInfo(
-    _pid: string,
-    _interestRate: string,
-    _maxSupply: string,
-    _autoLiquidateThreshold: string,
-  ): MethodReturnContext;
-  /**
-   * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
@@ -689,9 +727,8 @@ export interface PledgePool {
    * Type: function
    * @param _pid Type: uint256, Indexed: false
    * @param _jpAmount Type: uint256, Indexed: false
-   * @param _deadLine Type: uint256, Indexed: false
    */
-  withdrawBorrow(_pid: string, _jpAmount: string, _deadLine: string): MethodReturnContext;
+  withdrawBorrow(_pid: string, _jpAmount: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: false

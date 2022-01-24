@@ -230,7 +230,7 @@ const ClaimTime: React.FC<IClaimTime> = ({
     var timestamp = Math.round(new Date().getTime() / 1000 + 300).toString();
 
     mode == 'Lend'
-      ? services.PoolServer.getwithdrawLend(pid, Spnum)
+      ? services.PoolServer.getwithdrawLend(pid, Spnum, chainId)
           .then(() => {
             openNotificationlend('Success');
             setloadings(false);
@@ -238,7 +238,7 @@ const ClaimTime: React.FC<IClaimTime> = ({
           .catch(() => {
             openNotificationerrorlend('Error'), setloadings(false);
           })
-      : services.PoolServer.getwithdrawBorrow(pid, Jpnum, timestamp)
+      : services.PoolServer.getwithdrawBorrow(pid, Jpnum, timestamp, chainId)
           .then(() => {
             openNotificationborrow('Success');
             setloadings(false);
@@ -254,26 +254,26 @@ const ClaimTime: React.FC<IClaimTime> = ({
         mode == 'Lend'
           ? services.ERC20Server.balanceOf(spToken).then((res) => {
               setSpnum(res);
-              services.PoolServer.getuserLendInfo(pid.toString()).then((data) => {
+              services.PoolServer.getuserLendInfo(pid.toString(), chainId).then((data) => {
                 sethasNoClaim(Spnum == '0' ? true : false);
               });
             })
           : services.ERC20Server.balanceOf(jpToken).then((res) => {
               setJpnum(res);
-              services.PoolServer.getuserBorrowInfo(pid.toString()).then((data) => {
+              services.PoolServer.getuserBorrowInfo(pid.toString(), chainId).then((data) => {
                 sethasNoClaim(Jpnum == '0' ? true : false);
               });
             });
       }
     }
 
-    if (state !== '4') {
-      interval();
-    } else {
+    if (state == '4' || state == '3') {
       setdays(0);
       sethours(0);
       setminutes(0);
       setsecond(0);
+    } else {
+      interval();
     }
     return () => clearInterval(timer);
   });
@@ -285,22 +285,29 @@ const ClaimTime: React.FC<IClaimTime> = ({
           <span>{`${days}d`}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{second}</span>
         </p>
       </div>
-
+      {console.log(444, state)}
       <div className="claim_button">
-        {state !== '4' ? (
-          hasNoClaim == false ? (
-            <Button
-              disabled={days + hours + minutes + second == 0 ? false : true}
-              loading={loadings}
-              onClick={() => {
-                setloadings(true), getclaim();
-              }}
-            >
-              Claim
-            </Button>
-          ) : (
-            <Button disabled={true}>Claim</Button>
-          )
+        {state == '4' ? (
+          <Button disabled={true}>Claim</Button>
+        ) : state == '3' ? (
+          <Button
+            disabled={false}
+            onClick={() => {
+              setloadings(true), getclaim();
+            }}
+          >
+            Claim
+          </Button>
+        ) : hasNoClaim == false ? (
+          <Button
+            disabled={days + hours + minutes + second == 0 ? false : true}
+            loading={loadings}
+            onClick={() => {
+              setloadings(true), getclaim();
+            }}
+          >
+            Claim
+          </Button>
         ) : (
           <Button disabled={true}>Claim</Button>
         )}

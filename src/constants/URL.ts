@@ -1,14 +1,14 @@
 // 定义URL
 const URLSource = {
-  /** 用户登录 */
-  user: {
-    login: '/user/login',
+  info: {
+    poolBaseInfo: ':8080/poolBaseInfo',
+    poolDataInfo: ':8080/poolDataInfo',
   },
 };
 
 // 联调环境接口判断
 const baseUrl = {
-  development: 'http://dev.test.com/api',
+  development: 'http://50.18.79.42',
   production: 'https://pro.test.com/api',
 };
 
@@ -17,19 +17,18 @@ const handler = {
   get(target, key) {
     // get 的trap 拦截get方法
     let value = target[key];
+    const nowHost = window.location.hostname;
+
     try {
       return new Proxy(value, handler); // 使用try catch 巧妙的实现了 深层 属性代理
     } catch (err) {
       if (typeof value === 'string') {
-        // 向请求地址动态绑定执行环境 如: test
-        value = baseUrl[process.env.NODE_ENV] + value;
-
-        // 替换当前浏览器的类型 通过获取路由中的第一个路径去区分
-        // if (value.includes('{type}')) {
-        //  这里执行 动态替换 urlPath 的事情
-        // }
+        let base = baseUrl.development;
+        if (nowHost.includes('127.0.0.1') || nowHost.includes('localhost')) {
+          base = baseUrl['development'];
+        }
+        return base + value;
       }
-      return value;
     }
   },
   set(target, key) {

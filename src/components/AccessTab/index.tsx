@@ -25,13 +25,7 @@ export interface IAccessTab {
   props: any;
   stateinfo: any;
 }
-const imglist = {
-  BUSD: BUSD,
-  BTCB: BTCB,
-  USDT: USDT,
-  DAI: DAI,
-  BNB: BNB,
-};
+
 const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, stateinfo }) => {
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
 
@@ -39,10 +33,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
   const [loadings, setloadings] = useState(false);
   const [stakeAmount, setstakeAmount] = useState('');
   const [stakeAmountborrow, setstakeAmountborrow] = useState('');
-  const [BUSDprice, setBUSD] = useState('');
-  const [BTCBprice, setBTCB] = useState('');
-  const [DAIprice, setDAI] = useState('');
-  const [BNBprice, setBNB] = useState('');
+
   const openNotificationlend = (placement) => {
     notification.config({
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,
@@ -186,15 +177,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       ),
     });
   };
-  const pricelist = {
-    '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2': BUSDprice,
-    '0xF592aa48875a5FDE73Ba64B527477849C73787ad': BTCBprice,
-    '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096': DAIprice,
-    '0x0000000000000000000000000000000000000000': BNBprice,
-    '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA': BUSDprice,
-    '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658': BTCBprice,
-    '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B': DAIprice,
-  };
+
   const dealNumber_18 = (num) => {
     if (num) {
       let x = new BigNumber(num);
@@ -202,45 +185,48 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
       return x.dividedBy(y).toFixed();
     }
   };
-  const getImporttoken = () => {
-    mode == 'Lend'
-      ? library.provider
-          .request({
-            method: 'wallet_watchAsset',
-            params: {
-              type: 'ERC20',
-              options: {
-                address: props.Sptoken,
-                symbol: 'SP',
-                decimals: 18,
+  const getImporttoken = (address) => {
+    services.ERC20Server.getname(address).then((res) => {
+      console.log(res);
+      mode == 'Lend'
+        ? library.provider
+            .request({
+              method: 'wallet_watchAsset',
+              params: {
+                type: 'ERC20',
+                options: {
+                  address: props.Sptoken,
+                  symbol: res,
+                  decimals: 18,
+                },
               },
-            },
-          })
-          .then((success) => {
-            console.log(success);
-          })
-          .catch(() => console.log(false))
-      : library.provider
-          .request({
-            method: 'wallet_watchAsset',
-            params: {
-              type: 'ERC20',
-              options: {
-                address: props.Jptoken,
-                symbol: 'JP',
-                decimals: 18,
+            })
+            .then((success) => {
+              console.log(success);
+            })
+            .catch(() => console.log(false))
+        : library.provider
+            .request({
+              method: 'wallet_watchAsset',
+              params: {
+                type: 'ERC20',
+                options: {
+                  address: props.Jptoken,
+                  symbol: res,
+                  decimals: 18,
+                },
               },
-            },
-          })
-          .then((success) => {
-            console.log(success);
-          })
-          .catch(() => console.log(false));
+            })
+            .then((success) => {
+              console.log(success);
+            })
+            .catch(() => console.log(false));
+    });
   };
   const accessClaim = async () => {
-    if (props.state == '1' || props.state == '2') {
+    if (props.state == '1' || props.state == '2' || props.state == '3') {
       mode == 'Lend'
-        ? await services.PoolServer.getclaimLend((Number(props.key) - 1).toString())
+        ? await services.PoolServer.getclaimLend((Number(props.key) - 1).toString(), chainId)
             .then(() => {
               openNotificationlend('Success');
               setloadings(false);
@@ -248,7 +234,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
             .catch(() => {
               openNotificationerrorlend('Error'), setloadings(false);
             })
-        : await services.PoolServer.getclaimBorrow((Number(props.key) - 1).toString())
+        : await services.PoolServer.getclaimBorrow((Number(props.key) - 1).toString(), chainId)
             .then(() => {
               openNotificationborrow('Success');
               setloadings(false);
@@ -263,40 +249,19 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
     if (chainId !== undefined) {
       {
         mode == 'Lend'
-          ? services.PoolServer.getuserLendInfo((Number(props.key) - 1).toString()).then((data) => {
+          ? services.PoolServer.getuserLendInfo((Number(props.key) - 1).toString(), chainId).then((data) => {
               sethasNoClaim(data.hasNoClaim);
               setstakeAmount(data.stakeAmount);
             })
-          : services.PoolServer.getuserBorrowInfo((Number(props.key) - 1).toString()).then((data) => {
+          : services.PoolServer.getuserBorrowInfo((Number(props.key) - 1).toString(), chainId).then((data) => {
               sethasNoClaim(data.hasNoClaim);
               setstakeAmountborrow(data.stakeAmount);
             });
       }
     }
   });
-  const dealNumber_Price = (num) => {
-    if (num) {
-      let x = new BigNumber(num);
-      let y = new BigNumber(1e8);
-      return x.dividedBy(y).toString();
-    }
-  };
-  useEffect(() => {
-    services.BscPledgeOracleServer.getPrices([
-      '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2',
-      '0xF592aa48875a5FDE73Ba64B527477849C73787ad',
-      '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096',
-      '0x0000000000000000000000000000000000000000',
-      '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA',
-      '0xB5514a4FA9dDBb48C3DE215Bc9e52d9fCe2D8658',
-      '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B',
-    ]).then((res) => {
-      setBUSD(dealNumber_Price(res[0]));
-      setBTCB(dealNumber_Price(res[1]));
-      setDAI(dealNumber_Price(res[2]));
-      setBNB(dealNumber_Price(res[3]));
-    });
-  }, []);
+
+  useEffect(() => {}, []);
   const claimAmount =
     Number(dealNumber_18(props.lendSupply)) !== 0
       ? Number(dealNumber_18(stateinfo.settleAmountLend)) *
@@ -314,7 +279,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
   return (
     <div className={classnames('access_tab')} style={style}>
       <div className="access_title">
-        <img src={imglist[props.poolname]} alt="" style={{ width: '40px' }} />
+        <img src={props.logo2} alt="" style={{ width: '40px' }} />
         <h2>{props.poolname}</h2>
       </div>
 
@@ -350,7 +315,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
                   fontWeight: 500,
                   boxSizing: 'border-box',
                 }}
-                onClick={getImporttoken}
+                onClick={() => getImporttoken(props.Sptoken)}
               >
                 Add Token
               </Button>
@@ -361,8 +326,8 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
                 <p className="access_token">Loan amount</p>
                 <p className="access_num">
                   {Math.floor(
-                    ((Number(dealNumber_18(props.borrowSupply)) * Number(pricelist[props.Jp])) /
-                      Number(pricelist[props.Sp]) /
+                    ((Number(dealNumber_18(props.borrowSupply)) * Number(props.borrowPrice)) /
+                      Number(props.lendPrice) /
                       props.collateralization_ratio) *
                       10000,
                   ) / 100}{' '}
@@ -376,7 +341,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
                     <p className="access_num">{0}</p>
                   ) : (
                     <p className="access_num">
-                      {hasNoClaim == false ? Math.floor(claimAmountborrow * pricelist[props.Jp] * 100) / 100 : 0}
+                      {hasNoClaim == false ? Math.floor(claimAmountborrow * props.borrowPrice * 100) / 100 : 0}
                     </p>
                   )}
                 </div>
@@ -394,7 +359,7 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
                     fontWeight: 500,
                     boxSizing: 'border-box',
                   }}
-                  onClick={getImporttoken}
+                  onClick={() => getImporttoken(props.Jptoken)}
                 >
                   Add Token
                 </Button>

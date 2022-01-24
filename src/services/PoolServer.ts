@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { gasOptions, getPledgePoolContract, web3, getDefaultAccount } from './web3';
 import { AddEthereumChainParameter, BridgeConfigSimple } from '_constants/ChainBridge.d';
-import { pledge_address, ORACLE_address } from '_src/utils/constants';
+import { pledge_address, ORACLE_address, pledge_mainaddress } from '_src/utils/constants';
 
 import type { PledgePool } from '_src/contracts/PledgePool';
 import { pid, send } from 'process';
@@ -35,79 +35,103 @@ const PoolServer = {
     return poolDataData;
   },
 
-  async getuserLendInfo(pid: string) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getuserLendInfo(pid: string, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     const owner = await getDefaultAccount();
     const data = await contract.methods.userLendInfo(owner, pid).call();
     return await data;
   },
-  async getuserBorrowInfo(pid: string) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getuserBorrowInfo(pid: string, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     const owner = await getDefaultAccount();
     const data = await contract.methods.userBorrowInfo(owner, pid).call();
     return await data;
   },
-  async depositLend(pid, value, coinAddress) {
-    const contract = getPledgePoolContract(pledge_address);
+  async depositLend(pid, value, coinAddress, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     if (coinAddress === '0x0000000000000000000000000000000000000000') {
       options = { ...options, value };
     }
     return await contract.methods.depositLend(pid, value).send(options);
   },
-  async depositBorrow(pid, value, time, coinAddress) {
-    const contract = getPledgePoolContract(pledge_address);
+  async depositBorrow(pid, value, time, coinAddress, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     if (coinAddress === '0x0000000000000000000000000000000000000000') {
       options = { ...options, value };
     }
-    const data = await contract.methods.depositBorrow(pid, value, time).send(options);
+    const data = await contract.methods.depositBorrow(pid, value).send(options);
     return data;
   },
-  async getclaimLend(pid: string) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getclaimLend(pid: string, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     const data = await contract.methods.claimLend(pid).send(options);
     return data;
   },
-  async getemergencyLendWithdrawal(pid) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getemergencyLendWithdrawal(pid, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     const data = await contract.methods.emergencyLendWithdrawal(pid).send(options);
     return data;
   },
-  async getwithdrawLend(pid, value) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getwithdrawLend(pid, value, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     const data = await contract.methods.withdrawLend(pid, value).send(options);
     return data;
   },
-  async getrefundLend(pid) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getrefundLend(pid, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     const data = await contract.methods.refundLend(pid).send(options);
     return data;
   },
-  async getclaimBorrow(pid: string) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getclaimBorrow(pid: string, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     const data = await contract.methods.claimBorrow(pid).send(options);
     return data;
   },
-  async getemergencyBorrowWithdrawal(pid) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getemergencyBorrowWithdrawal(pid, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     const data = await contract.methods.emergencyBorrowWithdrawal(pid).send(options);
     return data;
   },
-  async getwithdrawBorrow(pid, value, time) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getwithdrawBorrow(pid, value, time, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
-    const data = await contract.methods.withdrawBorrow(pid, value, time).send(options);
+    const data = await contract.methods.withdrawBorrow(pid, value).send(options);
     return data;
   },
-  async getrefundBorrow(pid) {
-    const contract = getPledgePoolContract(pledge_address);
+  async getrefundBorrow(pid, chainId) {
+    const contract = getPledgePoolContract(
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+    );
     let options = await gasOptions();
     const data = await contract.methods.refundBorrow(pid).send(options);
     return data;

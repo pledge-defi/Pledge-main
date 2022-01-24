@@ -50,25 +50,32 @@ export type ContractContext = Web3ContractContext<
   AddressPrivilegesEventsContext,
   AddressPrivilegesEvents
 >;
-export type AddressPrivilegesEvents = undefined;
-export interface AddressPrivilegesEventsContext {}
+export type AddressPrivilegesEvents = 'OwnershipTransferred';
+export interface AddressPrivilegesEventsContext {
+  OwnershipTransferred(
+    parameters: {
+      filter?: { previousOwner?: string | string[]; newOwner?: string | string[] };
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
+}
 export type AddressPrivilegesMethodNames =
-  | 'new'
   | 'addMinter'
   | 'delMinter'
   | 'getMinter'
   | 'getMinterLength'
-  | 'getMultiSignatureAddress'
-  | 'isMinter';
+  | 'isMinter'
+  | 'owner'
+  | 'renounceOwnership'
+  | 'transferOwnership';
+export interface OwnershipTransferredEventEmittedResponse {
+  previousOwner: string;
+  newOwner: string;
+}
 export interface AddressPrivileges {
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: constructor
-   * @param multiSignature Type: address, Indexed: false
-   */
-  'new'(multiSignature: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: false
@@ -105,14 +112,29 @@ export interface AddressPrivileges {
    * Constant: true
    * StateMutability: view
    * Type: function
+   * @param account Type: address, Indexed: false
    */
-  getMultiSignatureAddress(): MethodConstantReturnContext<string>;
+  isMinter(account: string): MethodConstantReturnContext<boolean>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param account Type: address, Indexed: false
    */
-  isMinter(account: string): MethodConstantReturnContext<boolean>;
+  owner(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
+   */
+  renounceOwnership(): MethodReturnContext;
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
+   * @param newOwner Type: address, Indexed: false
+   */
+  transferOwnership(newOwner: string): MethodReturnContext;
 }
