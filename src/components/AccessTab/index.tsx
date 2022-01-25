@@ -261,7 +261,6 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
     }
   });
 
-  useEffect(() => {}, []);
   const claimAmount =
     Number(dealNumber_18(props.lendSupply)) !== 0
       ? Number(dealNumber_18(stateinfo.settleAmountLend)) *

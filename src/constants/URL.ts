@@ -1,14 +1,14 @@
 // 定义URL
 const URLSource = {
   info: {
-    poolBaseInfo: ':8080/poolBaseInfo',
-    poolDataInfo: ':8080/poolDataInfo',
+    poolBaseInfo: '/poolBaseInfo',
+    poolDataInfo: '/poolDataInfo',
   },
 };
 
 // 联调环境接口判断
 const baseUrl = {
-  development: 'http://50.18.79.42',
+  development: 'https://dev-v2-backend.pledger.finance',
   production: 'https://pro.test.com/api',
 };
 

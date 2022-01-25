@@ -291,7 +291,8 @@ const ClaimTime: React.FC<IClaimTime> = ({
           <Button disabled={true}>Claim</Button>
         ) : state == '3' ? (
           <Button
-            disabled={false}
+            loading={loadings}
+            disabled={hasNoClaim}
             onClick={() => {
               setloadings(true), getclaim();
             }}

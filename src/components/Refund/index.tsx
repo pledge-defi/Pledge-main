@@ -189,13 +189,7 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
       return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
     }
   };
-  const dealNumber_Price = (num) => {
-    if (num) {
-      let x = new BigNumber(num);
-      let y = new BigNumber(1e8);
-      return x.dividedBy(y).toString();
-    }
-  };
+
   useEffect(() => {}, []);
   useEffect(() => {
     if (chainId !== undefined) {

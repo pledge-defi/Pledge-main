@@ -187,15 +187,33 @@ ${props.props.poolname} `,
                             <p className="rewardkey">
                               {mode == 'Lend' ? 'The principal+interest' : 'Remaining Collateral'}
                             </p>
-                            <p className="rewardvalue">
-                              {mode == 'Lend'
-                                ? `${
-                                    Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000
-                                  }  ${props.props.poolname}`
-                                : `${
-                                    Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) / 10000000
-                                  }  ${props.props.underlying_asset}`}
-                            </p>
+
+                            {props.props.state == '3' ? (
+                              <p className="rewardvalue">
+                                {mode == 'Lend'
+                                  ? `${
+                                      Math.floor(Number(dealNumber_18(datainfo.liquidationAmounLend)) * 10000000) /
+                                      10000000
+                                    }  ${props.props.poolname}`
+                                  : `${
+                                      Math.floor(Number(dealNumber_18(datainfo.liquidationAmounBorrow)) * 10000000) /
+                                      10000000
+                                    }
+                                ${props.props.underlying_asset}`}
+                              </p>
+                            ) : (
+                              <p className="rewardvalue">
+                                {mode == 'Lend'
+                                  ? `${
+                                      Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000
+                                    }  ${props.props.poolname}`
+                                  : `${
+                                      Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) /
+                                      10000000
+                                    }
+                                   ${props.props.underlying_asset}`}
+                              </p>
+                            )}
                           </div>
                           <ClaimTime
                             endtime={props.props.endtime}
