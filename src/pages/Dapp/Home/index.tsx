@@ -38,6 +38,7 @@ function HomePage() {
   const [show, setshow] = useState('100');
   const [data, setdata] = useState([]);
   const [datastate, setdatastate] = useState([]);
+  const [Id, setId] = useState(97);
 
   const dealNumber_18 = (num) => {
     if (num) {
@@ -54,8 +55,8 @@ function HomePage() {
       return x.dividedBy(y).toString();
     }
   };
-  const getPoolInfo = async () => {
-    const datainfo = await services.userServer.getpoolBaseInfo(chainId && chainId);
+  const getPoolInfo = async (chainId) => {
+    const datainfo = await services.userServer.getpoolBaseInfo(chainId);
 
     console.log(222, datainfo);
     const res = datainfo.data.data.map((item, index) => {
@@ -101,15 +102,21 @@ function HomePage() {
 
   useEffect(() => {
     history.push('BUSD');
-    getPoolInfo().catch(() => {
-      console.error();
-    });
   }, []);
   useEffect(() => {
-    getPoolInfo().catch(() => {
-      console.error();
-    });
-  }, [chainId]);
+    setTimeout(() => {
+      setId(chainId);
+      getPoolInfo(Id == undefined ? 97 : Id).catch(() => {
+        console.error();
+      });
+    }, 500);
+  }, [Id]);
+
+  // useEffect(() => {
+  //   getPoolInfo(chainId).catch(() => {
+  //     console.error();
+  //   });
+  // }, [chainId]);
   const callback = (key) => {
     history.push(key);
     setpool(key);
@@ -422,7 +429,7 @@ function HomePage() {
                 datastate.filter((item, index) => {
                   console.log(datastate);
                   return (
-                    item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2' ||
+                    item.Sp == '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56' ||
                     item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
                   );
                 }).length < 10
@@ -432,7 +439,7 @@ function HomePage() {
               columns={columns}
               dataSource={datastate.filter((item, index) => {
                 return (
-                  item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2' ||
+                  item.Sp == '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56' ||
                   item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
                 );
               })}
@@ -466,7 +473,7 @@ function HomePage() {
               pagination={
                 datastate.filter((item, index) => {
                   return (
-                    item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096' ||
+                    item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
                     item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
                   );
                 }).length < 10
@@ -476,7 +483,7 @@ function HomePage() {
               columns={columns}
               dataSource={datastate.filter((item, index) => {
                 return (
-                  item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096' ||
+                  item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
                   item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
                 );
               })}
@@ -493,7 +500,7 @@ function HomePage() {
               columns={columns1}
               dataSource={data.filter((item, index) => {
                 return (
-                  item.Sp == '0xDc6dF65b2fA0322394a8af628Ad25Be7D7F413c2' ||
+                  item.Sp == '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56' ||
                   item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
                 );
               })}
@@ -520,7 +527,7 @@ function HomePage() {
               columns={columns1}
               dataSource={data.filter((item, index) => {
                 return (
-                  item.Sp == '0xf2bDB4ba16b7862A1bf0BE03CD5eE25147d7F096' ||
+                  item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
                   item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
                 );
               })}

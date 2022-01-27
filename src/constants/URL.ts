@@ -3,6 +3,7 @@ const URLSource = {
   info: {
     poolBaseInfo: '/poolBaseInfo',
     poolDataInfo: '/poolDataInfo',
+    poolBaseInfo1: ':8081/poolBaseInfo',
   },
 };
 
@@ -10,6 +11,7 @@ const URLSource = {
 const baseUrl = {
   development: 'https://dev-v2-backend.pledger.finance',
   production: 'https://pro.test.com/api',
+  development1: 'http://50.18.79.42',
 };
 
 // 代理监听 URL配置

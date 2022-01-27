@@ -309,7 +309,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   };
 
   const getPoolInfo = async () => {
-    const datainfo = await services.userServer.getpoolBaseInfo(chainId && chainId).then((res) => {
+    const datainfo = await services.userServer.getpoolBaseInfo(chainId).then((res) => {
       return res;
     });
     console.log(datainfo);
@@ -761,7 +761,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           setwarning('');
                           setloadings(true);
                           let num = dealNumber(lendvalue);
-                          await services.ERC20Server.Approve(poolinfo[pid]?.Sp ?? 0, num, chainId && chainId)
+                          await services.ERC20Server.Approve(poolinfo[pid]?.Sp ?? 0, num, chainId)
                             .then(() => {
                               openNotification('Success');
                               setloadings(false);
@@ -772,7 +772,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                             });
 
                           //授权的SPtoken
-                          await services.ERC20Server.allowance(poolinfo[pid]?.Sp ?? 0, chainId && chainId).catch(() =>
+                          await services.ERC20Server.allowance(poolinfo[pid]?.Sp ?? 0, chainId).catch(() =>
                             console.error(),
                           );
                         }}
@@ -821,7 +821,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       setloadings(true);
                       // //lend方法
                       console.log(poolinfo[pid]?.Jp ?? 0);
-                      services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Sp ?? 0, chainId && chainId)
+                      services.PoolServer.depositLend(pid, num, poolinfo[pid]?.Sp ?? 0, chainId)
                         .then(() => {
                           setloadings(false);
                           openNotificationlend('Success');
@@ -875,7 +875,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                         setloadings(true);
 
                         let borrownum = dealNumber(Math.round(data * Math.pow(10, 18)) / Math.pow(10, 18));
-                        await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum, chainId && chainId)
+                        await services.ERC20Server.Approve(poolinfo[pid]?.Jp ?? 0, borrownum, chainId)
                           .then(() => {
                             openNotification('Success');
                             setloadings(false);
@@ -886,7 +886,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           });
 
                         // // // //授权的JPtoken
-                        await services.ERC20Server.allowance(poolinfo[pid]?.Jp ?? 0, chainId && chainId)
+                        await services.ERC20Server.allowance(poolinfo[pid]?.Jp ?? 0, chainId)
                           .then((data) => {
                             console.log('授权' + data);
                           })
@@ -933,13 +933,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                       console.log(borrownum);
 
                       //borrow方法
-                      services.PoolServer.depositBorrow(
-                        pid,
-                        borrownum,
-                        timestamp,
-                        poolinfo[pid]?.Jp ?? 0,
-                        chainId && chainId,
-                      )
+                      services.PoolServer.depositBorrow(pid, borrownum, timestamp, poolinfo[pid]?.Jp ?? 0, chainId)
                         .then(() => {
                           openNotificationborrow('Success');
                           setloadings(false);

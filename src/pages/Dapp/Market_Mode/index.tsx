@@ -51,14 +51,14 @@ function Market_Mode() {
     }
   };
   const getData = () => {
-    services.userServer.getpoolDataInfo(chainId && chainId).then((res) => {
+    services.userServer.getpoolDataInfo(chainId).then((res) => {
       console.log(res.data.data);
       setdatainfo1(res.data.data);
     });
   };
   let [time, settime] = useState(0);
   const getPoolInfo = async () => {
-    const datainfo = await services.userServer.getpoolBaseInfo(chainId && chainId);
+    const datainfo = await services.userServer.getpoolBaseInfo(chainId);
 
     const res = datainfo.data.data.map((item, index) => {
       let maxSupply = dealNumber_18(item.pool_data.maxSupply);
@@ -97,13 +97,14 @@ function Market_Mode() {
     });
 
     res.map((item, index) => {
-      services.PoolServer.getuserLendInfo((Number(item.key) - 1).toString(), chainId && chainId)
+      services.PoolServer.getuserLendInfo((Number(item.key) - 1).toString(), chainId)
         .then((res1) => {
+          console.log(444, res1);
           res1.stakeAmount == '0' ? console.log(1111111) : pidlend.push(item);
           setdatalend(pidlend);
         })
         .catch(() => console.error());
-      services.PoolServer.getuserBorrowInfo((Number(item.key) - 1).toString(), chainId && chainId)
+      services.PoolServer.getuserBorrowInfo((Number(item.key) - 1).toString(), chainId)
         .then((res) => {
           res.stakeAmount == '0' ? console.log(1111111) : pidborrow.push(item);
           setdataborrow(pidborrow);

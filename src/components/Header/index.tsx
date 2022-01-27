@@ -99,14 +99,16 @@ const Header: React.FC<IHeaderProps> = () => {
           >
             Borrow
           </NavLink>
-          <NavLink
-            to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')}
-            className={location.pathname == '/Market/Provide' ? 'menu-item' : ''}
-            activeStyle={{ color: '#5d52ff' }}
-            activeClassName="active"
-          >
-            Get Testnet Tokens
-          </NavLink>
+          {(chainId == 97 || chainId == undefined) && (
+            <NavLink
+              to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')}
+              className={location.pathname == '/Market/Provide' ? 'menu-item' : ''}
+              activeStyle={{ color: '#5d52ff' }}
+              activeClassName="active"
+            >
+              Get Testnet Tokens
+            </NavLink>
+          )}
         </div>
         <div className="changeWallet">
           <Dropdown
@@ -208,9 +210,11 @@ const Header: React.FC<IHeaderProps> = () => {
               <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Borrow')} className="menu-item">
                 Borrow
               </NavLink>
-              <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
-                Get Testnet Tokens
-              </NavLink>
+              {(chainId == 97 || chainId == undefined) && (
+                <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
+                  Get Testnet Tokens
+                </NavLink>
+              )}
             </div>
           </Drawer>
         </div>
