@@ -49,7 +49,7 @@ const Header: React.FC<IHeaderProps> = () => {
       setCurrentChainId(chainId);
 
       const chainName = find(Object.values(currencyInfos), { chainId })?.chainName;
-      setCurrency(chainName || 'BSC_Testnet');
+      setCurrency(chainName || 'BSC_Mainnet');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
@@ -99,7 +99,7 @@ const Header: React.FC<IHeaderProps> = () => {
           >
             Borrow
           </NavLink>
-          {(chainId == 97 || chainId == undefined) && (
+          {chainId == 97 && (
             <NavLink
               to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')}
               className={location.pathname == '/Market/Provide' ? 'menu-item' : ''}
@@ -120,16 +120,16 @@ const Header: React.FC<IHeaderProps> = () => {
                 style={{ width: '240px', height: '160px', padding: '16px' }}
               >
                 <p style={{ color: ' #8B89A3' }}>Select a network</p>
-                <Menu.Item key={'BSC_Testnet'} style={{ borderRadius: '12px', marginBottom: '10px' }}>
-                  <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
-                    <img src={get(currencyInfos, ['BSC_Testnet', 'chainImageAsset'])} alt="" width={24} height={24} />
-                    <span>BSC-Testnet</span>
-                  </FlexDiv>
-                </Menu.Item>
                 <Menu.Item key={'BSC_Mainnet'} style={{ borderRadius: '12px' }}>
                   <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
                     <img src={get(currencyInfos, ['BSC_Mainnet', 'chainImageAsset'])} alt="" width={24} height={24} />
                     <span>BSC-Mainnet</span>
+                  </FlexDiv>
+                </Menu.Item>
+                <Menu.Item key={'BSC_Testnet'} style={{ borderRadius: '12px', marginBottom: '10px' }}>
+                  <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
+                    <img src={get(currencyInfos, ['BSC_Testnet', 'chainImageAsset'])} alt="" width={24} height={24} />
+                    <span>BSC-Testnet</span>
                   </FlexDiv>
                 </Menu.Item>
               </Menu>
@@ -158,17 +158,6 @@ const Header: React.FC<IHeaderProps> = () => {
                     style={{ width: '240px', height: '160px', padding: '16px' }}
                   >
                     <p style={{ color: ' #8B89A3' }}>Select a network</p>
-                    <Menu.Item key={'BSC_Testnet'} style={{ borderRadius: '12px', marginBottom: '10px' }}>
-                      <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
-                        <img
-                          src={get(currencyInfos, ['BSC_Testnet', 'chainImageAsset'])}
-                          alt=""
-                          width={20}
-                          height={20}
-                        />
-                        <span>BSC-Testnet</span>
-                      </FlexDiv>
-                    </Menu.Item>
                     <Menu.Item key={'BSC_Mainnet'} style={{ borderRadius: '12px' }}>
                       <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
                         <img
@@ -178,6 +167,17 @@ const Header: React.FC<IHeaderProps> = () => {
                           height={20}
                         />
                         <span>BSC-Mainnet</span>
+                      </FlexDiv>
+                    </Menu.Item>
+                    <Menu.Item key={'BSC_Testnet'} style={{ borderRadius: '12px', marginBottom: '10px' }}>
+                      <FlexDiv style={{ display: 'flex', justifyContent: 'left' }}>
+                        <img
+                          src={get(currencyInfos, ['BSC_Testnet', 'chainImageAsset'])}
+                          alt=""
+                          width={20}
+                          height={20}
+                        />
+                        <span>BSC-Testnet</span>
                       </FlexDiv>
                     </Menu.Item>
                   </Menu>
@@ -210,7 +210,7 @@ const Header: React.FC<IHeaderProps> = () => {
               <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Borrow')} className="menu-item">
                 Borrow
               </NavLink>
-              {(chainId == 97 || chainId == undefined) && (
+              {chainId == 97 && (
                 <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
                   Get Testnet Tokens
                 </NavLink>

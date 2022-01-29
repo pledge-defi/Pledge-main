@@ -24,27 +24,6 @@ type CurrencyInfos = Record<
 >;
 
 const currencyInfos: CurrencyInfos = {
-  BSC_Testnet: {
-    chainName: 'BSC_Testnet',
-    contractAddress: PLGR_CONTRACT_ADDRESS,
-    pledgerBridgeContractAddress: PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
-    chainImageAsset: require('_assets/images/BSC.svg'),
-    chainDesc: 'BSC Network',
-    currencyName: 'PLGR',
-    currencyImageAsset: require('_assets/images/PLGR.svg'),
-    chainId: 97,
-    netWorkInfo: {
-      chainId: web3.utils.toHex(97),
-      chainName: 'Binance Smart Chain Testnet',
-      nativeCurrency: {
-        name: 'BSC',
-        symbol: 'BNB',
-        decimals: 18,
-      },
-      rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
-      blockExplorerUrls: ['https://testnet.bscscan.com'],
-    },
-  },
   BSC_Mainnet: {
     chainId: 56,
     chainName: 'BSC_Mainnet',
@@ -66,6 +45,28 @@ const currencyInfos: CurrencyInfos = {
       blockExplorerUrls: ['https://bscscan.com'],
     },
   },
+  BSC_Testnet: {
+    chainName: 'BSC_Testnet',
+    contractAddress: PLGR_CONTRACT_ADDRESS,
+    pledgerBridgeContractAddress: PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
+    chainImageAsset: require('_assets/images/BSC.svg'),
+    chainDesc: 'BSC Network',
+    currencyName: 'PLGR',
+    currencyImageAsset: require('_assets/images/PLGR.svg'),
+    chainId: 97,
+    netWorkInfo: {
+      chainId: web3.utils.toHex(97),
+      chainName: 'Binance Smart Chain Testnet',
+      nativeCurrency: {
+        name: 'BSC',
+        symbol: 'BNB',
+        decimals: 18,
+      },
+      rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
+      blockExplorerUrls: ['https://testnet.bscscan.com'],
+    },
+  },
+
   // Ethereum: {
   //   chainId: 3,
   //   chainName: 'Ethereum',

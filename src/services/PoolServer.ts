@@ -37,7 +37,7 @@ const PoolServer = {
 
   async getuserLendInfo(pid: string, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     const owner = await getDefaultAccount();
     const data = await contract.methods.userLendInfo(owner, pid).call();
@@ -45,7 +45,7 @@ const PoolServer = {
   },
   async getuserBorrowInfo(pid: string, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     const owner = await getDefaultAccount();
     const data = await contract.methods.userBorrowInfo(owner, pid).call();
@@ -53,7 +53,7 @@ const PoolServer = {
   },
   async depositLend(pid, value, coinAddress, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     if (coinAddress === '0x0000000000000000000000000000000000000000') {
@@ -63,7 +63,7 @@ const PoolServer = {
   },
   async depositBorrow(pid, value, time, coinAddress, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     if (coinAddress === '0x0000000000000000000000000000000000000000') {
@@ -74,7 +74,7 @@ const PoolServer = {
   },
   async getclaimLend(pid: string, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.claimLend(pid).send(options);
@@ -82,7 +82,7 @@ const PoolServer = {
   },
   async getemergencyLendWithdrawal(pid, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.emergencyLendWithdrawal(pid).send(options);
@@ -90,7 +90,7 @@ const PoolServer = {
   },
   async getwithdrawLend(pid, value, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.withdrawLend(pid, value).send(options);
@@ -98,7 +98,7 @@ const PoolServer = {
   },
   async getrefundLend(pid, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.refundLend(pid).send(options);
@@ -106,7 +106,7 @@ const PoolServer = {
   },
   async getclaimBorrow(pid: string, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.claimBorrow(pid).send(options);
@@ -114,7 +114,7 @@ const PoolServer = {
   },
   async getemergencyBorrowWithdrawal(pid, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.emergencyBorrowWithdrawal(pid).send(options);
@@ -122,7 +122,7 @@ const PoolServer = {
   },
   async getwithdrawBorrow(pid, value, time, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.withdrawBorrow(pid, value).send(options);
@@ -130,7 +130,7 @@ const PoolServer = {
   },
   async getrefundBorrow(pid, chainId) {
     const contract = getPledgePoolContract(
-      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address,
+      chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress,
     );
     let options = await gasOptions();
     const data = await contract.methods.refundBorrow(pid).send(options);

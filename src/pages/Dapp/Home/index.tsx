@@ -38,7 +38,7 @@ function HomePage() {
   const [show, setshow] = useState('100');
   const [data, setdata] = useState([]);
   const [datastate, setdatastate] = useState([]);
-  const [Id, setId] = useState(97);
+  const [Id, setId] = useState(56);
 
   const dealNumber_18 = (num) => {
     if (num) {
@@ -106,7 +106,7 @@ function HomePage() {
   useEffect(() => {
     setTimeout(() => {
       setId(chainId);
-      getPoolInfo(Id == undefined ? 97 : Id).catch(() => {
+      getPoolInfo(Id == undefined ? 56 : Id).catch(() => {
         console.error();
       });
     }, 500);
@@ -179,16 +179,9 @@ function HomePage() {
   );
   //每三位加一个小数点
   function toThousands(num) {
-    var st1 = String(num);
-    var index = st1.indexOf('.');
-    var st2 = st1.slice(0, index);
-    var len = st2.length;
-    if (len < 3) return st2.concat(st1.slice(index));
-    var r = len % 3;
-    return (r > 0
-      ? st2.slice(0, r) + ',' + st2.slice(r, len).match(/\d{3}/g).join()
-      : st2.slice(r, len).match(/\d{3}/g).join()
-    ).concat(st1.slice(index));
+    var str = num.toString();
+    var reg = str.indexOf('.') > -1 ? /(\d)(?=(\d{3})+\.)/g : /(\d)(?=(?:\d{3})+$)/g;
+    return str.replace(reg, '$1,');
   }
 
   const columns = [
@@ -250,7 +243,7 @@ function HomePage() {
                 )}`}</span>
               </span>
               <span style={{ width: '10px' }}></span>
-              <span style={{ fontSize: '12px' }}>{toThousands(record.maxSupply)}</span>
+              <span style={{ fontSize: '12px' }}>{toThousands(Number(record.maxSupply))}</span>
             </p>
           </div>
         );

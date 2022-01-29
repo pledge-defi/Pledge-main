@@ -387,16 +387,9 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
 
   //每三位加一个小数点
   function toThousands(num) {
-    var st1 = String(num);
-    var index = st1.indexOf('.');
-    var st2 = st1.slice(0, index);
-    var len = st2.length;
-    if (len < 3) return st2.concat(st1.slice(index));
-    var r = len % 3;
-    return (r > 0
-      ? st2.slice(0, r) + ',' + st2.slice(r, len).match(/\d{3}/g).join()
-      : st2.slice(r, len).match(/\d{3}/g).join()
-    ).concat(st1.slice(index));
+    var str = num.toString();
+    var reg = str.indexOf('.') > -1 ? /(\d)(?=(\d{3})+\.)/g : /(\d)(?=(?:\d{3})+$)/g;
+    return str.replace(reg, '$1,');
   }
 
   function handleOnChange(value) {

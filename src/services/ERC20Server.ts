@@ -16,7 +16,7 @@ const ERC20Server = {
     const contract = getERC20Contract(contractAddress);
     const options = await gasOptions();
     const rates = await contract.methods
-      .approve(chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address, amount)
+      .approve(chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress, amount)
       .send(options);
     return rates;
   },
@@ -26,7 +26,7 @@ const ERC20Server = {
     const contract = getERC20Contract(contractAddress);
     const owner = await getDefaultAccount();
     return await contract.methods
-      .allowance(owner, chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_address)
+      .allowance(owner, chainId == 97 ? pledge_address : chainId == 56 ? pledge_mainaddress : pledge_mainaddress)
       .call();
   },
   async getname(contractAddress) {

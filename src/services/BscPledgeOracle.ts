@@ -5,7 +5,7 @@ import { pledge_address, ORACLE_address, ORACLE_mainaddress } from '_src/utils/c
 const BscPledgeOracleServer = {
   async getPrice(asset, chainId) {
     const contract = getBscPledgeOracleAbiContract(
-      chainId == 97 ? ORACLE_address : chainId == 56 ? ORACLE_mainaddress : ORACLE_address,
+      chainId == 97 ? ORACLE_address : chainId == 56 ? ORACLE_mainaddress : ORACLE_mainaddress,
     );
     const options = await gasOptions();
     const rates = await contract.methods.getPrice(asset).call();
@@ -13,7 +13,7 @@ const BscPledgeOracleServer = {
   },
   async getPrices(asset, chainId) {
     const contract = getBscPledgeOracleAbiContract(
-      chainId == 97 ? ORACLE_address : chainId == 56 ? ORACLE_mainaddress : ORACLE_address,
+      chainId == 97 ? ORACLE_address : chainId == 56 ? ORACLE_mainaddress : ORACLE_mainaddress,
     );
     const options = await gasOptions();
     const rates = await contract.methods.getPrices(asset).call();
