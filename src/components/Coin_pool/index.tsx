@@ -309,7 +309,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   };
 
   const getPoolInfo = async () => {
-    const datainfo = await services.userServer.getpoolBaseInfo(chainId).then((res) => {
+    const datainfo = await services.userServer.getpoolBaseInfo(chainId == undefined ? 56 : chainId).then((res) => {
       return res;
     });
     console.log(datainfo);
@@ -368,6 +368,19 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   useEffect(() => {
     getPoolInfo();
     account && getaccountbalance();
+    chainId !== undefined &&
+      (services.ERC20Server.balanceOf(poolinfo[pid]?.Sp ?? 0)
+        .then((res) => {
+          setbalance(res);
+        })
+        .catch(() => console.error()),
+      (poolinfo[pid]?.Jp ?? 0) !== '0x0000000000000000000000000000000000000000'
+        ? services.ERC20Server.balanceOf(poolinfo[pid]?.Jp ?? 0)
+            .then((res) => {
+              setbalanceborrow(res);
+            })
+            .catch(() => console.error())
+        : setbalanceborrow(accountbalance));
   }, [chainId]);
   useEffect(() => {
     chainId !== undefined &&
@@ -526,7 +539,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             <>
               <div className="balance_input">
                 <p style={{ fontWeight: 400 }}>
-                  Balance: {balance && Math.floor(Number(dealNumber_18(balance)) * 1000) / 1000} {pool}
+                  Balance: {balance && Math.floor(Number(dealNumber_18(balance)) * 1000000) / 1000000} {pool}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <InputNumber
@@ -621,7 +634,8 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
               <div style={{ marginBottom: '28px', paddingBottom: '28px', borderBottom: '1px dashed #E6E6EB' }}>
                 <div className="balance_input">
                   <p style={{ fontWeight: 400 }}>
-                    Balance: {(balanceborrow && Math.floor(Number(dealNumber_18(balanceborrow)) * 1000) / 1000) || 0}{' '}
+                    Balance:{' '}
+                    {(balanceborrow && Math.floor(Number(dealNumber_18(balanceborrow)) * 1000000) / 1000000) || 0}{' '}
                     {coin}
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center' }}>

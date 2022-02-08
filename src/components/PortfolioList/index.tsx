@@ -52,10 +52,6 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
     }
   };
 
-  useEffect(() => {
-    getBalance();
-  });
-  useEffect(() => {}, []);
   const claimAmount =
     Number(dealNumber_18(props.props.lendSupply)) !== 0
       ? Number(dealNumber_18(datainfo.settleAmountLend)) *
@@ -66,6 +62,12 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
       ? Number(dealNumber_18(datainfo.settleAmountBorrow)) *
         (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.props.borrowSupply)))
       : 0;
+
+  useEffect(() => {
+    getBalance();
+  });
+  useEffect(() => {}, []);
+
   const expectedInterest =
     mode == 'Lend'
       ? ((Number(dealNumber_7(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)) *
@@ -192,12 +194,18 @@ ${props.props.poolname} `,
                               <p className="rewardvalue">
                                 {mode == 'Lend'
                                   ? `${
-                                      Math.floor(Number(dealNumber_18(datainfo.liquidationAmounLend)) * 10000000) /
-                                      10000000
+                                      Math.floor(
+                                        (claimAmount / Number(dealNumber_18(datainfo.settleAmountLend))) *
+                                          Number(dealNumber_18(datainfo.liquidationAmounLend)) *
+                                          10000000,
+                                      ) / 10000000
                                     }  ${props.props.poolname}`
                                   : `${
-                                      Math.floor(Number(dealNumber_18(datainfo.liquidationAmounBorrow)) * 10000000) /
-                                      10000000
+                                      Math.floor(
+                                        (claimAmountborrow / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
+                                          Number(dealNumber_18(datainfo.liquidationAmounBorrow)) *
+                                          10000000,
+                                      ) / 10000000
                                     }
                                 ${props.props.underlying_asset}`}
                               </p>
@@ -205,16 +213,30 @@ ${props.props.poolname} `,
                               <p className="rewardvalue">
                                 {mode == 'Lend'
                                   ? `${
-                                      Math.floor(Number(dealNumber_18(datainfo.finishAmountLend)) * 10000000) / 10000000
+                                      Math.floor(
+                                        (claimAmount / Number(dealNumber_18(datainfo.settleAmountLend))) *
+                                          Number(dealNumber_18(datainfo.finishAmountLend)) *
+                                          10000000,
+                                      ) / 10000000
                                     }  ${props.props.poolname}`
                                   : `${
-                                      Math.floor(Number(dealNumber_18(datainfo.finishAmountBorrow)) * 10000000) /
-                                      10000000
+                                      Math.floor(
+                                        (claimAmountborrow / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
+                                          Number(dealNumber_18(datainfo.finishAmountBorrow)) *
+                                          10000000,
+                                      ) / 10000000
                                     }
                                    ${props.props.underlying_asset}`}
                               </p>
                             )}
                           </div>
+                          {console.log(
+                            Math.floor(
+                              (claimAmountborrow / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
+                                Number(dealNumber_18(datainfo.finishAmountBorrow)) *
+                                10000000,
+                            ) / 10000000,
+                          )}
                           <ClaimTime
                             endtime={props.props.endtime}
                             state={props.props.state}
