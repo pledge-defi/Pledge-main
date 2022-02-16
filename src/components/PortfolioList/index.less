@@ -173,6 +173,10 @@
     .order_list {
       width: 100%;
     }
+
+    div {
+      flex-direction: column;
+    }
   }
 
   .ant-collapse-content-box {
@@ -229,7 +233,8 @@
           background-color: #fff;
 
           .rewardtab {
-            display: flex;
+            display: flex !important;
+            flex-direction: row;
             justify-content: space-between;
 
             p {

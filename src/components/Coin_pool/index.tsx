@@ -530,6 +530,10 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           <span className="info_title">Settlement date</span>
           <span className="info_key_info">{poolinfo[pid]?.settlement_date ?? ''}</span>
         </p>
+        <p className="info_key">
+          <span className="info_title">Maturity Date</span>{' '}
+          <span className="info_key_info">{poolinfo[pid]?.maturity_date ?? 0}</span>
+        </p>
       </div>
 
       <div className="coin_pool_box2">
@@ -730,10 +734,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
             {pool}
           </span>
         </p>
-        <p className="info_key">
-          <span className="info_title">Maturity Date</span>{' '}
-          <span className="info_key_info">{poolinfo[pid]?.maturity_date ?? 0}</span>
-        </p>
+
         {mode == 'Lend' ? (
           <div>
             <div
@@ -833,7 +834,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           setloadings(false);
                           openNotificationlend('Success');
                           prev();
-                          window.open(pageURL.Lend_Borrow.replace(':mode', `${mode}`));
+                          window.open(`${pageURL.Lend_Borrow.replace(':mode', `${mode}`)}`, '_self');
                         })
                         .catch(() => {
                           openNotificationerrorlend('Error'), setloadings(false);
@@ -945,7 +946,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
                           openNotificationborrow('Success');
                           setloadings(false);
                           prev();
-                          window.open(pageURL.Lend_Borrow.replace(':mode', `${mode}`));
+                          window.open(`${pageURL.Lend_Borrow.replace(':mode', `${mode}`)}`, '_self');
                         })
                         .catch(() => {
                           openNotificationerrorborrow('Error'), setloadings(false);

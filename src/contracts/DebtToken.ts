@@ -50,20 +50,11 @@ export type ContractContext = Web3ContractContext<
   DebtTokenEventsContext,
   DebtTokenEvents
 >;
-export type DebtTokenEvents = 'Approval' | 'OwnershipTransferred' | 'Transfer';
+export type DebtTokenEvents = 'Approval' | 'Transfer';
 export interface DebtTokenEventsContext {
   Approval(
     parameters: {
       filter?: { owner?: string | string[]; spender?: string | string[] };
-      fromBlock?: number;
-      toBlock?: 'latest' | number;
-      topics?: string[];
-    },
-    callback?: (error: Error, event: EventData) => void,
-  ): EventResponse;
-  OwnershipTransferred(
-    parameters: {
-      filter?: { previousOwner?: string | string[]; newOwner?: string | string[] };
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
@@ -92,25 +83,19 @@ export type DebtTokenMethodNames =
   | 'delMinter'
   | 'getMinter'
   | 'getMinterLength'
+  | 'getMultiSignatureAddress'
   | 'increaseAllowance'
   | 'isMinter'
   | 'mint'
   | 'name'
-  | 'owner'
-  | 'renounceOwnership'
   | 'symbol'
   | 'totalSupply'
   | 'transfer'
-  | 'transferFrom'
-  | 'transferOwnership';
+  | 'transferFrom';
 export interface ApprovalEventEmittedResponse {
   owner: string;
   spender: string;
   value: string;
-}
-export interface OwnershipTransferredEventEmittedResponse {
-  previousOwner: string;
-  newOwner: string;
 }
 export interface TransferEventEmittedResponse {
   from: string;
@@ -125,8 +110,9 @@ export interface DebtToken {
    * Type: constructor
    * @param _name Type: string, Indexed: false
    * @param _symbol Type: string, Indexed: false
+   * @param multiSignature Type: address, Indexed: false
    */
-  'new'(_name: string, _symbol: string): MethodReturnContext;
+  'new'(_name: string, _symbol: string, multiSignature: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: false
@@ -211,6 +197,13 @@ export interface DebtToken {
   getMinterLength(): MethodConstantReturnContext<string>;
   /**
    * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  getMultiSignatureAddress(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
@@ -248,20 +241,6 @@ export interface DebtToken {
    * StateMutability: view
    * Type: function
    */
-  owner(): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   */
-  renounceOwnership(): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
   symbol(): MethodConstantReturnContext<string>;
   /**
    * Payable: false
@@ -289,12 +268,4 @@ export interface DebtToken {
    * @param amount Type: uint256, Indexed: false
    */
   transferFrom(sender: string, recipient: string, amount: string): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param newOwner Type: address, Indexed: false
-   */
-  transferOwnership(newOwner: string): MethodReturnContext;
 }

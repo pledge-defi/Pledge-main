@@ -50,38 +50,22 @@ export type ContractContext = Web3ContractContext<
   BscPledgeOracleEventsContext,
   BscPledgeOracleEvents
 >;
-export type BscPledgeOracleEvents = 'OwnershipTransferred';
-export interface BscPledgeOracleEventsContext {
-  OwnershipTransferred(
-    parameters: {
-      filter?: { previousOwner?: string | string[]; newOwner?: string | string[] };
-      fromBlock?: number;
-      toBlock?: 'latest' | number;
-      topics?: string[];
-    },
-    callback?: (error: Error, event: EventData) => void,
-  ): EventResponse;
-}
+export type BscPledgeOracleEvents = undefined;
+export interface BscPledgeOracleEventsContext {}
 export type BscPledgeOracleMethodNames =
   | 'new'
   | 'getAssetsAggregator'
+  | 'getMultiSignatureAddress'
   | 'getPrice'
   | 'getPrices'
   | 'getUnderlyingAggregator'
   | 'getUnderlyingPrice'
-  | 'owner'
-  | 'renounceOwnership'
   | 'setAssetsAggregator'
   | 'setDecimals'
   | 'setPrice'
   | 'setPrices'
   | 'setUnderlyingAggregator'
-  | 'setUnderlyingPrice'
-  | 'transferOwnership';
-export interface OwnershipTransferredEventEmittedResponse {
-  previousOwner: string;
-  newOwner: string;
-}
+  | 'setUnderlyingPrice';
 export interface GetAssetsAggregatorResponse {
   result0: string;
   result1: string;
@@ -96,8 +80,9 @@ export interface BscPledgeOracle {
    * Constant: false
    * StateMutability: nonpayable
    * Type: constructor
+   * @param multiSignature Type: address, Indexed: false
    */
-  'new'(): MethodReturnContext;
+  'new'(multiSignature: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: true
@@ -106,6 +91,13 @@ export interface BscPledgeOracle {
    * @param asset Type: address, Indexed: false
    */
   getAssetsAggregator(asset: string): MethodConstantReturnContext<GetAssetsAggregatorResponse>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  getMultiSignatureAddress(): MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
@@ -138,20 +130,6 @@ export interface BscPledgeOracle {
    * @param underlying Type: uint256, Indexed: false
    */
   getUnderlyingPrice(underlying: string): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
-  owner(): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   */
-  renounceOwnership(): MethodReturnContext;
   /**
    * Payable: false
    * Constant: false
@@ -207,12 +185,4 @@ export interface BscPledgeOracle {
    * @param price Type: uint256, Indexed: false
    */
   setUnderlyingPrice(underlying: string, price: string): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param newOwner Type: address, Indexed: false
-   */
-  transferOwnership(newOwner: string): MethodReturnContext;
 }

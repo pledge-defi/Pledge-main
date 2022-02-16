@@ -128,6 +128,18 @@
       border: none;
       border-collapse: collapse;
 
+      .ant-table-tbody {
+        visibility: hidden;
+        animation: cssAnimation 0s 3.5s forwards;
+      }
+
+      @keyframes cssAnimation {
+        /* stylelint-disable-next-line rule-empty-line-before */
+        to {
+          visibility: visible;
+        }
+      }
+
       .ant-table-tbody > tr > td {
         font-size: 18px;
         border: none;
@@ -344,21 +356,26 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 20px;
 
-      span:nth-child(2) {
-        margin-bottom: 8px;
-        color: #262533;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
-        text-align: center;
-      }
+      p {
+        display: flex;
+        flex-direction: column;
 
-      span:nth-child(3) {
-        color: #8b89a3;
-        font-weight: 400;
-        font-size: 12px;
-        line-height: 18px;
-        text-align: center;
+        span:nth-child(1) {
+          margin-bottom: 8px;
+          color: #262533;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 24px;
+          text-align: center;
+        }
+
+        span:nth-child(2) {
+          color: #8b89a3;
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 18px;
+          text-align: center;
+        }
       }
 
       img {
@@ -378,17 +395,27 @@
     display: block;
 
     .dropdown {
-      display: none;
+      top: 200px;
+      left: -250px !important;
+      width: 96px;
+      height: 38px;
+      font-size: 14px !important;
+      line-height: 22px;
     }
 
     .ant-table-cell {
       padding: 10px;
     }
 
+    .ant-tabs-nav-list .ant-tabs-tab-active {
+      border-radius: 5px !important;
+    }
+
     .ant-tabs-nav-list {
       width: 223px;
       height: 38px;
       margin-left: 16px;
+      border-radius: 10px;
     }
 
     .ant-tabs-nav-list > .ant-tabs-tab div,
@@ -498,20 +525,12 @@
 
         span {
           display: block;
+          margin-left: 7px;
           text-align: left !important;
         }
 
         span:nth-child(1) {
-          color: #262533;
-          font-weight: 500;
-          font-size: 16px;
-          line-height: 24px;
-        }
-
-        span:nth-child(2) {
-          color: #8b89a3;
-          font-size: 12px;
-          line-height: 18px;
+          margin-top: 10px;
         }
 
         img {

@@ -109,7 +109,7 @@ function HomePage() {
       getPoolInfo(Id == undefined ? 56 : Id).catch(() => {
         console.error();
       });
-    }, 500);
+    }, 1000);
   }, [Id]);
 
   // useEffect(() => {
@@ -362,7 +362,7 @@ function HomePage() {
       title: 'Settlement Date',
       dataIndex: 'settlement_date',
       sorter: {
-        compare: (a, b) => a.settlement_date - b.settlement_date,
+        compare: (a, b) => a.settleTime - b.settleTime,
         multiple: 1,
       },
     },
@@ -383,7 +383,9 @@ function HomePage() {
       >
         <div className="choose_lender">
           <img src={Lender1} alt="" />
-          <span>Lender</span> <span> Lock in a fixed interest rate today. Fixed rates guarantee your APY.</span>
+          <p>
+            <span>Lender</span> <span> Lock in a fixed interest rate today. Fixed rates guarantee your APY.</span>
+          </p>
         </div>
       </Link>
       <Link
@@ -392,7 +394,9 @@ function HomePage() {
       >
         <div className="choose_borrow">
           <img src={Borrower} alt="" />
-          <span>Borrower</span> <span>Borrow with certainty. Fixed rates lock in what you pay.</span>
+          <p>
+            <span>Borrower</span> <span>Borrow with certainty. Fixed rates lock in what you pay.</span>
+          </p>
         </div>
       </Link>
       <img
@@ -490,8 +494,19 @@ function HomePage() {
         <Tabs defaultActiveKey="1" onChange={callback} className="media_tab">
           <TabPane tab="BUSD" key="BUSD">
             <Table
+              pagination={
+                datastate.filter((item, index) => {
+                  console.log(datastate);
+                  return (
+                    item.Sp == '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56' ||
+                    item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
+                  );
+                }).length < 10
+                  ? false
+                  : {}
+              }
               columns={columns1}
-              dataSource={data.filter((item, index) => {
+              dataSource={datastate.filter((item, index) => {
                 return (
                   item.Sp == '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56' ||
                   item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
@@ -505,8 +520,15 @@ function HomePage() {
           </TabPane>
           <TabPane tab="USDT" key="USDT">
             <Table
+              pagination={
+                datastate.filter((item, index) => {
+                  return item.Sp == '';
+                }).length < 10
+                  ? false
+                  : {}
+              }
               columns={columns1}
-              dataSource={data.filter((item, index) => {
+              dataSource={datastate.filter((item, index) => {
                 return item.Sp == '';
               })}
               onChange={onChange}
@@ -517,8 +539,18 @@ function HomePage() {
           </TabPane>
           <TabPane tab="DAI" key="DAI">
             <Table
+              pagination={
+                datastate.filter((item, index) => {
+                  return (
+                    item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
+                    item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
+                  );
+                }).length < 10
+                  ? false
+                  : {}
+              }
               columns={columns1}
-              dataSource={data.filter((item, index) => {
+              dataSource={datastate.filter((item, index) => {
                 return (
                   item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
                   item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'

@@ -177,11 +177,11 @@ ${props.props.poolname} `,
                         </li>
                       )}
                       <li>
-                        <span>Order Time</span> <span>{item.Time}</span>
+                        <span>Maturity Date</span> <span>{item.Time}</span>
                       </li>
                     </ul>
 
-                    {props.props.state != 0 && props.props.state != 4 && (
+                    {props.props.state != 0 && props.props.state != 1 && props.props.state != 4 && (
                       <div className="Reward">
                         <p>Reward</p>
                         <div className="rewardinfo">

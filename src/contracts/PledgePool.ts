@@ -57,7 +57,6 @@ export type PledgePoolEvents =
   | 'DepositLend'
   | 'EmergencyBorrowWithdrawal'
   | 'EmergencyLendWithdrawal'
-  | 'OwnershipTransferred'
   | 'Redeem'
   | 'RefundBorrow'
   | 'RefundLend'
@@ -118,15 +117,6 @@ export interface PledgePoolEventsContext {
   EmergencyLendWithdrawal(
     parameters: {
       filter?: { from?: string | string[]; token?: string | string[] };
-      fromBlock?: number;
-      toBlock?: 'latest' | number;
-      topics?: string[];
-    },
-    callback?: (error: Error, event: EventData) => void,
-  ): EventResponse;
-  OwnershipTransferred(
-    parameters: {
-      filter?: { previousOwner?: string | string[]; newOwner?: string | string[] };
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
@@ -248,6 +238,7 @@ export type PledgePoolMethodNames =
   | 'emergencyLendWithdrawal'
   | 'feeAddress'
   | 'finish'
+  | 'getMultiSignatureAddress'
   | 'getPoolState'
   | 'getUnderlyingPriceView'
   | 'globalPaused'
@@ -255,13 +246,11 @@ export type PledgePoolMethodNames =
   | 'liquidate'
   | 'minAmount'
   | 'oracle'
-  | 'owner'
   | 'poolBaseInfo'
   | 'poolDataInfo'
   | 'poolLength'
   | 'refundBorrow'
   | 'refundLend'
-  | 'renounceOwnership'
   | 'setFee'
   | 'setFeeAddress'
   | 'setMinAmount'
@@ -269,7 +258,6 @@ export type PledgePoolMethodNames =
   | 'setSwapRouterAddress'
   | 'settle'
   | 'swapRouter'
-  | 'transferOwnership'
   | 'userBorrowInfo'
   | 'userLendInfo'
   | 'withdrawBorrow'
@@ -305,10 +293,6 @@ export interface EmergencyLendWithdrawalEventEmittedResponse {
   from: string;
   token: string;
   amount: string;
-}
-export interface OwnershipTransferredEventEmittedResponse {
-  previousOwner: string;
-  newOwner: string;
 }
 export interface RedeemEventEmittedResponse {
   recieptor: string;
@@ -408,8 +392,9 @@ export interface PledgePool {
    * @param _oracle Type: address, Indexed: false
    * @param _swapRouter Type: address, Indexed: false
    * @param _feeAddress Type: address, Indexed: false
+   * @param _multiSignature Type: address, Indexed: false
    */
-  'new'(_oracle: string, _swapRouter: string, _feeAddress: string): MethodReturnContext;
+  'new'(_oracle: string, _swapRouter: string, _feeAddress: string, _multiSignature: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: true
@@ -539,6 +524,13 @@ export interface PledgePool {
    * Constant: true
    * StateMutability: view
    * Type: function
+   */
+  getMultiSignatureAddress(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
    * @param _pid Type: uint256, Indexed: false
    */
   getPoolState(_pid: string): MethodConstantReturnContext<string>;
@@ -591,13 +583,6 @@ export interface PledgePool {
    * Constant: true
    * StateMutability: view
    * Type: function
-   */
-  owner(): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
    * @param parameter0 Type: uint256, Indexed: false
    */
   poolBaseInfo(parameter0: string): MethodConstantReturnContext<PoolBaseInfoResponse>;
@@ -632,13 +617,6 @@ export interface PledgePool {
    * @param _pid Type: uint256, Indexed: false
    */
   refundLend(_pid: string): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   */
-  renounceOwnership(): MethodReturnContext;
   /**
    * Payable: false
    * Constant: false
@@ -694,14 +672,6 @@ export interface PledgePool {
    * Type: function
    */
   swapRouter(): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param newOwner Type: address, Indexed: false
-   */
-  transferOwnership(newOwner: string): MethodReturnContext;
   /**
    * Payable: false
    * Constant: true

@@ -15,9 +15,6 @@ const userServer = {
   async getpoolDataInfo(chainId) {
     return await axios.get(`${URL.info.poolDataInfo}?chainId=${chainId}`);
   },
-  async getpoolBaseInfo1(chainId, p) {
-    return await axios.get(`${URL.info.poolBaseInfo1}?chainId=${chainId}&p=${p}`);
-  },
 };
 
 export default userServer;

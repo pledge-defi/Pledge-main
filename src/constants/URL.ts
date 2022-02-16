@@ -3,7 +3,6 @@ const URLSource = {
   info: {
     poolBaseInfo: '/poolBaseInfo',
     poolDataInfo: '/poolDataInfo',
-    poolBaseInfo1: ':8081/poolBaseInfo',
   },
 };
 
@@ -11,7 +10,7 @@ const URLSource = {
 const baseUrl = {
   development: 'https://dev-v2-backend.pledger.finance',
   production: 'https://pro.test.com/api',
-  development1: 'http://50.18.79.42',
+  v2: 'http://50.18.79.42:8081',
 };
 
 // 代理监听 URL配置
@@ -25,9 +24,15 @@ const handler = {
       return new Proxy(value, handler); // 使用try catch 巧妙的实现了 深层 属性代理
     } catch (err) {
       if (typeof value === 'string') {
-        let base = baseUrl.development;
+        let base = baseUrl.v2;
         if (nowHost.includes('127.0.0.1') || nowHost.includes('localhost')) {
+          base = baseUrl['v2'];
+        }
+        if (nowHost.includes('dev-v2-pledger')) {
           base = baseUrl['development'];
+        }
+        if (nowHost.includes('v2-pldeger')) {
+          base = baseUrl['v2'];
         }
         return base + value;
       }
