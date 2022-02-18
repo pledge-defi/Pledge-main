@@ -58,7 +58,6 @@ function HomePage() {
   const getPoolInfo = async (chainId) => {
     const datainfo = await services.userServer.getpoolBaseInfo(chainId);
 
-    console.log(222, datainfo);
     const res = datainfo.data.data.map((item, index) => {
       console.log(item.pool_data);
       let maxSupply = dealNumber_18(item.pool_data.maxSupply);
