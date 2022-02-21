@@ -15,7 +15,7 @@ axiosRetry(axios, {
   },
 });
 
-axios.defaults.headers.common.timeout = 10000;
+// axios.defaults.headers.common.timeout = 10000;
 
 // 处理统一处理
 axios.interceptors.response.use(

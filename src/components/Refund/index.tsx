@@ -218,12 +218,12 @@ const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props })
 
   const refundLend =
     Number(dealNumber_18(props.lendSupply)) !== 0
-      ? (Number(dealNumber_18(props.lendSupply)) - Number(dealNumber_18(stateinfo.settleAmountLend))) *
+      ? (Number(dealNumber_18(props.lendSupply)) - Number(dealNumber_18(stateinfo.pool_data.settleAmountLend))) *
         (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.lendSupply)))
       : 0;
   const refundBorrow =
     Number(dealNumber_18(props.borrowSupply)) !== 0
-      ? (Number(dealNumber_18(props.borrowSupply)) - Number(dealNumber_18(stateinfo.settleAmountBorrow))) *
+      ? (Number(dealNumber_18(props.borrowSupply)) - Number(dealNumber_18(stateinfo.pool_data.settleAmountBorrow))) *
         (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.borrowSupply)))
       : 0;
 

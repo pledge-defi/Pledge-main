@@ -44,7 +44,7 @@ function HomePage() {
     if (num) {
       let x = new BigNumber(num);
       let y = new BigNumber(1e18);
-      return Math.floor(Number(x.dividedBy(y)) * Math.pow(10, 7)) / Math.pow(10, 7);
+      return x.dividedBy(y).toFixed();
     }
   };
 
@@ -232,7 +232,10 @@ function HomePage() {
                 <span style={{ color: '#FFA011', fontSize: '12px' }}>
                   {toThousands(
                     Math.floor(
-                      ((val[0] * record.borrowPrice) / record.lendPrice / record.collateralization_ratio) * 10000,
+                      ((val[0] * Number(record.borrowPrice)) /
+                        Number(record.lendPrice) /
+                        record.collateralization_ratio) *
+                        10000,
                     ) / 100,
                   )}
                 </span>

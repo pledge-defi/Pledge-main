@@ -263,13 +263,13 @@ const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, statei
 
   const claimAmount =
     Number(dealNumber_18(props.lendSupply)) !== 0
-      ? Number(dealNumber_18(stateinfo.settleAmountLend)) *
+      ? Number(dealNumber_18(stateinfo.pool_data.settleAmountLend)) *
         (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.lendSupply)))
       : 0;
   const claimAmountborrow =
     Number(dealNumber_18(props.borrowSupply)) !== 0
       ? Math.floor(
-          Number(dealNumber_18(stateinfo.settleAmountBorrow)) *
+          Number(dealNumber_18(stateinfo.pool_data.settleAmountBorrow)) *
             (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.borrowSupply))) *
             1000000,
         ) / 1000000

@@ -485,7 +485,6 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
           />
           <p style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>
-              {console.log(poolinfo[pid]?.fixed_rate ?? 0)}
               <span style={{ color: '#ffa011' }}>{`${toThousands(
                 Math.floor(
                   (((poolinfo[pid]?.available_to_lend[0] ?? 0) * Number(poolinfo[pid]?.borrowPrice ?? 0)) /

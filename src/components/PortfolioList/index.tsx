@@ -54,12 +54,12 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
 
   const claimAmount =
     Number(dealNumber_18(props.props.lendSupply)) !== 0
-      ? Number(dealNumber_18(datainfo.settleAmountLend)) *
+      ? Number(dealNumber_18(datainfo.pool_data.settleAmountLend)) *
         (Number(dealNumber_18(stakeAmount)) / Number(dealNumber_18(props.props.lendSupply)))
       : 0;
   const claimAmountborrow =
     Number(dealNumber_18(props.props.borrowSupply)) !== 0
-      ? Number(dealNumber_18(datainfo.settleAmountBorrow)) *
+      ? Number(dealNumber_18(datainfo.pool_data.settleAmountBorrow)) *
         (Number(dealNumber_18(stakeAmountborrow)) / Number(dealNumber_18(props.props.borrowSupply)))
       : 0;
 
@@ -70,12 +70,20 @@ const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ..
 
   const expectedInterest =
     mode == 'Lend'
-      ? ((Number(dealNumber_7(props.props.state < '2' ? datainfo.settleAmountLend : datainfo.finishAmountLend)) *
+      ? ((Number(
+          dealNumber_7(
+            props.props.state < '2' ? datainfo.pool_data.settleAmountLend : datainfo.pool_data.finishAmountLend,
+          ),
+        ) *
           Number(props.props.fixed_rate)) /
           100 /
           365) *
         props.props.length
-      : ((Number(dealNumber_7(props.props.state < '2' ? datainfo.settleAmountBorrow : datainfo.finishAmountBorrow)) *
+      : ((Number(
+          dealNumber_7(
+            props.props.state < '2' ? datainfo.pool_data.settleAmountBorrow : datainfo.pool_data.finishAmountBorrow,
+          ),
+        ) *
           Number(props.props.fixed_rate)) /
           100 /
           365) *
@@ -195,15 +203,16 @@ ${props.props.poolname} `,
                                 {mode == 'Lend'
                                   ? `${
                                       Math.floor(
-                                        (claimAmount / Number(dealNumber_18(datainfo.settleAmountLend))) *
-                                          Number(dealNumber_18(datainfo.liquidationAmounLend)) *
+                                        (claimAmount / Number(dealNumber_18(datainfo.pool_data.settleAmountLend))) *
+                                          Number(dealNumber_18(datainfo.pool_data.liquidationAmounLend)) *
                                           10000000,
                                       ) / 10000000
                                     }  ${props.props.poolname}`
                                   : `${
                                       Math.floor(
-                                        (claimAmountborrow / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
-                                          Number(dealNumber_18(datainfo.liquidationAmounBorrow)) *
+                                        (claimAmountborrow /
+                                          Number(dealNumber_18(datainfo.pool_data.settleAmountBorrow))) *
+                                          Number(dealNumber_18(datainfo.pool_data.liquidationAmounBorrow)) *
                                           10000000,
                                       ) / 10000000
                                     }
@@ -214,15 +223,16 @@ ${props.props.poolname} `,
                                 {mode == 'Lend'
                                   ? `${
                                       Math.floor(
-                                        (claimAmount / Number(dealNumber_18(datainfo.settleAmountLend))) *
-                                          Number(dealNumber_18(datainfo.finishAmountLend)) *
+                                        (claimAmount / Number(dealNumber_18(datainfo.pool_data.settleAmountLend))) *
+                                          Number(dealNumber_18(datainfo.pool_data.finishAmountLend)) *
                                           10000000,
                                       ) / 10000000
                                     }  ${props.props.poolname}`
                                   : `${
                                       Math.floor(
-                                        (claimAmountborrow / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
-                                          Number(dealNumber_18(datainfo.finishAmountBorrow)) *
+                                        (claimAmountborrow /
+                                          Number(dealNumber_18(datainfo.pool_data.settleAmountBorrow))) *
+                                          Number(dealNumber_18(datainfo.pool_data.finishAmountBorrow)) *
                                           10000000,
                                       ) / 10000000
                                     }
@@ -232,8 +242,8 @@ ${props.props.poolname} `,
                           </div>
                           {console.log(
                             Math.floor(
-                              (claimAmountborrow / Number(dealNumber_18(datainfo.settleAmountBorrow))) *
-                                Number(dealNumber_18(datainfo.finishAmountBorrow)) *
+                              (claimAmountborrow / Number(dealNumber_18(datainfo.pool_data.settleAmountBorrow))) *
+                                Number(dealNumber_18(datainfo.pool_data.finishAmountBorrow)) *
                                 10000000,
                             ) / 10000000,
                           )}
@@ -241,9 +251,9 @@ ${props.props.poolname} `,
                             endtime={props.props.endtime}
                             state={props.props.state}
                             pid={props.props.key - 1}
-                            value={datainfo.finishAmountLend}
+                            value={datainfo.pool_data.finishAmountLend}
                             mode={mode}
-                            settlementAmountLend={datainfo.settleAmountLend}
+                            settlementAmountLend={datainfo.pool_data.settleAmountLend}
                             spToken={props.props.Sptoken}
                             jpToken={props.props.Jptoken}
                           />
