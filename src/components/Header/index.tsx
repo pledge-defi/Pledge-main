@@ -99,6 +99,14 @@ const Header: React.FC<IHeaderProps> = () => {
           >
             Borrow
           </NavLink>
+          <NavLink
+            to={PageUrl.DEX.replace(':mode', 'Swap')}
+            activeStyle={{ color: '#5d52ff' }}
+            activeClassName="active"
+            className={location.pathname == '/DEX/Swap' ? 'menu-item' : ''}
+          >
+            DEX
+          </NavLink>
           {chainId == 97 && (
             <NavLink
               to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')}
@@ -209,6 +217,9 @@ const Header: React.FC<IHeaderProps> = () => {
               </NavLink>
               <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Borrow')} className="menu-item">
                 Borrow
+              </NavLink>
+              <NavLink to={PageUrl.DEX.replace(':mode', 'Swap')} className="menu-item">
+                DEX
               </NavLink>
               {chainId == 97 && (
                 <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">

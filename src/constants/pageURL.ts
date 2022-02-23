@@ -12,6 +12,7 @@ const pageURL = {
   Market: '/:pool',
   Lend_Borrow: '/Market/:mode',
   Market_Pool: '/:pid/:pool/:coin/:mode',
+  DEX: '/DEX/:mode',
 };
 
 export default pageURL;

@@ -30,6 +30,12 @@ const routeMap = [
     dynamic: false,
   },
   {
+    path: pageURL.DEX,
+    component: Landing,
+    exact: true,
+    dynamic: false,
+  },
+  {
     path: '*',
     component: () => <div>404</div>,
     exact: true,

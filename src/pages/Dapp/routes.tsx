@@ -7,7 +7,7 @@ import DappHome from './Home';
 import Loading from '_components/Loading';
 import Market_Pool from '_src/pages/Dapp/Market_Pool';
 import Market_Mode from '_src/pages/Dapp/Market_Mode';
-
+import Dex from '_src/pages/Dapp/Dex';
 const routeMap = [
   {
     path: pageURL.Dapp,
@@ -30,6 +30,12 @@ const routeMap = [
   {
     path: pageURL.Lend_Borrow,
     component: Market_Mode,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.DEX,
+    component: Dex,
     exact: true,
     dynamic: true,
   },
