@@ -51,10 +51,15 @@ function Market_Mode() {
     }
   };
   const getData = () => {
-    services.userServer.getpoolDataInfo(chainId).then((res) => {
-      console.log(res.data.data);
-      setdatainfo1(res.data.data);
-    });
+    services.userServer
+      .getpoolDataInfo(chainId)
+      .then((res) => {
+        console.log(res.data.data);
+        setdatainfo1(res.data.data);
+      })
+      .catch(() => {
+        console.error();
+      });
   };
   let [time, settime] = useState(0);
   const getPoolInfo = async () => {
