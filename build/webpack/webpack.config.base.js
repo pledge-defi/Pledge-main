@@ -106,7 +106,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.wasm'],
-    modules: [SRC_ROOT, path.resolve(PROJECT_ROOT, './node_modules')],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     alias: {
       _src: SRC_ROOT,
       _components: path.resolve(SRC_ROOT, './components/'),

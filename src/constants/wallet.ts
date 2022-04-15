@@ -6,7 +6,7 @@ import METAMASK_ICON_URL from '_assets/images/meta-mask.svg';
 import WALLETCONNECT_ICON_URL from '_assets/images/walletConnectIcon.svg';
 // import METAMASK_ICON_URL from '../assets/images/metamask.png'
 
-import { walletconnect } from '../connectors';
+import { walletconnect, walletlink } from '../connectors';
 import { injected } from '../components/ConnectWallet/connector';
 
 interface WalletInfo {
@@ -49,7 +49,14 @@ export const SUPPORTED_WALLETS: WalletInfos = {
     color: '#4196FC',
     mobile: true,
   },
-
+  WALLET_LINK: {
+    connector: walletlink,
+    name: 'Coinbase Wallet',
+    iconURL: COINBASE_ICON_URL,
+    description: 'Use Coinbase Wallet app on mobile device',
+    href: null,
+    color: '#315CF5',
+  },
   COINBASE_LINK: {
     name: 'Open in Coinbase Wallet',
     iconURL: COINBASE_ICON_URL,
