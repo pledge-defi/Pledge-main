@@ -467,31 +467,53 @@ function HomePage() {
               }}
             />
           </TabPane>
-          <TabPane tab="DAI" key="DAI">
-            <Table
-              pagination={
-                datastate.filter((item, index) => {
+          {chainId == 97 ? (
+            <TabPane tab="DAI" key="DAI">
+              <Table
+                pagination={
+                  datastate.filter((item, index) => {
+                    return (
+                      item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
+                      item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
+                    );
+                  }).length < 10
+                    ? false
+                    : {}
+                }
+                columns={columns}
+                dataSource={datastate.filter((item, index) => {
                   return (
                     item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
                     item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
                   );
-                }).length < 10
-                  ? false
-                  : {}
-              }
-              columns={columns}
-              dataSource={datastate.filter((item, index) => {
-                return (
-                  item.Sp == '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3' ||
-                  item.Sp == '0x490BC3FCc845d37C1686044Cd2d6589585DE9B8B'
-                );
-              })}
-              onChange={onChange}
-              rowClassName={(record, index) => {
-                return record;
-              }}
-            />
-          </TabPane>
+                })}
+                onChange={onChange}
+                rowClassName={(record, index) => {
+                  return record;
+                }}
+              />
+            </TabPane>
+          ) : (
+            <TabPane tab="PLGR" key="PLGR">
+              <Table
+                pagination={
+                  datastate.filter((item, index) => {
+                    return item.Sp == '0x6Aa91CbfE045f9D154050226fCc830ddbA886CED';
+                  }).length < 10
+                    ? false
+                    : {}
+                }
+                columns={columns}
+                dataSource={datastate.filter((item, index) => {
+                  return item.Sp == '0x6Aa91CbfE045f9D154050226fCc830ddbA886CED';
+                })}
+                onChange={onChange}
+                rowClassName={(record, index) => {
+                  return record;
+                }}
+              />
+            </TabPane>
+          )}
         </Tabs>
         <Tabs defaultActiveKey="1" onChange={callback} className="media_tab">
           <TabPane tab="BUSD" key="BUSD">

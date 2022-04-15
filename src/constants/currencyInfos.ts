@@ -7,23 +7,21 @@ import {
   PLGR_CONTRACT_ADDRESS,
 } from '_utils/constants';
 import type { AddEthereumChainParameter } from './ChainBridge.d';
+import { filter, map } from 'lodash';
 
-type CurrencyInfos = Record<
-  CurrencyType,
-  {
-    chainId: number;
-    chainName: CurrencyType;
-    contractAddress: string;
-    pledgerBridgeContractAddress: string;
-    chainImageAsset: string;
-    chainDesc: string;
-    currencyName: string;
-    currencyImageAsset: string;
-    netWorkInfo: AddEthereumChainParameter;
-  }
->;
+export type CurrencyInfos = {
+  chainId: number;
+  chainName: CurrencyType;
+  contractAddress: string;
+  pledgerBridgeContractAddress: string;
+  chainImageAsset: string;
+  chainDesc: string;
+  currencyName: string;
+  currencyImageAsset: string;
+  netWorkInfo: AddEthereumChainParameter;
+};
 
-const currencyInfos: CurrencyInfos = {
+const currencyInfos = {
   BSC_Mainnet: {
     chainId: 56,
     chainName: 'BSC_Mainnet',
@@ -89,5 +87,13 @@ const currencyInfos: CurrencyInfos = {
   //   },
   // },
 };
+const envChainInfos =
+  process.env.NODE_ENV === 'development'
+    ? filter(currencyInfos, (c) => c.chainId === 97)
+    : filter(currencyInfos, (c) => c.chainId === 56);
+
+export type ChainInfoKeysType = typeof envChainInfos[number]['chainName'];
+
+export const chainInfoKeys: ChainInfoKeysType[] = map(envChainInfos, (c) => c.chainName);
 
 export default currencyInfos;

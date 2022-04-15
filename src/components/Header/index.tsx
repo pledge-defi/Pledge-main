@@ -99,14 +99,17 @@ const Header: React.FC<IHeaderProps> = () => {
           >
             Borrow
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to={PageUrl.DEX.replace(':mode', 'Swap')}
             activeStyle={{ color: '#5d52ff' }}
             activeClassName="active"
             className={location.pathname == '/DEX/Swap' ? 'menu-item' : ''}
           >
             DEX
-          </NavLink>
+          </NavLink> */}
+          <a onClick={() => window.open('http://prod-pledger-swap.s3-website-us-west-2.amazonaws.com')} className="">
+            DEX
+          </a>
           {chainId == 97 && (
             <NavLink
               to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')}
@@ -218,9 +221,15 @@ const Header: React.FC<IHeaderProps> = () => {
               <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Borrow')} className="menu-item">
                 Borrow
               </NavLink>
-              <NavLink to={PageUrl.DEX.replace(':mode', 'Swap')} className="menu-item">
+              {/* <NavLink to={PageUrl.DEX.replace(':mode', 'Swap')} className="menu-item">
                 DEX
-              </NavLink>
+              </NavLink> */}
+              <a
+                onClick={() => window.open('http://prod-pledger-swap.s3-website-us-west-2.amazonaws.com')}
+                className="menu-item"
+              >
+                DEX
+              </a>
               {chainId == 97 && (
                 <NavLink to={PageUrl.Lend_Borrow.replace(':mode', 'Provide')} className="menu-item">
                   Get Testnet Tokens

@@ -6,6 +6,8 @@ const plugins = [
   '@babel/plugin-proposal-nullish-coalescing-operator',
   '@babel/plugin-transform-runtime',
   ['import', { libraryName: 'antd', libraryDirectory: 'es', style: true }],
+  ['babel-plugin-styled-components'],
+  ['babel-plugin-macros'],
 ];
 
 module.exports = function (api) {
