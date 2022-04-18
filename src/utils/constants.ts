@@ -5,8 +5,11 @@
 // export const pledge_address = '0xb996788A2471f34ad301dD5090d85521Da252ED4';
 // export const ORACLE_address = '0xd96DBDC193617A0cD4bbf38E78a0fB4799A8E554';
 //2.2
-export const pledge_address = '0x216f718A983FCCb462b338FA9c60f2A89199490c';
-export const ORACLE_address = '0x272aCa56637FDaBb2064f19d64BC3dE64A85A1b2';
+// export const pledge_address = '0x216f718A983FCCb462b338FA9c60f2A89199490c';
+// export const ORACLE_address = '0x272aCa56637FDaBb2064f19d64BC3dE64A85A1b2';
+//prop
+export const pledge_address = '0x25C3f3d3E3299d7C56700CE54303Fbe1E6a16fee';
+export const ORACLE_address = '0x4Aa9EB3149089D7208C9C0403BF1b9bA25ff05BD';
 
 export const pledge_mainaddress = '0x78CE5055149Dc30755612209f9d9A98f36fb022E';
 export const ORACLE_mainaddress = '0x6cc2B5D12aD1Cc66149F2fb895ca863e9aEbD31e';
