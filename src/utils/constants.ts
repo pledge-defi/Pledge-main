@@ -8,11 +8,11 @@
 // export const pledge_address = '0x216f718A983FCCb462b338FA9c60f2A89199490c';
 // export const ORACLE_address = '0x272aCa56637FDaBb2064f19d64BC3dE64A85A1b2';
 //prop
-export const pledge_address = '0x25C3f3d3E3299d7C56700CE54303Fbe1E6a16fee';
-export const ORACLE_address = '0x4Aa9EB3149089D7208C9C0403BF1b9bA25ff05BD';
+export const pledge_address = '0x80a4D82f1879c7933ee9aa266E8580abaaa9b7c2';
+export const ORACLE_address = '0x4F72DFa7E151767eC583bbaE7cf878Ed12d6c111';
 
-export const pledge_mainaddress = '0x78CE5055149Dc30755612209f9d9A98f36fb022E';
-export const ORACLE_mainaddress = '0x6cc2B5D12aD1Cc66149F2fb895ca863e9aEbD31e';
+export const pledge_mainaddress = '0x25C3f3d3E3299d7C56700CE54303Fbe1E6a16fee';
+export const ORACLE_mainaddress = '0x4Aa9EB3149089D7208C9C0403BF1b9bA25ff05BD';
 
 export const FORMAT_TIME_STANDARD = 'YYYY-MM-DD HH:mm:ss';
 export const borderColor = '#e7e3eb';
