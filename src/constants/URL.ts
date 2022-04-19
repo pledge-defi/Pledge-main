@@ -25,12 +25,12 @@ const handler = {
       return new Proxy(value, handler); // 使用try catch 巧妙的实现了 深层 属性代理
     } catch (err) {
       if (typeof value === 'string') {
-        let base = baseUrl.v22;
+        let base = baseUrl.v21;
         if (nowHost.includes('127.0.0.1') || nowHost.includes('localhost')) {
           base = baseUrl['v21'];
         }
         if (nowHost.includes('dev-v2-pledger')) {
-          base = baseUrl['development'];
+          base = baseUrl['v21'];
         }
         if (nowHost.includes('v2-pldeger')) {
           base = baseUrl['v22'];
