@@ -17,7 +17,7 @@ export function useEagerConnect() {
         setTried(true);
       }
     });
-  }, []);
+  }, [activate]);
 
   useEffect(() => {
     if (!tried && active) {
@@ -38,17 +38,17 @@ export function useInactiveListener(suppress = false) {
         console.log("Handling 'connect' event");
         activate(injected);
       };
-      const handleChainChanged = (chainId) => {
+      const handleChainChanged = (chainId: any) => {
         console.log("Handling 'chainChanged' event with payload", chainId);
         activate(injected);
       };
-      const handleAccountsChanged = (accounts) => {
+      const handleAccountsChanged = (accounts: string | any[]) => {
         console.log("Handling 'accountsChanged' event with payload", accounts);
         if (accounts.length > 0) {
           activate(injected);
         }
       };
-      const handleNetworkChanged = (networkId) => {
+      const handleNetworkChanged = (networkId: any) => {
         console.log("Handling 'networkChanged' event with payload", networkId);
         activate(injected);
       };

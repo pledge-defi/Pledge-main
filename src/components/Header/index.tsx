@@ -12,6 +12,8 @@ import { useWeb3React } from '@web3-react/core';
 import { Select, message, Drawer, Dropdown, Menu } from 'antd';
 import Button from '_components/Button';
 import ConnectWallet from '_components/ConnectWallet';
+import ConnectWallet1 from '_components/ConnectWallet1';
+
 import PageUrl from '_constants/pageURL';
 import logo from '_assets/images/vector.png';
 import logo2 from '_assets/images/vector2.png';

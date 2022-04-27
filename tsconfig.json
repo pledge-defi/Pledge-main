@@ -75,6 +75,6 @@
     "skipLibCheck": true /* 跳过声明文件的类型检查. */,
     "forceConsistentCasingInFileNames": true /* 禁止对同一文件使用大小写不一致的引用. */
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "src/theme"],
   "exclude": ["./node_modules", "build", "public"]
 }

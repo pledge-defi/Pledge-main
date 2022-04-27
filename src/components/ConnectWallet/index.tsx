@@ -13,6 +13,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { HeaderBox } from '../styleComponents';
 import WalletModal from './../WalletModal';
 import ChainBridge from '_constants/ChainBridge';
+import './index.less';
 
 // import { modal } from
 
@@ -46,7 +47,6 @@ const WalletConnected = styled(HeaderBox)`
 
 const WalletNoConnected = styled(HeaderBox)`
   margin-left: 24px;
-
   background: #5d52ff;
   border-radius: 21px 21px 21px 0px;
   color: #fff;
