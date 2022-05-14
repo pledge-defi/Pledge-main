@@ -7,101 +7,6 @@
   }
 }
 
-.ant-popover-inner {
-  width: 303px;
-  height: 196px;
-  background: #f5f5fa;
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(168, 168, 197, 0.14);
-
-  .content_title {
-    color: #262533;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-  }
-
-  .content_tab {
-    color: #4f4e66;
-    font-size: 14px;
-    line-height: 20px;
-  }
-
-  .slippage_value {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .ant-input-number-handler-wrap {
-      display: none;
-    }
-
-    span {
-      display: block;
-      flex: 0;
-      box-sizing: border-box;
-      padding: 4px 10px;
-      color: #111729;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 20px;
-      text-align: center;
-      background: #fff;
-      border: 1px solid #bcc0cc;
-      border-radius: 14px;
-    }
-
-    .onchange {
-      color: #fff;
-      background: #5d52ff;
-    }
-
-    .ant-input-number {
-      box-sizing: border-box;
-      width: 90px;
-      height: 28px;
-      color: #9095a3;
-      font-weight: 500;
-      font-size: 14px;
-      background: #fff;
-      border: 1px solid #eaedf5;
-      border-radius: 14px;
-
-      input {
-        line-height: 20px;
-        text-align: right;
-      }
-    }
-  }
-
-  .slippage_time {
-    display: flex;
-    align-items: center;
-
-    .ant-input-number-handler-wrap {
-      display: none;
-    }
-
-    .ant-input-number {
-      box-sizing: border-box;
-      width: 90px;
-      height: 28px;
-      margin-right: 10px;
-      color: #9095a3;
-      font-weight: 500;
-      font-size: 14px;
-      background: #fff;
-      border: 1px solid #eaedf5;
-      border-radius: 14px;
-
-      input {
-        line-height: 20px;
-        text-align: right;
-      }
-    }
-  }
-}
-
 .dapp_Dex {
   display: block;
   max-width: 1280px;
@@ -153,6 +58,11 @@
 
         .ant-input-number-handler-wrap {
           display: none;
+        }
+
+        .ant-input-number-group-addon {
+          background-color: transparent;
+          border: 0;
         }
 
         input {
@@ -295,6 +205,116 @@
       width: 174px;
       height: 38px;
       margin-left: 16px;
+    }
+  }
+}
+
+.seting_modal {
+  top: calc(50% - 160px);
+  border-radius: 16px;
+}
+
+.ant-modal-content {
+  border-radius: 16px;
+}
+
+.ant-input-number-handler-wrap {
+  display: none;
+}
+//弃用
+
+.ant-popover-inner {
+  width: 303px;
+  height: 196px;
+  background: #f5f5fa;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(168, 168, 197, 0.14);
+
+  .content_title {
+    color: #262533;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .content_tab {
+    color: #4f4e66;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .slippage_value {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+
+    span {
+      display: block;
+      flex: 0;
+      box-sizing: border-box;
+      padding: 4px 10px;
+      color: #111729;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      background: #fff;
+      border: 1px solid #bcc0cc;
+      border-radius: 14px;
+    }
+
+    .onchange {
+      color: #fff;
+      background: #5d52ff;
+    }
+
+    .ant-input-number {
+      box-sizing: border-box;
+      width: 90px;
+      height: 28px;
+      color: #9095a3;
+      font-weight: 500;
+      font-size: 14px;
+      background: #fff;
+      border: 1px solid #eaedf5;
+      border-radius: 14px;
+
+      input {
+        line-height: 20px;
+        text-align: right;
+      }
+    }
+  }
+
+  .slippage_time {
+    display: flex;
+    align-items: center;
+
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+
+    .ant-input-number {
+      box-sizing: border-box;
+      width: 90px;
+      height: 28px;
+      margin-right: 10px;
+      color: #9095a3;
+      font-weight: 500;
+      font-size: 14px;
+      background: #fff;
+      border: 1px solid #eaedf5;
+      border-radius: 14px;
+
+      input {
+        line-height: 20px;
+        text-align: right;
+      }
     }
   }
 }
