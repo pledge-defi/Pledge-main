@@ -101,14 +101,14 @@ const Header: React.FC<IHeaderProps> = () => {
           >
             Borrow
           </NavLink>
-          {/* <NavLink
+          <NavLink
             to={PageUrl.DEX.replace(':mode', 'Swap')}
             activeStyle={{ color: '#5d52ff' }}
             activeClassName="active"
             className={location.pathname == '/DEX/Swap' ? 'menu-item' : ''}
           >
             DEX
-          </NavLink> */}
+          </NavLink>
           <a onClick={() => window.open('http://prod-pledger-swap.s3-website-us-west-2.amazonaws.com')} className="">
             DEX
           </a>

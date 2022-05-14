@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 
-import { Tabs, InputNumber, Popover, Space, Tooltip } from 'antd';
+import { Tabs, InputNumber, Popover, Space, Tooltip, Select, Cascader } from 'antd';
 import { SettingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { DappLayout } from '_src/Layout';
 import pageURL from '_constants/pageURL';
@@ -9,7 +9,7 @@ import Coin_pool from '_components/Coin_pool';
 import Button from '_components/Button';
 import './index.less';
 import { color } from 'echarts';
-
+const { Option } = Select;
 type Iparams = {
   mode: 'Swap' | 'Liquidity';
 };
@@ -80,10 +80,24 @@ function Dex() {
       </div>
     </div>
   );
+  const selectBefore = (
+    <Select defaultValue="add" style={{ width: 60 }}>
+      <Option value="add">+</Option>
+      <Option value="minus">-</Option>
+    </Select>
+  );
+  const selectAfter = (
+    <Select defaultValue="USD" style={{ width: 60 }}>
+      <Option value="USD">$</Option>
+      <Option value="EUR">€</Option>
+      <Option value="GBP">£</Option>
+      <Option value="CNY">¥</Option>
+    </Select>
+  );
 
   return (
-    <DappLayout className="dapp_Dex">
-      <Tabs defaultActiveKey="Swap" onChange={callback}>
+    <DappLayout title={`${mode} Dex`} className="dapp_Dex">
+      <Tabs defaultActiveKey="Swap" activeKey={mode} onChange={callback}>
         <TabPane tab="Swap" key="Swap">
           <div className="swap_tab">
             <p className="swap_title">
