@@ -22,11 +22,9 @@ const DeadlineInput = styled(Input)`
   font-size: 14px;
 `;
 
-type TransactionDeadlineSettingModalProps = {
-  translateString: (translationId: number, fallback: string) => string;
-};
+type TransactionDeadlineSettingModalProps = {};
 
-const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSettingModalProps) => {
+const TransactionDeadlineSetting = ({}: TransactionDeadlineSettingModalProps) => {
   const [deadline, setDeadline] = useRecoilState(userDeadline);
 
   const [value, setValue] = useState(deadline / 60); // deadline in minutes
@@ -45,12 +43,12 @@ const TransactionDeadlineSetting = ({ translateString }: TransactionDeadlineSett
         setDeadline(rawValue);
         setError(null);
       } else {
-        setError(translateString(1150, 'Enter a valid deadline'));
+        setError('Enter a valid deadline');
       }
     } catch {
-      setError(translateString(1150, 'Enter a valid deadline'));
+      setError('Enter a valid deadline');
     }
-  }, [value, setError, setDeadline, translateString]);
+  }, [value, setError, setDeadline]);
 
   return (
     <Box marginBottom={16}>
