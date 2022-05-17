@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 
 import { Tabs, InputNumber, Popover, Space, Tooltip, Select, Cascader, Modal } from 'antd';
-import { SettingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { DappLayout } from '_src/Layout';
 import pageURL from '_constants/pageURL';
 import Coin_pool from '_components/Coin_pool';
@@ -10,6 +10,7 @@ import Button from '_components/Button';
 import styled, { css } from 'styled-components';
 import './index.less';
 import { color } from 'echarts';
+import PageHeader from '_components/PageHeader';
 const { Option } = Select;
 type Iparams = {
   mode: 'Swap' | 'Liquidity';
@@ -76,7 +77,6 @@ function Dex() {
   const { TabPane } = Tabs;
   const [slippagevalue, setslippagevalue] = useState(0.5);
   const [slippagetime, setslippagetime] = useState(20);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   function callback(key) {
     history.replace(pageURL.DEX.replace(':mode', `${key}`));
   }
@@ -195,7 +195,7 @@ function Dex() {
       <Tabs defaultActiveKey="Swap" activeKey={mode} onChange={callback}>
         <TabPane tab="Swap" key="Swap">
           <div className="swap_tab">
-            <p className="swap_title">
+            {/* <p className="swap_title">
               <span>Swap</span>
               <SettingOutlined
                 onClick={() => {
@@ -219,7 +219,9 @@ function Dex() {
               >
                 {content}
               </Modal>
-            </p>
+            </p> */}
+            <PageHeader title={'Swap'} />
+
             <div className="swap_input" style={{ width: '100%', marginBottom: '44px' }}>
               <CurrencyRow>
                 <span>From</span>
