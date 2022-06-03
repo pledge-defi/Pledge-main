@@ -26,11 +26,9 @@ export interface IHeaderProps {}
 
 type Iparams = {};
 const Header: React.FC<IHeaderProps> = () => {
-  console.log(location.pathname);
   const [isOpacity, setIsOpacity] = useState(true);
   const [visable, setVisable] = useState(false);
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
-  console.log(routeUrl);
   const [currency, setCurrency] = useRecoilState(currencyState);
   const { chainId } = useWeb3React();
   const [currentChainId, setCurrentChainId] = useState<number>();
@@ -102,10 +100,10 @@ const Header: React.FC<IHeaderProps> = () => {
             Borrow
           </NavLink>
           <NavLink
-            to={PageUrl.DEX.replace(':mode', 'Swap')}
+            to={PageUrl.DEX_Swap.replace(':mode', 'Swap')}
             activeStyle={{ color: '#5d52ff' }}
             activeClassName="active"
-            className={location.pathname == '/DEX/Swap' ? 'menu-item' : ''}
+            className={location.pathname == '/DEX/Swap' || location.pathname == '/DEX/Liquidity' ? 'menu-item' : ''}
           >
             DEX
           </NavLink>

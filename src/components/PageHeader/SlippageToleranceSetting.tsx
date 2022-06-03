@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Box, Button, Flex, Input, Text } from '@pancakeswap-libs/uikit';
+import { useUserSlippageTolerance } from '_src/state/user/hooks';
 import QuestionHelper from '../QuestionHelper';
-import { Col, Row, Button, Input } from 'antd';
-import { Flex, Text } from '_components/lib';
-import { useRecoilState } from 'recoil';
-import { userSlippageTolerance } from '_src/model/global';
 
 const MAX_SLIPPAGE = 5000;
 const RISKY_SLIPPAGE_LOW = 50;
@@ -17,6 +15,7 @@ const Option = styled.div`
 const Options = styled.div`
   align-items: center;
   display: flex;
+  flex-direction: column;
 
   ${Option}:first-child {
     padding-left: 0;
@@ -25,29 +24,12 @@ const Options = styled.div`
   ${Option}:last-child {
     padding-right: 0;
   }
-`;
-const SlippageButton = styled(Button)`
-  background: #ffffff;
-  border: 1px solid #bcc0cc;
-  font-weight: 700;
-  box-sizing: border-box;
-  border-radius: 14px;
-  width: 49px;
-  height: 28px;
-  text-align: center;
-  padding: 0;
-  color: rgb(17, 23, 41);
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    flex-direction: row;
+  }
 `;
 
-const SlippageInput = styled(Input)`
-  background: rgb(255, 255, 255);
-  border: 1px solid rgb(234, 237, 245);
-  box-sizing: border-box;
-  border-radius: 14px;
-  width: 90px;
-  height: 28px;
-  font-size: 14px;
-`;
 const predefinedValues = [
   { label: '0.1%', value: 0.1 },
   { label: '0.5%', value: 0.5 },
@@ -55,85 +37,91 @@ const predefinedValues = [
 ];
 
 type SlippageToleranceSettingsModalProps = {
-  // translateString: (translationId: number, fallback: string) => string
+  translateString: (translationId: number, fallback: string) => string;
 };
 
-const SlippageToleranceSettings = ({}: SlippageToleranceSettingsModalProps) => {
-  const [slippageTolerance, setSlippageTolerance] = useRecoilState(userSlippageTolerance);
-  const [value, setValue] = useState(slippageTolerance / 100);
-  const [error, setError] = useState<string | null>('');
+const SlippageToleranceSettings = ({ translateString }: SlippageToleranceSettingsModalProps) => {
+  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance();
+  const [value, setValue] = useState(userSlippageTolerance / 100);
+  const [error, setError] = useState<string | null>(null);
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = evt.target;
     setValue(parseFloat(inputValue));
   };
 
+  // Updates local storage if value is valid
   useEffect(() => {
     try {
       const rawValue = value * 100;
       if (!Number.isNaN(rawValue) && rawValue > 0 && rawValue < MAX_SLIPPAGE) {
-        console.log(rawValue);
-        setSlippageTolerance(rawValue);
+        setUserslippageTolerance(rawValue);
         setError(null);
       } else {
-        setError('Enter a valid slippage percentage');
+        setError(translateString(1144, 'Enter a valid slippage percentage'));
       }
     } catch {
-      setError('Enter a valid slippage percentage');
+      setError(translateString(1144, 'Enter a valid slippage percentage'));
     }
-  }, [value, setError, setSlippageTolerance]);
+  }, [value, setError, setUserslippageTolerance, translateString]);
 
+  // Notify user if slippage is risky
   useEffect(() => {
-    if (slippageTolerance < RISKY_SLIPPAGE_LOW) {
-      setError('Your transaction may fail');
-    } else if (slippageTolerance > RISKY_SLIPPAGE_HIGH) {
-      setError('Your transaction may be frontrun');
+    if (userSlippageTolerance < RISKY_SLIPPAGE_LOW) {
+      setError(translateString(1146, 'Your transaction may fail'));
+    } else if (userSlippageTolerance > RISKY_SLIPPAGE_HIGH) {
+      setError(translateString(1148, 'Your transaction may be frontrun'));
     }
-  }, [slippageTolerance, setError]);
+  }, [userSlippageTolerance, setError, translateString]);
 
   return (
-    <Row style={{ marginBottom: '16px' }}>
-      <Flex style={{ marginBottom: '8px' }}>
-        <Text>{'Slippage tolerance'}</Text>
+    <Box mb="16px">
+      <Flex alignItems="center" mb="8px">
+        <Text bold>{translateString(88, 'Slippage tolerance')}</Text>
         <QuestionHelper
-          title={'Your transaction will revert if the price changes unfavorably by more than this percentage.'}
+          text={translateString(
+            186,
+            'Your transaction will revert if the price changes unfavorably by more than this percentage.',
+          )}
         />
       </Flex>
       <Options>
-        <Flex style={{ marginRight: '5px' }}>
+        <Flex mb={['8px', '8px', 0]} mr={[0, 0, '8px']}>
           {predefinedValues.map(({ label, value: predefinedValue }) => {
             const handleClick = () => setValue(predefinedValue);
+
             return (
               <Option key={predefinedValue}>
-                <SlippageButton type={'primary'} className={'tertiary'} onClick={handleClick}>
+                <Button variant={value === predefinedValue ? 'primary' : 'tertiary'} onClick={handleClick}>
                   {label}
-                </SlippageButton>
+                </Button>
               </Option>
             );
           })}
         </Flex>
-        <Flex>
+        <Flex alignItems="center">
           <Option>
-            <SlippageInput
+            <Input
               type="number"
-              status={error ? 'error' : ''}
+              scale="lg"
               step={0.1}
               min={0.1}
               placeholder="5%"
               value={value}
               onChange={handleChange}
+              isWarning={error !== null}
             />
           </Option>
           <Option>
-            <Text fontSize={14}>%</Text>
+            <Text fontSize="18px">%</Text>
           </Option>
         </Flex>
       </Options>
       {error && (
-        <Text marginTop={8} color="rgb(237, 75, 158)">
+        <Text mt="8px" color="failure">
           {error}
         </Text>
       )}
-    </Row>
+    </Box>
   );
 };
 

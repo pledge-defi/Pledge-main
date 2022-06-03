@@ -1,30 +1,38 @@
-import React from 'react';
-import { Web3ReactProvider } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
+import React, { StrictMode } from 'react';
 import 'firebase/firestore';
 
 import Header from '_components/Header';
 import { WebLayout } from '_src/Layout';
 import Routes from './routes';
-
+import ApplicationUpdater from '_src/state/application/updater';
+import ListsUpdater from '_src/state/lists/updater';
+import MulticallUpdater from '_src/state/multicall/updater';
+import TransactionUpdater from '_src/state/transactions/updater';
+import ToastListener from '_components/ToastListener';
+import { ResetCSS } from '@pancakeswap-libs/uikit';
 import './index.less';
-
-function getLibrary(provider) {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 5000;
-  return library;
-}
+import Providers from './Providers';
 
 const PortfolioPage: React.FC = () => {
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <WebLayout className="dapp-page">
-        <Header />
-        <div className="dapp-router-page">
-          <Routes />
-        </div>
-      </WebLayout>
-    </Web3ReactProvider>
+    <StrictMode>
+      <Providers>
+        <>
+          <ListsUpdater />
+          <ApplicationUpdater />
+          <TransactionUpdater />
+          <MulticallUpdater />
+          <ToastListener />
+        </>
+        <WebLayout className="dapp-page">
+          <Header />
+          <div className="dapp-router-page">
+            <ResetCSS />
+            <Routes />
+          </div>
+        </WebLayout>
+      </Providers>
+    </StrictMode>
   );
 };
 export default PortfolioPage;

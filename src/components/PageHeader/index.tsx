@@ -1,8 +1,9 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Row } from 'antd';
-import { SettingOutlined } from '@ant-design/icons';
-import SettingsModal from '_components/PageHeader/SettingsModal';
+import { Heading, IconButton, Text, Flex, useModal } from '@pancakeswap-libs/uikit';
+import useI18n from '_src/hooks/useI18n';
+import SettingsModal from './SettingsModal';
+import shezhi from '../../images/Icon(5).png';
 
 interface PageHeaderProps {
   title: ReactNode;
@@ -17,44 +18,28 @@ const Details = styled.div`
   flex: 1;
 `;
 
-const Heading = styled.div`
-  color: #262533;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
-  margin-bottom: 8px;
-`;
-const Description = styled.div`
-  font-size: 14px;
-`;
-const ChindredNode = styled.div`
-  margin-bottom: 16px;
-`;
-
 const PageHeader = ({ title, description, children }: PageHeaderProps) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const TranslateString = useI18n();
+  const [onPresentSettings] = useModal(<SettingsModal translateString={TranslateString} />);
 
   return (
     <StyledPageHeader>
-      <Row>
+      <Flex alignItems="center">
         <Details>
-          <Heading>{title}</Heading>
-          {description && <Description>{description}</Description>}
+          <Heading mb="8px" style={{ color: '#262533', fontWeight: 500, fontSize: '16px', lineHeight: '24px' }}>
+            {title}
+          </Heading>
+          {description && (
+            <Text color="textSubtle" fontSize="14px">
+              {description}
+            </Text>
+          )}
         </Details>
-        <SettingOutlined
-          onClick={() => {
-            setIsModalVisible(!isModalVisible);
-          }}
-        />
-      </Row>
-      {children && <ChindredNode>{children}</ChindredNode>}
-      <SettingsModal
-        visible={isModalVisible}
-        onCancel={() => {
-          setIsModalVisible(() => false);
-        }}
-        title={'Transaction Settings'}
-      />
+        <IconButton variant="text" onClick={onPresentSettings} title={TranslateString(1200, 'Settings')}>
+          <img src={shezhi} alt="" />
+        </IconButton>
+      </Flex>
+      {children && <Text mt="16px">{children}</Text>}
     </StyledPageHeader>
   );
 };

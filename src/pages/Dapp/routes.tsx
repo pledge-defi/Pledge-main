@@ -8,6 +8,15 @@ import Loading from '_components/Loading';
 import Market_Pool from '_src/pages/Dapp/Market_Pool';
 import Market_Mode from '_src/pages/Dapp/Market_Mode';
 import Dex from '_src/pages/Dapp/Dex';
+import PoolFinder from '_src/pages/Dapp/Dex/PoolFinder';
+import AddLiquidity from '_src/pages/Dapp/Dex/AddLiquidity';
+import RemoveLiquidity from '_src/pages/Dapp/Dex/RemoveLiquidity';
+import { RedirectOldRemoveLiquidityPathStructure } from '_src/pages/Dapp/Dex/RemoveLiquidity/redirects';
+
+import {
+  RedirectDuplicateTokenIds,
+  RedirectOldAddLiquidityPathStructure,
+} from '_src/pages/Dapp/Dex//AddLiquidity/redirects';
 const routeMap = [
   {
     path: pageURL.Dapp,
@@ -36,6 +45,42 @@ const routeMap = [
   {
     path: pageURL.DEX,
     component: Dex,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Find,
+    component: PoolFinder,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Add,
+    component: AddLiquidity,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Add_Single,
+    component: RedirectOldAddLiquidityPathStructure,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Add_Double,
+    component: RedirectDuplicateTokenIds,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Remove_Tokens,
+    component: RedirectOldRemoveLiquidityPathStructure,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Remove_Liquidity,
+    component: RemoveLiquidity,
     exact: true,
     dynamic: true,
   },

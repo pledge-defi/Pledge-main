@@ -1,53 +1,83 @@
-import React, { useState } from 'react';
-import { Modal } from 'antd';
-import styled from 'styled-components';
-import SlippageToleranceSetting from './SlippageToleranceSetting';
-import TransactionDeadlineSetting from './TransactionDeadlineSetting';
+import React from 'react'
+import { Modal } from '@pancakeswap-libs/uikit'
+import styled from 'styled-components'
+import SlippageToleranceSetting from './SlippageToleranceSetting'
+import TransactionDeadlineSetting from './TransactionDeadlineSetting'
+
 
 const Settingtab = styled.div`
-  border-radius: 16px;
-  background: #f5f5fa;
-`;
-const Title = styled.div`
-  font-weight: 700;
+z-index:10;
+border-radius: 16px;
+background: #F5F5FA;
+div:nth-child(1)>h2{
+  font-weight: 600;
   font-size: 14px;
   line-height: 20px;
   color: #262533;
-  padding: 16px 16px 0px;
-`;
-const ModalWrap = styled.div`
-  padding: 16px;
-`;
-
-type ModalProps = React.ComponentProps<typeof Modal>;
-interface SettingsModalProps extends Omit<ModalProps, 'title'> {
-  title?: string;
 }
 
-const SettingsModal = ({ title, ...props }: SettingsModalProps) => {
-  return (
-    <Settingtab className="Settingtab">
-      <Modal
-        width={320}
-        bodyStyle={{
-          background: '#f5f5fa',
-          borderRadius: '16px',
-          boxShadow: '0 0 20px rgba(168, 168, 197, 0.14)',
-          padding: '0',
-        }}
-        footer={null}
-        closable={false}
-        className={'seting_modal'}
-        {...props}
-      >
-        <Title>{title}</Title>
-        <ModalWrap>
-          <SlippageToleranceSetting />
-          <TransactionDeadlineSetting />
-        </ModalWrap>
-      </Modal>
-    </Settingtab>
-  );
-};
+div:nth-child(1){
+  font-weight: 400;
+font-size: 14px;
+line-height: 20px;
+color: #4F4E66;
+background: #F5F5FA;
+border:none;
+border-radius: 16px;
 
-export default SettingsModal;
+button:nth-child(2){
+  display:none
+}
+&>div>button{
+  background: #FFFFFF;
+border: 1px solid #BCC0CC;
+box-sizing: border-box;
+border-radius: 14px;
+width:49px;
+height:28px;
+color: #111729;
+}
+&>div>button:focus{
+  color: #FFFFFF;
+  background: #5D52FF;
+}
+&>input{
+  background: #FFFFFF;
+  border: 1px solid #EAEDF5;
+  box-sizing: border-box;
+  border-radius: 14px;
+  width:90px;
+  height:28px
+}
+}
+div:nth-child(2)>div:nth-child(2)>div>input{
+  background: #FFFFFF;
+border: 1px solid #EAEDF5;
+box-sizing: border-box;
+border-radius: 14px;
+width:90px;
+height:28px
+}
+&>div:nth-child(1)>div{
+  padding:16px 16px 0
+  
+  }
+&>div>div{
+padding:16px
+}
+}
+`
+// TODO: Fix UI Kit typings
+
+const SettingsModal = ({ translateString }) => {
+  return (
+    <Settingtab className='Settingtab'>
+    <Modal title='Transaction Settings' >
+      <SlippageToleranceSetting translateString={translateString} />
+      <TransactionDeadlineSetting translateString={translateString} />
+    </Modal>
+    </Settingtab>
+  )
+}
+
+export default SettingsModal

@@ -1,7 +1,17 @@
 import services from '_src/services';
 import BigNumber from 'bignumber.js';
+import { getAddress } from '@ethersproject/address';
 
 const specialAsset = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
+
+// returns the checksummed address if the address is valid, otherwise returns false
+function isAddress(value: any): string | false {
+  try {
+    return getAddress(value);
+  } catch {
+    return false;
+  }
+}
 
 /**
  * 获取地址栏参数 Get address bar parameters
@@ -56,4 +66,4 @@ const calDecimalPrecision = (val, num) => {
   return newAmount;
 };
 
-export { getUrlPrmt, getParams, bin2Hex, calDecimalPrecision };
+export { getUrlPrmt, getParams, bin2Hex, calDecimalPrecision, isAddress };

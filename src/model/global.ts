@@ -1,13 +1,10 @@
 import { atom } from 'recoil';
 import currencyInfos from './../constants/currencyInfos';
 import type { CurrencyInfos, chainInfoKeys } from './../constants/currencyInfos';
-
+import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '_constants/index';
+import DEFAULT_LIST from '_constants/token/pancakeswap.json';
 export const currencies = ['BSC_Mainnet', 'BSC_Testnet'] as const;
-
-// default allowed slippage, in bips
-export const INITIAL_ALLOWED_SLIPPAGE = 80;
-// 20 minutes, denominated in seconds
-export const DEFAULT_DEADLINE_FROM_NOW = 60 * 20;
+import { TokenList } from '@uniswap/token-lists/dist/types';
 
 export type CurrencyType = typeof currencies[number];
 const defaultChain = currencyInfos[0];
@@ -43,4 +40,9 @@ export const userSlippageTolerance = atom<number>({
 export const userDeadline = atom<number>({
   key: 'userDeadline',
   default: DEFAULT_DEADLINE_FROM_NOW,
+});
+
+export const useTokens = atom<TokenList>({
+  key: 'useTokens',
+  default: DEFAULT_LIST,
 });

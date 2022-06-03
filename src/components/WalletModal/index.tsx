@@ -94,9 +94,7 @@ export default function WalletModal({}: // pendingTransactions,
   function getOptions() {
     // const isMetamask = window.ethereum && window.ethereum.isMetaMask;
     return Object.keys(SUPPORTED_WALLETS).map((key) => {
-      console.log(key);
       const option = SUPPORTED_WALLETS[key];
-      console.log(option);
       // return rest of options
       return (
         !option.mobileOnly && (

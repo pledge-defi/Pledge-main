@@ -36,6 +36,42 @@ const routeMap = [
     dynamic: false,
   },
   {
+    path: pageURL.Find,
+    component: Landing,
+    exact: true,
+    dynamic: false,
+  },
+  {
+    path: pageURL.Add,
+    component: Landing,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Add_Single,
+    component: Landing,
+    exact: true,
+    dynamic: false,
+  },
+  {
+    path: pageURL.Add_Double,
+    component: Landing,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Remove_Tokens,
+    component: Landing,
+    exact: true,
+    dynamic: true,
+  },
+  {
+    path: pageURL.Remove_Liquidity,
+    component: Landing,
+    exact: true,
+    dynamic: true,
+  },
+  {
     path: '*',
     component: () => <div>404</div>,
     exact: true,

@@ -3,7 +3,6 @@ import { useRouteMatch, useHistory } from 'react-router-dom';
 
 import { Tabs } from 'antd';
 import { DappLayout } from '_src/Layout';
-import pageURL from '_constants/pageURL';
 import Coin_pool from '_components/Coin_pool';
 
 import './index.less';
@@ -16,7 +15,6 @@ type Iparams = {
 function MarketPage() {
   const history = useHistory();
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
-  console.log(params);
   const { coin, pool, mode } = params;
   const { TabPane } = Tabs;
   const callback = (key) => {
