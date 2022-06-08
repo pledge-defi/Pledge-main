@@ -30,7 +30,13 @@ const routeMap = [
     dynamic: false,
   },
   {
-    path: pageURL.DEX,
+    path: pageURL.DEX_Swap,
+    component: Landing,
+    exact: true,
+    dynamic: false,
+  },
+  {
+    path: pageURL.DEX_Pool,
     component: Landing,
     exact: true,
     dynamic: false,

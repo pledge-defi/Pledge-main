@@ -10,6 +10,7 @@ import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 
 import './index.less';
 import services from '_src/services';
+import { useActiveWeb3React } from '_src/hooks';
 
 export interface IPortfolioList {
   props?: any;
@@ -20,7 +21,7 @@ export interface IPortfolioList {
 }
 
 const PortfolioList: React.FC<IPortfolioList> = ({ className, mode, datainfo, ...props }) => {
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useActiveWeb3React();
   const { Panel } = Collapse;
   const [stakeAmount, setstakeAmount] = useState('');
   const [stakeAmountborrow, setstakeAmountborrow] = useState('');

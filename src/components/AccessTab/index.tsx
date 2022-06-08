@@ -8,7 +8,7 @@ import USDT from '_src/assets/images/order_USDT.png';
 import DAI from '_src/assets/images/order_DAI.png';
 import BNB from '_src/assets/images/order_BNB.png';
 import BigNumber from 'bignumber.js';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { useActiveWeb3React } from '_src/hooks';
 import { Progress, notification, Divider, Space } from 'antd';
 import Success from '_src/assets/images/Success.png';
 import Error from '_src/assets/images/Error.png';
@@ -27,7 +27,7 @@ export interface IAccessTab {
 }
 
 const AccessTab: React.FC<IAccessTab> = ({ className, style, mode, props, stateinfo }) => {
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useActiveWeb3React();
 
   const [hasNoClaim, sethasNoClaim] = useState(false);
   const [loadings, setloadings] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { useActiveWeb3React } from '_src/hooks';
 import { Collapse, Statistic, Row, Col, Table, Steps, message } from 'antd';
 import { Progress, notification, Divider, Space } from 'antd';
 import Success from '_src/assets/images/Success.png';
@@ -49,7 +49,7 @@ const ClaimTime: React.FC<IClaimTime> = ({
   const [hasNoClaim, sethasNoClaim] = useState(false);
   const [loadings, setloadings] = useState(false);
 
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useActiveWeb3React();
   const openNotificationlend = (placement) => {
     notification.config({
       closeIcon: <img src={Union} alt="" style={{ width: '10px', height: '10px', margin: '14px' }} />,

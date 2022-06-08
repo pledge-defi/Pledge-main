@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { Progress, notification, Divider, Space } from 'antd';
 import ConnectWallet from '_components/ConnectWallet';
 import BUSD from '_src/assets/images/busd.png';
@@ -35,6 +34,7 @@ import BigNumber from 'bignumber.js';
 import { render } from 'react-dom';
 import { use } from 'echarts';
 import { web3 } from '_src/services/web3';
+import { useActiveWeb3React } from '_src/hooks';
 
 export interface ICoin_pool {
   mode: string;
@@ -53,7 +53,7 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
   const [poolinfo, setpoolinfo] = useState({});
   const [borrowvalue, setborrowvalue] = useState(0);
   const [lendvalue, setlendvalue] = useState(0);
-  const { connector, library, chainId, account } = useWeb3React();
+  const { connector, library, chainId, account } = useActiveWeb3React();
   const [loadings, setloadings] = useState(false);
   const [warning, setwarning] = useState('');
   const [price, setprice] = useState(0);
@@ -312,13 +312,11 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
     const datainfo = await services.userServer.getpoolBaseInfo(chainId == undefined ? 56 : chainId).then((res) => {
       return res;
     });
-    console.log(datainfo);
     if (datainfo.data.code == 0) {
       const res = datainfo.data.data.map((item, index) => {
         let maxSupply = dealNumber_18(item.pool_data.maxSupply);
         let borrowSupply = dealNumber_18(item.pool_data.borrowSupply);
         let lendSupply = dealNumber_18(item.pool_data.lendSupply);
-        console.log(maxSupply);
         const settlementdate = moment.unix(item.pool_data.settleTime).format(FORMAT_TIME_STANDARD);
         const maturitydate = moment.unix(item.pool_data.endTime).format(FORMAT_TIME_STANDARD);
         var difftime = item.pool_data.endTime - item.pool_data.settleTime;
@@ -326,7 +324,6 @@ const Coin_pool: React.FC<ICoin_pool> = ({ mode, pool, coin }) => {
         var days = parseInt(difftime / 86400 + '');
         console.log('state', item.pool_data.state);
         console.log(item.pool_data.autoLiquidateThreshold);
-        console.log(item.pool_data);
         return {
           key: index + 1,
           state: item.pool_data.state,

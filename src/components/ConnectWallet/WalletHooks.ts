@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useWeb3React } from '@web3-react/core';
 import { injected } from './connector';
+import { useActiveWeb3React } from '_src/hooks';
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3React();
+  const { activate, active } = useActiveWeb3React();
 
   const [tried, setTried] = useState(false);
 
@@ -29,7 +29,7 @@ export function useEagerConnect() {
 }
 
 export function useInactiveListener(suppress = false) {
-  const { active, error, activate } = useWeb3React();
+  const { active, error, activate } = useActiveWeb3React();
 
   useEffect(() => {
     const { ethereum } = window as any;

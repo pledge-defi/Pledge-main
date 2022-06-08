@@ -11,14 +11,14 @@ import {
 } from '@web3-react/walletconnect-connector';
 import { connectorLocalStorageKey, ConnectorNames } from '@pancakeswap-libs/uikit';
 import useToast from '_src/hooks/useToast';
-// import { connectorsByName } from 'connectors';
+import { INFURA_NETWORK_URLS } from '_constants/infura';
 
 const useAuth = () => {
   const { activate, deactivate } = useWeb3React();
   const { toastError } = useToast();
 
   const login = useCallback((connectorID: ConnectorNames) => {
-    const connector = connectorsByName[connectorID];
+    const connector = INFURA_NETWORK_URLS[connectorID];
     if (connector) {
       activate(connector, async (error: Error) => {
         window.localStorage.removeItem(connectorLocalStorageKey);

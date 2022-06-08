@@ -8,6 +8,7 @@ import { SUPPORTED_WALLETS } from '../../constants/wallet';
 import Option from './Option';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import type { AbstractConnector } from '@web3-react/abstract-connector';
+import { useActiveWeb3React } from '_src/hooks';
 const Wrapper = styled.div`
   width: 100%;
 `;
@@ -58,7 +59,7 @@ export default function WalletModal({}: // pendingTransactions,
   // confirmedTransactions: string[]; // hashes of confirmed
   // ENSName?: string;
 }) {
-  const { activate, error } = useWeb3React();
+  const { activate, error } = useActiveWeb3React();
   // const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT);
   // const setWalletModalOpen = useSetRecoilState(walletModalOpen);
   // const previousWalletView = usePrevious(walletView);

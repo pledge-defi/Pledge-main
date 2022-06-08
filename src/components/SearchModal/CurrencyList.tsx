@@ -94,7 +94,6 @@ function CurrencyRow({
   style: CSSProperties;
 }) {
   const { account, chainId } = useActiveWeb3React();
-  console.log(chainId, 'chainId');
   const key = currencyKey(currency);
   const selectedTokenList = useSelectedTokenList();
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency);

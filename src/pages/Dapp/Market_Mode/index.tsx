@@ -12,18 +12,18 @@ import services from '_src/services';
 import { FORMAT_TIME_STANDARD } from '_src/utils/constants';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import Defaultpage from '_components/Defaultpage';
 import pageURL from '_constants/pageURL';
 import TestnetTokens from '_components/TestnetTokens';
 
 import './index.less';
+import { useActiveWeb3React } from '_src/hooks';
 
 type Iparams = {
   mode: 'Lend' | 'Borrow' | 'Provide';
 };
 function Market_Mode() {
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useActiveWeb3React();
 
   const history = useHistory();
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
@@ -62,7 +62,6 @@ function Market_Mode() {
   let [time, settime] = useState(0);
   const getPoolInfo = async () => {
     const datainfo = await services.userServer.getpoolBaseInfo(chainId);
-
     const res = datainfo.data.data.map((item, index) => {
       let maxSupply = dealNumber_18(item.pool_data.maxSupply);
       let borrowSupply = dealNumber_18(item.pool_data.borrowSupply);

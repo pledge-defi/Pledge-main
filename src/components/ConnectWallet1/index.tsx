@@ -14,6 +14,7 @@ import { HeaderBox } from '../styleComponents';
 import WalletModal from './../WalletModal';
 import ChainBridge from '_constants/ChainBridge';
 import './index.less';
+import { useActiveWeb3React } from '_src/hooks';
 
 // import { modal } from
 
@@ -61,7 +62,7 @@ const ConnectWallet: React.FC<IConnectWallet> = () => {
   const triedEager = useEagerConnect();
   const chainInfo = useRecoilValue(chainInfoState);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { connector, chainId, account, activate, deactivate, error } = useWeb3React();
+  const { connector, chainId, account, activate, deactivate, error } = useActiveWeb3React();
   const [activatingConnector, setActivatingConnector] = useState<InjectedConnector>();
 
   const setWalletModalOpen = useSetRecoilState(walletModalOpen);

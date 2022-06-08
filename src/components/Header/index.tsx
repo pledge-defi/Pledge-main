@@ -21,6 +21,7 @@ import list from '_assets/images/Icon (1).png';
 import close from '_assets/images/Icon (2).png';
 
 import './index.less';
+import { useActiveWeb3React } from '_src/hooks';
 
 export interface IHeaderProps {}
 
@@ -30,7 +31,7 @@ const Header: React.FC<IHeaderProps> = () => {
   const [visable, setVisable] = useState(false);
   const { url: routeUrl, params } = useRouteMatch<Iparams>();
   const [currency, setCurrency] = useRecoilState(currencyState);
-  const { chainId } = useWeb3React();
+  const { chainId } = useActiveWeb3React();
   const [currentChainId, setCurrentChainId] = useState<number>();
   const [flag, setflag] = useState(false);
 

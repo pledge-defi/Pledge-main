@@ -15,6 +15,7 @@ import BigNumber from 'bignumber.js';
 import services from '_src/services';
 
 import './index.less';
+import { useActiveWeb3React } from '_src/hooks';
 
 export interface IRefund {
   className?: string;
@@ -25,7 +26,7 @@ export interface IRefund {
 }
 
 const Refund: React.FC<IRefund> = ({ className, style, mode, stateinfo, props }) => {
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useActiveWeb3React();
 
   const [hasNoClaim, sethasNoClaim] = useState(false);
   const [balance, setbalance] = useState('0');

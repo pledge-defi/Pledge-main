@@ -59,7 +59,6 @@ function HomePage() {
     const datainfo = await services.userServer.getpoolBaseInfo(chainId);
 
     const res = datainfo.data.data.map((item, index) => {
-      console.log(item.pool_data);
       let maxSupply = dealNumber_18(item.pool_data.maxSupply);
       let borrowSupply = dealNumber_18(item.pool_data.borrowSupply);
       let lendSupply = dealNumber_18(item.pool_data.lendSupply);
@@ -426,7 +425,6 @@ function HomePage() {
             <Table
               pagination={
                 datastate.filter((item, index) => {
-                  console.log(datastate);
                   return (
                     item.Sp == '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56' ||
                     item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'
@@ -520,7 +518,6 @@ function HomePage() {
             <Table
               pagination={
                 datastate.filter((item, index) => {
-                  console.log(datastate);
                   return (
                     item.Sp == '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56' ||
                     item.Sp == '0xE676Dcd74f44023b95E0E2C6436C97991A7497DA'

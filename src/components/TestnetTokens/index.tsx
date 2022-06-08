@@ -13,11 +13,11 @@ import icon3 from '_src/assets/images/icon (3).png';
 import icon4 from '_src/assets/images/icon (4).png';
 import Union from '_src/assets/images/union.png';
 import { Progress, notification, Divider, Space } from 'antd';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 
 import './index.less';
 import services from '_src/services';
 import { web3 } from '_src/services/web3';
+import { useActiveWeb3React } from '_src/hooks';
 
 export interface ITestnetTokens {
   className?: string;
@@ -31,7 +31,7 @@ const TestnetTokens: React.FC<ITestnetTokens> = ({ className, style, props, mode
   const [loadingsbtc, setloadingsbtc] = useState(false);
 
   const [loadingsdai, setloadingsdai] = useState(false);
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = useActiveWeb3React();
 
   const getImporttoken = (address, coin) => {
     library.provider

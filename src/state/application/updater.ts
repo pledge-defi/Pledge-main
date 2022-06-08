@@ -32,7 +32,6 @@ export default function Updater(): null {
   // attach/detach listeners
   useEffect(() => {
     if (!library || !chainId || !windowVisible) return undefined;
-    console.log('进来一了');
     setState({ chainId, blockNumber: null });
 
     library
