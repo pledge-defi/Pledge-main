@@ -125,7 +125,7 @@ ${props.props.poolname} `,
       <Collapse bordered={false} expandIconPosition="right" ghost={true}>
         <Panel
           header={
-            <Row gutter={16}>
+            <Row gutter={16} style={{ width: '100%' }}>
               <Col span={4}>
                 <OrderImg img1={props.props.logo2} img2={props.props.logo} />
                 <Statistic title={`${props.props.poolname}/${props.props.underlying_asset}`} />
