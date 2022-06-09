@@ -189,7 +189,8 @@ function Market_Mode() {
               })}
             </p>
 
-            {datainfo1.length &&
+            {datainfo1 &&
+              datainfo1.length &&
               datastate.length &&
               (mode == 'Lend'
                 ? datalend.map((item, index) => {
@@ -206,7 +207,8 @@ function Market_Mode() {
               </Tooltip>
             </div>
             <div className="access">
-              {datainfo1.length &&
+              {datainfo1 &&
+                datainfo1.length &&
                 datastate.length &&
                 (mode == 'Lend'
                   ? datalend.map((item, index) => {
@@ -241,7 +243,8 @@ function Market_Mode() {
                     })}
               </p>
 
-              {datainfo1.length &&
+              {datainfo1 &&
+                datainfo1.length &&
                 datastate.length &&
                 (mode == 'Lend'
                   ? datalend.map((item, index) => {
